@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAC 860 Capstone Project - Sam Servellon</title>
+    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        /* Additional styles specific to this page */
+        .content-container {
+            display: none; /* Hidden by default until password is entered */
+        }
+        
+        .password-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
+            text-align: center;
+        }
+        
+        .password-input {
+            padding: 0.5rem 1rem;
+            width: 100%;
+            margin: 1rem 0;
+            border: 1px solid var(--primary-light);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        .password-button {
+            background-color: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .password-button:hover {
+            background-color: var(--accent);
+        }
+        
+        .incorrect-password {
+            color: red;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .media-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+        
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background-color: var(--secondary);
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .drive-container {
+            background-color: var(--secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .project-summary {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+    </style>
+</head>
+<body>
+    <header class="header header-small">
+        <div class="container profile-container-small">
+            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
+            <div class="profile-info-small">
+                <h1>Sam Servellon <span class="pronouns">they/she</span></h1>
+                <p>PhD Student in Educational Studies</p>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="experience.html">Experience & Education</a></li>
+                <li><a href="publications.html">Presentations & Publications</a></li>
+                <li><a href="activities.html">Activities & Certifications</a></li>
+                <li><a href="teac860cap.html" class="active">TEAC 860 Capstone</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <!-- Password Protection Section -->
+        <div class="password-container" id="passwordContainer">
+            <h2>Password Protected Content</h2>
+            <p>This page contains protected content for TEAC 860 Capstone Project. Please enter the password to continue.</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+            <button id="submitPassword" class="password-button">Submit</button>
+            <p id="incorrectPassword" class="incorrect-password">Incorrect password. Please try again.</p>
+        </div>
+        
+        <!-- Main Content (Hidden until password entered) -->
+        <div class="content-container" id="contentContainer">
+            <div class="page-header">
+                <h2 class="page-title">TEAC 860 Capstone Project</h2>
+            </div>
+            
+            <section class="section">
+                <h2 class="section-title">Project Overview</h2>
+                <div class="project-summary">
+                    <p>This capstone project explores the integration of artificial intelligence tools in educational contexts, with a focus on creating equitable and accessible learning environments. The research employs mixed methods approaches to examine both the quantitative and qualitative impacts of AI implementation in classroom settings.</p>
+                    
+                    <p>Key research questions include:</p>
+                    <ul>
+                        <li>How can AI tools be effectively integrated to support diverse learning needs?</li>
+                        <li>What are the ethical considerations and practical challenges of implementing AI in educational spaces?</li>
+                        <li>How do educators and students respond to and interact with AI-enhanced learning environments?</li>
+                    </ul>
+                    
+                    <p>The findings suggest that thoughtful implementation of AI can significantly enhance educational outcomes when paired with appropriate pedagogical frameworks and ethical guidelines. This project contributes to the growing body of knowledge around technology integration in education and offers practical recommendations for educators and institutions.</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Project Presentation</h2>
+                <div class="media-container">
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                            </svg>
+                            <h3>Video Presentation</h3>
+                            <p>Embedded video will appear here.</p>
+                            <!-- Replace with actual embed code when available -->
+                            <!-- Example: <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Project Resources</h2>
+                <div class="media-container">
+                    <div class="drive-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <h3>Google Drive Shared Folder</h3>
+                        <p>Access project materials, research data, and additional resources.</p>
+                        <!-- Replace with actual embed code when available -->
+                        <!-- Example: <iframe src="https://drive.google.com/embeddedfolderview?id=FOLDER_ID" width="100%" height="400" frameborder="0"></iframe> -->
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Methodology</h2>
+                <div class="project-summary">
+                    <p>This research employed a sequential explanatory mixed methods design, beginning with quantitative data collection and analysis, followed by qualitative inquiry to provide deeper insights into the initial findings.</p>
+                    
+                    <h3>Phase 1: Quantitative Analysis</h3>
+                    <p>The first phase involved collecting performance data from 87 students across 4 classrooms, comparing learning outcomes between traditional instructional methods and AI-enhanced approaches.</p>
+                    
+                    <h3>Phase 2: Qualitative Exploration</h3>
+                    <p>Semi-structured interviews were conducted with 12 students and 4 educators to explore their experiences, perceptions, and challenges when engaging with AI tools in educational settings.</p>
+                    
+                    <h3>Data Integration</h3>
+                    <p>Findings were integrated using a joint display approach, allowing for the identification of convergent and divergent patterns between the quantitative and qualitative results.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <h3>Contact Information</h3>
+            <div class="contact-links">
+                <a href="mailto:sam@servellon.net" class="contact-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    sam@servellon.net
+                </a>
+                <a href="sms:4023505157" class="contact-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Text Message
+                </a>
+            </div>
+            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Password Protection Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const correctPassword = "hesnotjustanyguyhesTHEGUY!";
+            const passwordInput = document.getElementById('passwordInput');
+            const submitButton = document.getElementById('submitPassword');
+            const incorrectMessage = document.getElementById('incorrectPassword');
+            const passwordContainer = document.getElementById('passwordContainer');
+            const contentContainer = document.getElementById('contentContainer');
+            
+            // Check if password has been entered in this session
+            if (sessionStorage.getItem('teac860Authenticated') === 'true') {
+                passwordContainer.style.display = 'none';
+                contentContainer.style.display = 'block';
+            }
+            
+            // Password submission event
+            submitButton.addEventListener('click', checkPassword);
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+            
+            function checkPassword() {
+                if (passwordInput.value === correctPassword) {
+                    passwordContainer.style.display = 'none';
+                    contentContainer.style.display = 'block';
+                    sessionStorage.setItem('teac860Authenticated', 'true');
+                } else {
+                    incorrectMessage.style.display = 'block';
+                    passwordInput.value = '';
+                    setTimeout(() => {
+                        incorrectMessage.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
