@@ -53,9 +53,8 @@
         
         .media-container {
             margin: 2rem 0;
-            padding: 2rem;
-            background-color: var(--light-gray);
-            border-radius: var(--border-radius);
+            padding: 0;
+            width: 100%;
         }
         
         .video-container {
@@ -81,11 +80,16 @@
         }
         
         .drive-container {
-            background-color: var(--secondary);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            text-align: center;
+            width: 100%;
+            padding: 0;
             margin-bottom: 2rem;
+        }
+        
+        .drive-embed {
+            width: 100%;
+            height: 700px;
+            border: none;
+            overflow: hidden;
         }
         
         .project-summary {
@@ -94,6 +98,14 @@
             border-radius: var(--border-radius);
             border-left: 4px solid var(--accent);
             box-shadow: 0 4px 6px var(--shadow);
+        }
+        
+        /* Full-width container for the drive section */
+        .full-width-section {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 2rem 0;
         }
     </style>
 </head>
@@ -120,83 +132,85 @@
         </div>
     </nav>
     
-    <main class="container">
+    <main>
         <!-- Password Protection Section -->
-        <div class="password-container" id="passwordContainer">
-            <h2>Password Protected Content</h2>
-            <p>This page contains protected content for TEAC 860 Capstone Project. Please enter the password to continue.</p>
-            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
-            <button id="submitPassword" class="password-button">Submit</button>
-            <p id="incorrectPassword" class="incorrect-password">Incorrect password. Please try again.</p>
+        <div class="container">
+            <div class="password-container" id="passwordContainer">
+                <h2>Password Protected Content</h2>
+                <p>This page contains protected content for TEAC 860 Capstone Project. Please enter the password to continue.</p>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+                <button id="submitPassword" class="password-button">Submit</button>
+                <p id="incorrectPassword" class="incorrect-password">Incorrect password. Please try again.</p>
+            </div>
         </div>
         
         <!-- Main Content (Hidden until password entered) -->
         <div class="content-container" id="contentContainer">
-            <div class="page-header">
-                <h2 class="page-title">TEAC 860 Capstone Project</h2>
-            </div>
-            
-            <section class="section">
-                <h2 class="section-title">Project Overview</h2>
-                <div class="project-summary">
-                    <p>This capstone project explores the integration of artificial intelligence tools in educational contexts, with a focus on creating equitable and accessible learning environments. The research employs mixed methods approaches to examine both the quantitative and qualitative impacts of AI implementation in classroom settings.</p>
-                    
-                    <p>Key research questions include:</p>
-                    <ul>
-                        <li>How can AI tools be effectively integrated to support diverse learning needs?</li>
-                        <li>What are the ethical considerations and practical challenges of implementing AI in educational spaces?</li>
-                        <li>How do educators and students respond to and interact with AI-enhanced learning environments?</li>
-                    </ul>
-                    
-                    <p>The findings suggest that thoughtful implementation of AI can significantly enhance educational outcomes when paired with appropriate pedagogical frameworks and ethical guidelines. This project contributes to the growing body of knowledge around technology integration in education and offers practical recommendations for educators and institutions.</p>
+            <div class="container">
+                <div class="page-header">
+                    <h2 class="page-title">TEAC 860 Capstone Project</h2>
                 </div>
-            </section>
-            
-            <section class="section">
-                <h2 class="section-title">Project Presentation</h2>
-                <div class="media-container">
-                    <div class="video-container">
-                        <div class="video-placeholder">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                            </svg>
-                            <h3>Video Presentation</h3>
-                            <p>Embedded video will appear here.</p>
-                            <!-- Replace with actual embed code when available -->
-                            <!-- Example: <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                
+                <section class="section">
+                    <h2 class="section-title">Project Overview</h2>
+                    <div class="project-summary">
+                        <p>This capstone project explores the integration of artificial intelligence tools in educational contexts, with a focus on creating equitable and accessible learning environments. The research employs mixed methods approaches to examine both the quantitative and qualitative impacts of AI implementation in classroom settings.</p>
+                        
+                        <p>Key research questions include:</p>
+                        <ul>
+                            <li>How can AI tools be effectively integrated to support diverse learning needs?</li>
+                            <li>What are the ethical considerations and practical challenges of implementing AI in educational spaces?</li>
+                            <li>How do educators and students respond to and interact with AI-enhanced learning environments?</li>
+                        </ul>
+                        
+                        <p>The findings suggest that thoughtful implementation of AI can significantly enhance educational outcomes when paired with appropriate pedagogical frameworks and ethical guidelines. This project contributes to the growing body of knowledge around technology integration in education and offers practical recommendations for educators and institutions.</p>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <h2 class="section-title">Project Presentation</h2>
+                    <div class="media-container">
+                        <div class="video-container">
+                            <div class="video-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                </svg>
+                                <h3>Video Presentation</h3>
+                                <p>Embedded video will appear here.</p>
+                                <!-- Replace with actual embed code when available -->
+                                <!-- Example: <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                            </div>
                         </div>
                     </div>
+                </section>
+            </div>
+            
+            <!-- Full-width section for Google Drive -->
+            <section class="full-width-section">
+                <h2 class="section-title container">Project Resources</h2>
+                <div class="drive-container">
+                    <iframe class="drive-embed" src="https://drive.google.com/embeddedfolderview?id=1NT3l-5d_1QHQ8osOk9cf5uKD55nypmDs&amp;resourcekey=0-8FQ-5ZhICZ5PsYVOUWl9nA" allowfullscreen></iframe>
                 </div>
             </section>
             
-            <section class="section">
-                <h2 class="section-title">Project Resources</h2>
-                <div class="media-container">
-                    <div class="drive-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <iframe class="drive-embed" src="https://drive.google.com/embeddedfolderview?id=1NT3l-5d_1QHQ8osOk9cf5uKD55nypmDs&amp;resourcekey=0-8FQ-5ZhICZ5PsYVOUWl9nA" allowfullscreen></iframe>
+            <div class="container">
+                <section class="section">
+                    <h2 class="section-title">Methodology</h2>
+                    <div class="project-summary">
+                        <p>This research employed a sequential explanatory mixed methods design, beginning with quantitative data collection and analysis, followed by qualitative inquiry to provide deeper insights into the initial findings.</p>
+                        
+                        <h3>Phase 1: Quantitative Analysis</h3>
+                        <p>The first phase involved collecting performance data from 87 students across 4 classrooms, comparing learning outcomes between traditional instructional methods and AI-enhanced approaches.</p>
+                        
+                        <h3>Phase 2: Qualitative Exploration</h3>
+                        <p>Semi-structured interviews were conducted with 12 students and 4 educators to explore their experiences, perceptions, and challenges when engaging with AI tools in educational settings.</p>
+                        
+                        <h3>Data Integration</h3>
+                        <p>Findings were integrated using a joint display approach, allowing for the identification of convergent and divergent patterns between the quantitative and qualitative results.</p>
                     </div>
-                </div>
-            </section>
-            
-            <section class="section">
-                <h2 class="section-title">Methodology</h2>
-                <div class="project-summary">
-                    <p>This research employed a sequential explanatory mixed methods design, beginning with quantitative data collection and analysis, followed by qualitative inquiry to provide deeper insights into the initial findings.</p>
-                    
-                    <h3>Phase 1: Quantitative Analysis</h3>
-                    <p>The first phase involved collecting performance data from 87 students across 4 classrooms, comparing learning outcomes between traditional instructional methods and AI-enhanced approaches.</p>
-                    
-                    <h3>Phase 2: Qualitative Exploration</h3>
-                    <p>Semi-structured interviews were conducted with 12 students and 4 educators to explore their experiences, perceptions, and challenges when engaging with AI tools in educational settings.</p>
-                    
-                    <h3>Data Integration</h3>
-                    <p>Findings were integrated using a joint display approach, allowing for the identification of convergent and divergent patterns between the quantitative and qualitative results.</p>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
     </main>
     
@@ -204,12 +218,12 @@
         <div class="container">
             <h3>Contact Information</h3>
             <div class="contact-links">
-                <a href="mailto:sam@servellon.net" class="contact-link">
+                <a href="mailto:sebservellon@gmail.com" class="contact-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                         <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
-                    sam@servellon.net
+                    sebservellon@gmail.com
                 </a>
                 <a href="sms:4023505157" class="contact-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
