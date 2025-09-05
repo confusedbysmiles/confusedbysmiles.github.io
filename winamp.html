@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio-Reactive Pride Visualizer</title>
+    <title>Audio-Reactive Pride Visualizer with YouTube</title>
     <style>
         body {
             margin: 0;
@@ -45,6 +45,8 @@
             font-size: 12px;
             transition: all 0.3s;
             backdrop-filter: blur(10px);
+            display: block;
+            width: 200px;
         }
         
         .audio-button:hover {
@@ -58,6 +60,39 @@
             background: rgba(0, 255, 100, 0.2);
             border-color: rgba(0, 255, 100, 0.5);
             box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
+        }
+        
+        .youtube-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 12px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            display: block;
+            width: 200px;
+        }
+        
+        .youtube-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .youtube-player {
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .youtube-player.show {
+            display: block;
         }
         
         .audio-level {
@@ -141,9 +176,23 @@
 </head>
 <body>
     <div class="controls" id="controls">
-        <div>🎵 Audio-Reactive Pride Visualizer</div>
+        <div>🎵 Audio-Reactive Pride Visualizer + YouTube</div>
         <div style="font-size: 12px; margin-top: 5px;">Move and click to create patterns</div>
         <button class="audio-button" id="audioButton">🎤 Enable Audio Reactivity</button>
+        <button class="youtube-button" id="youtubeButton">📺 Show Lofi Hip Hop Stream</button>
+        <div class="youtube-player" id="youtubePlayer">
+            <iframe 
+                width="200" 
+                height="113" 
+                src="https://www.youtube.com/embed/S_MOd40zlYU?enablejsapi=1&controls=1&rel=0&modestbranding=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+            <div style="color: rgba(255,255,255,0.7); font-size: 10px; margin-top: 5px;">
+                🎧 Enable microphone above for audio-reactive visuals!
+            </div>
+        </div>
         <div class="audio-level">
             <div class="audio-level-bar" id="audioLevelBar"></div>
         </div>
@@ -159,6 +208,8 @@
         const controls = document.getElementById('controls');
         const cursor = document.getElementById('cursor');
         const audioButton = document.getElementById('audioButton');
+        const youtubeButton = document.getElementById('youtubeButton');
+        const youtubePlayer = document.getElementById('youtubePlayer');
         const audioLevelBar = document.getElementById('audioLevelBar');
         const frequencyBars = document.getElementById('frequencyBars');
         
@@ -193,6 +244,7 @@
         let mouseY = 0;
         let isMouseDown = false;
         let hasInteracted = false;
+        let youtubeVisible = false;
         
         // Create frequency bars
         for (let i = 0; i < 32; i++) {
@@ -282,6 +334,19 @@
             }
         });
         
+        // YouTube button click
+        youtubeButton.addEventListener('click', () => {
+            youtubeVisible = !youtubeVisible;
+            
+            if (youtubeVisible) {
+                youtubePlayer.classList.add('show');
+                youtubeButton.textContent = '📺 Hide Stream';
+            } else {
+                youtubePlayer.classList.remove('show');
+                youtubeButton.textContent = '📺 Show Lofi Hip Hop Stream';
+            }
+        });
+        
         // Global reset function
         window.doReset = function(btn) {
             // Clear all particles
@@ -299,12 +364,8 @@
             
             // Show controls again briefly
             controls.classList.remove('fade');
-            youtubeControls.classList.remove('fade');
             setTimeout(() => {
-                if (hasInteracted) {
-                    controls.classList.add('fade');
-                    youtubeControls.classList.add('fade');
-                }
+                if (hasInteracted) controls.classList.add('fade');
             }, 2000);
             
             // Visual feedback
