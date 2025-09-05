@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio-Reactive Pride Visualizer with YouTube</title>
+    <title>Audio-Reactive Pride Visualizer with YouTube v2</title>
     <style>
         body {
             margin: 0;
@@ -26,12 +26,21 @@
             color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
             z-index: 10;
-            transition: opacity 2s;
+            transition: opacity 0.3s ease;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .controls.fade {
-            opacity: 0;
+            opacity: 0.4;
+        }
+        
+        .controls:hover {
+            opacity: 1 !important;
+            transform: scale(1.02);
         }
         
         .audio-button {
@@ -172,25 +181,36 @@
         .reset-btn:active {
             transform: translateY(0) scale(0.95);
         }
+        
+        .controls-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
     </style>
 </head>
 <body>
     <div class="controls" id="controls">
-        <div>🎵 Audio-Reactive Pride Visualizer + YouTube</div>
-        <div style="font-size: 12px; margin-top: 5px;">Move and click to create patterns</div>
+        <div>🎵 Audio-Reactive Pride Visualizer + YouTube v2</div>
+        <div style="font-size: 12px; margin-top: 5px;">Move and click to create patterns • Hover here for controls</div>
         <button class="audio-button" id="audioButton">🎤 Enable Audio Reactivity</button>
         <button class="youtube-button" id="youtubeButton">📺 Show Lofi Hip Hop Stream</button>
         <div class="youtube-player" id="youtubePlayer">
             <iframe 
                 width="200" 
                 height="113" 
-                src="https://www.youtube.com/embed/S_MOd40zlYU?enablejsapi=1&controls=1&rel=0&modestbranding=1" 
+                src="https://www.youtube.com/embed/S_MOd40zlYU?controls=1&rel=0&modestbranding=1" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen>
             </iframe>
-            <div style="color: rgba(255,255,255,0.7); font-size: 10px; margin-top: 5px;">
-                🎧 Enable microphone above for audio-reactive visuals!
+            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 8px; line-height: 1.3;">
+                🔊 <strong>Click PLAY & UNMUTE</strong> the video above!<br>
+                🎧 Then enable microphone for reactive visuals!<br>
+                💡 Volume up on your speakers to hear the music!
             </div>
         </div>
         <div class="audio-level">
@@ -198,6 +218,7 @@
         </div>
         <div class="frequency-bars" id="frequencyBars"></div>
     </div>
+    <div class="controls-hint">💡 Controls fade but return on hover</div>
     <button class="reset-btn" onclick="doReset(this)" title="Reset Visualization">🔄</button>
     <div class="cursor" id="cursor"></div>
     <canvas id="canvas"></canvas>
@@ -366,7 +387,7 @@
             controls.classList.remove('fade');
             setTimeout(() => {
                 if (hasInteracted) controls.classList.add('fade');
-            }, 5000);
+            }, 6000);
             
             // Visual feedback
             btn.style.transform = 'scale(0.8)';
@@ -596,9 +617,9 @@
                 particles.push(particle);
             }
             
-            // Hide controls after first interaction
+            // Fade controls after interaction but allow hover to restore
             if (controls.style.opacity !== '0') {
-                setTimeout(() => controls.classList.add('fade'), 3000);
+                setTimeout(() => controls.classList.add('fade'), 6000);
             }
         });
         
