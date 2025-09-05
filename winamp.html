@@ -249,6 +249,39 @@
             }
         });
         
+        // Reset button functionality
+        function resetVisualization() {
+            // Clear all particles
+            particles = [];
+            
+            // Clear the canvas completely
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Reset flow field
+            initFlowField();
+            
+            // Reset time
+            time = 0;
+            
+            // Show controls again briefly
+            controls.classList.remove('fade');
+            setTimeout(() => {
+                if (hasInteracted) {
+                    controls.classList.add('fade');
+                }
+            }, 2000);
+            
+            // Visual feedback for the reset button
+            resetButton.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                resetButton.style.transform = '';
+            }, 150);
+        }
+        
+        // Reset button click
+        resetButton.addEventListener('click', resetVisualization);
+        
         // Resize canvas to full window
         function resizeCanvas() {
             canvas.width = window.innerWidth;
