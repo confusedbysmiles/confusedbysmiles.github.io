@@ -299,8 +299,12 @@
             
             // Show controls again briefly
             controls.classList.remove('fade');
+            youtubeControls.classList.remove('fade');
             setTimeout(() => {
-                if (hasInteracted) controls.classList.add('fade');
+                if (hasInteracted) {
+                    controls.classList.add('fade');
+                    youtubeControls.classList.add('fade');
+                }
             }, 2000);
             
             // Visual feedback
