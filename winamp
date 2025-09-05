@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pride Fluid Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            cursor: none;
+            font-family: Arial, sans-serif;
+        }
+        
+        canvas {
+            display: block;
+            background: #000;
+        }
+        
+        .instructions {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            z-index: 10;
+            transition: opacity 2s;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .instructions.fade {
+            opacity: 0;
+        }
+        
+        .cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 15;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: transform 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions" id="instructions">
+        Move and click to create fluid patterns ✨
+    </div>
+    <div class="cursor" id="cursor"></div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const instructions = document.getElementById('instructions');
+        const cursor = document.getElementById('cursor');
+        
+        // Pride colors with more fluid transitions
+        const prideColors = [
+            [228, 3, 3],     // Red
+            [255, 140, 0],   // Orange  
+            [255, 237, 0],   // Yellow
+            [0, 128, 24],    // Green
+            [0, 76, 255],    // Blue
+            [115, 41, 130]   // Purple
+        ];
+        
+        let particles = [];
+        let flowField = [];
+        let time = 0;
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseDown = false;
+        let hasInteracted = false;
+        
+        // Resize canvas to full window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initFlowField();
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // Initialize flow field for fluid movement
+        function initFlowField() {
+            flowField = [];
+            const resolution = 20;
+            for (let x = 0; x < canvas.width; x += resolution) {
+                for (let y = 0; y < canvas.height; y += resolution) {
+                    flowField.push({
+                        x: x,
+                        y: y,
+                        angle: Math.random() * Math.PI * 2,
+                        force: Math.random() * 0.5 + 0.1
+                    });
+                }
+            }
+        }
+        
+        // Particle class for fluid effects
+        class FluidParticle {
+            constructor(x, y, colorIndex = null) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.life = 1;
+                this.maxLife = 3 + Math.random() * 4;
+                this.size = Math.random() * 3 + 1;
+                this.colorIndex = colorIndex !== null ? colorIndex : Math.floor(Math.random() * prideColors.length);
+                this.trail = [];
+                this.trailLength = 15 + Math.random() * 10;
+                this.originalSize = this.size;
+                this.phase = Math.random() * Math.PI * 2;
+            }
+            
+            update() {
+                // Flow field influence
+                const flowX = Math.floor(this.x / 20) * 20;
+                const flowY = Math.floor(this.y / 20) * 20;
+                const flow = flowField.find(f => f.x === flowX && f.y === flowY);
+                
+                if (flow) {
+                    this.vx += Math.cos(flow.angle + time * 0.01) * flow.force * 0.1;
+                    this.vy += Math.sin(flow.angle + time * 0.01) * flow.force * 0.1;
+                }
+                
+                // Mouse attraction
+                if (isMouseDown) {
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 200) {
+                        const force = (200 - dist) / 200 * 0.5;
+                        this.vx += (dx / dist) * force;
+                        this.vy += (dy / dist) * force;
+                    }
+                }
+                
+                // Add some turbulence
+                this.vx += Math.sin(time * 0.01 + this.phase) * 0.1;
+                this.vy += Math.cos(time * 0.015 + this.phase) * 0.1;
+                
+                // Damping
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                
+                // Store trail
+                this.trail.push({ x: this.x, y: this.y, life: this.life });
+                if (this.trail.length > this.trailLength) {
+                    this.trail.shift();
+                }
+                
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Wrap around edges
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+                
+                // Update life and size
+                this.life -= 1 / (this.maxLife * 60);
+                this.size = this.originalSize * (0.5 + Math.sin(time * 0.05 + this.phase) * 0.5) * this.life;
+                
+                return this.life > 0;
+            }
+            
+            draw() {
+                if (this.life <= 0) return;
+                
+                const color = prideColors[this.colorIndex];
+                
+                // Draw trail with gradient
+                for (let i = 0; i < this.trail.length - 1; i++) {
+                    const segment = this.trail[i];
+                    const nextSegment = this.trail[i + 1];
+                    const alpha = (i / this.trail.length) * this.life * 0.8;
+                    
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'screen';
+                    ctx.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+                    ctx.lineWidth = (i / this.trail.length) * this.size * 2;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(segment.x, segment.y);
+                    ctx.lineTo(nextSegment.x, nextSegment.y);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                
+                // Draw particle with glow
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+                
+                // Outer glow
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 4);
+                gradient.addColorStop(0, `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${this.life * 0.8})`);
+                gradient.addColorStop(0.5, `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${this.life * 0.3})`);
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Core particle
+                ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${this.life})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+        
+        // Mouse movement tracking
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update custom cursor
+            cursor.style.left = (mouseX - 10) + 'px';
+            cursor.style.top = (mouseY - 10) + 'px';
+            
+            // Add particles on mouse move
+            if (hasInteracted && Math.random() < 0.3) {
+                for (let i = 0; i < 2; i++) {
+                    const offsetX = mouseX + (Math.random() - 0.5) * 50;
+                    const offsetY = mouseY + (Math.random() - 0.5) * 50;
+                    particles.push(new FluidParticle(offsetX, offsetY));
+                }
+            }
+        });
+        
+        // Mouse click events
+        document.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            hasInteracted = true;
+            
+            // Create burst of particles
+            for (let i = 0; i < 20; i++) {
+                const angle = (i / 20) * Math.PI * 2;
+                const velocity = 2 + Math.random() * 3;
+                const x = mouseX + Math.cos(angle) * Math.random() * 30;
+                const y = mouseY + Math.sin(angle) * Math.random() * 30;
+                const particle = new FluidParticle(x, y);
+                particle.vx = Math.cos(angle) * velocity;
+                particle.vy = Math.sin(angle) * velocity;
+                particles.push(particle);
+            }
+            
+            // Hide instructions
+            if (instructions.style.opacity !== '0') {
+                instructions.classList.add('fade');
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+        
+        // Animation loop
+        function animate() {
+            // Create trailing effect instead of full clear
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time++;
+            
+            // Update flow field
+            flowField.forEach(flow => {
+                flow.angle += Math.sin(time * 0.01 + flow.x * 0.01 + flow.y * 0.01) * 0.02;
+            });
+            
+            // Update and draw particles
+            particles = particles.filter(particle => {
+                const alive = particle.update();
+                if (alive) particle.draw();
+                return alive;
+            });
+            
+            // Add ambient particles
+            if (hasInteracted && particles.length < 500 && Math.random() < 0.1) {
+                const edge = Math.floor(Math.random() * 4);
+                let x, y;
+                switch (edge) {
+                    case 0: x = Math.random() * canvas.width; y = 0; break;
+                    case 1: x = canvas.width; y = Math.random() * canvas.height; break;
+                    case 2: x = Math.random() * canvas.width; y = canvas.height; break;
+                    case 3: x = 0; y = Math.random() * canvas.height; break;
+                }
+                particles.push(new FluidParticle(x, y));
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Start animation
+        animate();
+        
+        // Initialize with some particles for demo
+        setTimeout(() => {
+            if (!hasInteracted) {
+                for (let i = 0; i < 50; i++) {
+                    particles.push(new FluidParticle(
+                        Math.random() * canvas.width,
+                        Math.random() * canvas.height
+                    ));
+                }
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
