@@ -10,58 +10,66 @@
             padding: 0;
             background: #000;
             overflow: hidden;
-            cursor: none;
             font-family: Arial, sans-serif;
         }
         
         canvas {
             display: block;
             background: #000;
+            cursor: none;
         }
         
         .controls {
-            position: fixed; /* Changed from absolute to fixed */
+            position: fixed;
             top: 20px;
             left: 20px;
-            color: rgba(255, 255, 255, 0.9); /* Increased opacity */
+            color: rgba(255, 255, 255, 0.9);
             font-size: 14px;
-            z-index: 1000; /* Increased z-index significantly */
+            z-index: 1000;
             transition: opacity 0.3s ease;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            background: rgba(20, 20, 20, 0.8); /* Made background more visible */
+            background: rgba(20, 20, 20, 0.8);
             padding: 15px;
             border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.5); /* Made border more visible */
+            border: 2px solid rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Added shadow for better visibility */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            cursor: auto;
+        }
+        
+        .controls * {
+            cursor: auto;
         }
         
         .controls.fade {
-            opacity: 0.6; /* Increased from 0.4 */
+            opacity: 0.6;
         }
         
         .controls:hover {
             opacity: 1 !important;
             transform: scale(1.02);
-            background: rgba(30, 30, 30, 0.9); /* Slightly lighter on hover */
+            background: rgba(30, 30, 30, 0.9);
         }
         
-        .audio-button {
-            background: rgba(255, 255, 255, 0.2); /* Made buttons more visible */
+        .audio-button, .youtube-button {
+            background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
-            cursor: pointer;
+            cursor: pointer !important;
+            pointer-events: all !important;
             margin-top: 10px;
             font-size: 12px;
             transition: all 0.3s;
             backdrop-filter: blur(10px);
             display: block;
             width: 200px;
+            position: relative;
+            z-index: 1002;
         }
         
-        .audio-button:hover {
+        .audio-button:hover, .youtube-button:hover {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px);
@@ -74,37 +82,26 @@
             box-shadow: 0 0 20px rgba(0, 255, 100, 0.4);
         }
         
-        .youtube-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 12px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-            display: block;
-            width: 200px;
-        }
-        
-        .youtube-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-        
         .youtube-player {
             margin-top: 10px;
             border-radius: 8px;
             overflow: hidden;
-            display: none;
+            display: none !important;
+            background: rgba(20, 20, 20, 0.8);
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1001;
         }
         
         .youtube-player.show {
-            display: block;
+            display: block !important;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .audio-level {
@@ -124,13 +121,13 @@
         }
         
         .cursor {
-            position: fixed; /* Changed from absolute */
+            position: fixed;
             width: 20px;
             height: 20px;
             border: 2px solid rgba(255, 255, 255, 0.6);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 1500; /* Increased z-index */
+            z-index: 1500;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
             transition: transform 0.1s ease;
         }
@@ -142,19 +139,19 @@
             display: flex;
             height: 60px;
             align-items: flex-end;
-            opacity: 0.8; /* Increased opacity */
+            opacity: 0.8;
         }
         
         .freq-bar {
             width: 3px;
-            background: rgba(255, 255, 255, 0.5); /* Made more visible */
+            background: rgba(255, 255, 255, 0.5);
             margin: 0 1px;
             border-radius: 2px 2px 0 0;
             transition: height 0.1s ease;
         }
         
         .reset-btn {
-            position: fixed; /* Changed from absolute */
+            position: fixed;
             bottom: 20px;
             left: 20px;
             background: rgba(255, 255, 255, 0.2);
@@ -162,7 +159,7 @@
             color: white;
             padding: 12px;
             border-radius: 50%;
-            cursor: pointer;
+            cursor: pointer !important;
             font-size: 18px;
             transition: all 0.3s;
             backdrop-filter: blur(10px);
@@ -171,7 +168,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000; /* Increased z-index */
+            z-index: 1000;
         }
         
         .reset-btn:hover {
@@ -186,13 +183,13 @@
         }
         
         .controls-hint {
-            position: fixed; /* Changed from absolute */
+            position: fixed;
             bottom: 80px;
             left: 20px;
-            color: rgba(255, 255, 255, 0.8); /* Made more visible */
-            font-size: 12px; /* Slightly larger */
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-            background: rgba(20, 20, 20, 0.6); /* Added background */
+            background: rgba(20, 20, 20, 0.6);
             padding: 5px 10px;
             border-radius: 5px;
             z-index: 1000;
@@ -257,7 +254,7 @@
         let beatDetected = false;
         let lastBeatTime = 0;
         
-        // Pride colors with more fluid transitions
+        // Pride colors
         const prideColors = [
             [228, 3, 3],     // Red
             [255, 140, 0],   // Orange  
@@ -266,6 +263,10 @@
             [0, 76, 255],    // Blue
             [115, 41, 130]   // Purple
         ];
+        
+        // Memory leak prevention
+        const MAX_PARTICLES = 800;
+        const MAX_TRAIL_LENGTH = 25;
         
         let particles = [];
         let flowField = [];
@@ -356,33 +357,50 @@
             }
         }
         
-        // Audio button click
-        audioButton.addEventListener('click', async () => {
-            if (!audioEnabled) {
-                audioButton.textContent = '🔄 Requesting Access...';
-                await setupAudio();
+        // Fixed YouTube button event handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('youtubeButton');
+            const player = document.getElementById('youtubePlayer');
+            
+            if (btn && player) {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    youtubeVisible = !youtubeVisible;
+                    
+                    if (youtubeVisible) {
+                        player.classList.add('show');
+                        this.textContent = '📺 Hide Stream';
+                    } else {
+                        player.classList.remove('show');
+                        this.textContent = '📺 Show Lofi Hip Hop Stream';
+                    }
+                    console.log('YouTube toggled:', youtubeVisible);
+                    return false;
+                };
             }
         });
         
-        // YouTube button click
-        youtubeButton.addEventListener('click', () => {
-            youtubeVisible = !youtubeVisible;
-            
-            if (youtubeVisible) {
-                youtubePlayer.classList.add('show');
-                youtubeButton.textContent = '📺 Hide Stream';
-            } else {
-                youtubePlayer.classList.remove('show');
-                youtubeButton.textContent = '📺 Show Lofi Hip Hop Stream';
+        // Audio button click
+        audioButton.onclick = async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!audioEnabled) {
+                this.textContent = '🔄 Requesting Access...';
+                await setupAudio();
             }
-        });
+            return false;
+        };
         
         // Global reset function
         window.doReset = function(btn) {
             // Clear all particles
+            particles.forEach(p => {
+                p.trail = null; // Clear trail reference
+            });
             particles = [];
             
-            // Clear the canvas completely
+            // Clear the canvas
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
@@ -392,20 +410,22 @@
             // Reset time
             time = 0;
             
-            // Show controls again briefly
+            // Show controls again
             controls.classList.remove('fade');
             setTimeout(() => {
                 if (hasInteracted) controls.classList.add('fade');
-            }, 8000); // Increased from 6000
+            }, 8000);
             
             // Visual feedback
             btn.style.transform = 'scale(0.8)';
             setTimeout(() => {
                 btn.style.transform = '';
             }, 150);
+            
+            console.log('Reset complete - particles cleared');
         };
         
-        // Resize canvas to full window
+        // Resize canvas
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -415,7 +435,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         
-        // Initialize flow field for fluid movement
+        // Initialize flow field
         function initFlowField() {
             flowField = [];
             const resolution = 20;
@@ -431,7 +451,7 @@
             }
         }
         
-        // Particle class for fluid effects
+        // Optimized Particle class
         class FluidParticle {
             constructor(x, y, colorIndex = null, audioInfluenced = false) {
                 this.x = x;
@@ -443,7 +463,7 @@
                 this.size = Math.random() * 3 + 1;
                 this.colorIndex = colorIndex !== null ? colorIndex : Math.floor(Math.random() * prideColors.length);
                 this.trail = [];
-                this.trailLength = 15 + Math.random() * 10;
+                this.trailLength = Math.min(MAX_TRAIL_LENGTH, 15 + Math.random() * 10);
                 this.originalSize = this.size;
                 this.phase = Math.random() * Math.PI * 2;
                 this.audioInfluenced = audioInfluenced;
@@ -458,7 +478,6 @@
                 let sizeMultiplier = 1;
                 
                 if (audioEnabled && this.audioInfluenced) {
-                    // Different particles respond to different frequency ranges
                     if (this.bassResponse > 0.7) {
                         audioMultiplier += bassLevel * 3;
                         sizeMultiplier += bassLevel * 2;
@@ -469,17 +488,16 @@
                     }
                     if (this.trebleResponse > 0.7) {
                         audioMultiplier += trebleLevel * 1.5;
-                        this.trailLength = Math.max(5, 25 * trebleLevel);
+                        this.trailLength = Math.min(MAX_TRAIL_LENGTH, Math.max(5, 25 * trebleLevel));
                     }
                     
-                    // Beat detection creates bursts
                     if (beatDetected) {
                         this.vx += (Math.random() - 0.5) * 5;
                         this.vy += (Math.random() - 0.5) * 5;
                     }
                 }
                 
-                // Flow field influence (modified by audio)
+                // Flow field influence
                 const flowX = Math.floor(this.x / 20) * 20;
                 const flowY = Math.floor(this.y / 20) * 20;
                 const flow = flowField.find(f => f.x === flowX && f.y === flowY);
@@ -502,7 +520,7 @@
                     }
                 }
                 
-                // Add some turbulence (enhanced by audio)
+                // Turbulence
                 const turbulence = 0.1 * audioMultiplier;
                 this.vx += Math.sin(time * 0.01 + this.phase) * turbulence;
                 this.vy += Math.cos(time * 0.015 + this.phase) * turbulence;
@@ -511,9 +529,9 @@
                 this.vx *= 0.98;
                 this.vy *= 0.98;
                 
-                // Store trail
+                // Update trail - memory leak fix
                 this.trail.push({ x: this.x, y: this.y, life: this.life });
-                if (this.trail.length > this.trailLength) {
+                while (this.trail.length > this.trailLength) {
                     this.trail.shift();
                 }
                 
@@ -527,7 +545,7 @@
                 if (this.y < 0) this.y = canvas.height;
                 if (this.y > canvas.height) this.y = 0;
                 
-                // Update life and size (modified by audio)
+                // Update life
                 this.life -= 1 / (this.maxLife * 60);
                 this.size = this.originalSize * (0.5 + Math.sin(time * 0.05 + this.phase) * 0.5) * this.life * sizeMultiplier;
                 
@@ -540,12 +558,11 @@
                 const color = prideColors[this.colorIndex];
                 let alpha = this.life;
                 
-                // Audio enhances brightness
                 if (audioEnabled && this.audioInfluenced) {
                     alpha *= (1 + audioLevel);
                 }
                 
-                // Draw trail with gradient
+                // Draw trail
                 for (let i = 0; i < this.trail.length - 1; i++) {
                     const segment = this.trail[i];
                     const nextSegment = this.trail[i + 1];
@@ -563,11 +580,10 @@
                     ctx.restore();
                 }
                 
-                // Draw particle with glow
+                // Draw particle
                 ctx.save();
                 ctx.globalCompositeOperation = 'screen';
                 
-                // Outer glow (enhanced by audio)
                 const glowSize = this.size * 4 * (audioEnabled ? 1 + audioLevel : 1);
                 const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowSize);
                 gradient.addColorStop(0, `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha * 0.8})`);
@@ -579,7 +595,6 @@
                 ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Core particle
                 ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -587,19 +602,29 @@
                 
                 ctx.restore();
             }
+            
+            // Cleanup method
+            cleanup() {
+                this.trail = null;
+            }
         }
         
-        // Mouse movement tracking
+        // Mouse movement
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // Update custom cursor
-            cursor.style.left = (mouseX - 10) + 'px';
-            cursor.style.top = (mouseY - 10) + 'px';
+            // Don't show cursor over controls
+            if (e.target.closest('.controls') || e.target.closest('.reset-btn')) {
+                cursor.style.display = 'none';
+            } else {
+                cursor.style.display = 'block';
+                cursor.style.left = (mouseX - 10) + 'px';
+                cursor.style.top = (mouseY - 10) + 'px';
+            }
             
             // Add particles on mouse move
-            if (hasInteracted && Math.random() < 0.3) {
+            if (hasInteracted && Math.random() < 0.3 && particles.length < MAX_PARTICLES) {
                 for (let i = 0; i < 2; i++) {
                     const offsetX = mouseX + (Math.random() - 0.5) * 50;
                     const offsetY = mouseY + (Math.random() - 0.5) * 50;
@@ -610,12 +635,15 @@
         
         // Mouse click events
         document.addEventListener('mousedown', (e) => {
+            // Don't trigger for control clicks
+            if (e.target.closest('.controls') || e.target.closest('.reset-btn')) return;
+            
             isMouseDown = true;
             hasInteracted = true;
             
-            // Create burst of particles
-            const burstSize = audioEnabled ? 20 + Math.floor(audioLevel * 30) : 20;
-            for (let i = 0; i < burstSize; i++) {
+            // Create burst
+            const burstSize = Math.min(audioEnabled ? 20 + Math.floor(audioLevel * 30) : 20, 50);
+            for (let i = 0; i < burstSize && particles.length < MAX_PARTICLES; i++) {
                 const angle = (i / burstSize) * Math.PI * 2;
                 const velocity = 2 + Math.random() * 3 + (audioEnabled ? audioLevel * 5 : 0);
                 const x = mouseX + Math.cos(angle) * Math.random() * 30;
@@ -626,9 +654,9 @@
                 particles.push(particle);
             }
             
-            // Fade controls after interaction but allow hover to restore
+            // Fade controls
             if (!controls.classList.contains('fade')) {
-                setTimeout(() => controls.classList.add('fade'), 8000); // Increased delay
+                setTimeout(() => controls.classList.add('fade'), 8000);
             }
         });
         
@@ -638,31 +666,34 @@
         
         // Animation loop
         function animate() {
-            // Analyze audio
             analyzeAudio();
             
-            // Create trailing effect (modified by audio)
+            // Fade effect
             const fadeAmount = audioEnabled ? 0.02 + (audioLevel * 0.05) : 0.02;
             ctx.fillStyle = `rgba(0, 0, 0, ${fadeAmount})`;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             time++;
             
-            // Update flow field (audio influences rotation speed)
+            // Update flow field
             const flowSpeed = audioEnabled ? 0.01 + (audioLevel * 0.02) : 0.01;
             flowField.forEach(flow => {
                 flow.angle += Math.sin(time * flowSpeed + flow.x * 0.01 + flow.y * 0.01) * 0.02;
             });
             
-            // Update and draw particles
+            // Update and clean up particles
             particles = particles.filter(particle => {
                 const alive = particle.update();
-                if (alive) particle.draw();
+                if (alive) {
+                    particle.draw();
+                } else {
+                    particle.cleanup(); // Clean up dead particles
+                }
                 return alive;
             });
             
-            // Add ambient particles (more with audio)
-            const maxParticles = audioEnabled ? 500 + Math.floor(audioLevel * 200) : 500;
+            // Add ambient particles with limit
+            const maxParticles = Math.min(MAX_PARTICLES, audioEnabled ? 500 + Math.floor(audioLevel * 200) : 500);
             const spawnRate = audioEnabled ? 0.1 + (audioLevel * 0.3) : 0.1;
             
             if (hasInteracted && particles.length < maxParticles && Math.random() < spawnRate) {
@@ -677,9 +708,9 @@
                 particles.push(new FluidParticle(x, y, null, true));
             }
             
-            // Beat-driven particle bursts
-            if (beatDetected && hasInteracted) {
-                for (let i = 0; i < 10; i++) {
+            // Beat-driven bursts with limit
+            if (beatDetected && hasInteracted && particles.length < maxParticles - 10) {
+                for (let i = 0; i < 10 && particles.length < maxParticles; i++) {
                     const x = Math.random() * canvas.width;
                     const y = Math.random() * canvas.height;
                     const particle = new FluidParticle(x, y, Math.floor(Math.random() * prideColors.length), true);
@@ -695,7 +726,7 @@
         // Start animation
         animate();
         
-        // Initialize with some particles for demo
+        // Initialize with demo particles
         setTimeout(() => {
             if (!hasInteracted) {
                 for (let i = 0; i < 50; i++) {
@@ -709,11 +740,10 @@
             }
         }, 2000);
         
-        // Log to console for debugging
-        console.log('Visualizer initialized. Controls should be visible at top-left.');
-        console.log('Controls element:', controls);
-        console.log('Controls visibility:', window.getComputedStyle(controls).visibility);
-        console.log('Controls display:', window.getComputedStyle(controls).display);
+        // Debug logging
+        console.log('Visualizer initialized');
+        console.log('YouTube button:', youtubeButton);
+        console.log('Controls visible');
     </script>
 </body>
 </html>
