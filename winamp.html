@@ -20,32 +20,35 @@
         }
         
         .controls {
-            position: absolute;
+            position: fixed; /* Changed from absolute to fixed */
             top: 20px;
             left: 20px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9); /* Increased opacity */
             font-size: 14px;
-            z-index: 10;
+            z-index: 1000; /* Increased z-index significantly */
             transition: opacity 0.3s ease;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(20, 20, 20, 0.8); /* Made background more visible */
             padding: 15px;
             border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5); /* Made border more visible */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Added shadow for better visibility */
         }
         
         .controls.fade {
-            opacity: 0.4;
+            opacity: 0.6; /* Increased from 0.4 */
         }
         
         .controls:hover {
             opacity: 1 !important;
             transform: scale(1.02);
+            background: rgba(30, 30, 30, 0.9); /* Slightly lighter on hover */
         }
         
         .audio-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2); /* Made buttons more visible */
+            border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
@@ -59,21 +62,21 @@
         }
         
         .audio-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
         
         .audio-button.active {
-            background: rgba(0, 255, 100, 0.2);
-            border-color: rgba(0, 255, 100, 0.5);
-            box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
+            background: rgba(0, 255, 100, 0.3);
+            border-color: rgba(0, 255, 100, 0.7);
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.4);
         }
         
         .youtube-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
@@ -87,10 +90,10 @@
         }
         
         .youtube-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
         
         .youtube-player {
@@ -107,7 +110,7 @@
         .audio-level {
             width: 200px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 2px;
             margin-top: 10px;
             overflow: hidden;
@@ -121,13 +124,13 @@
         }
         
         .cursor {
-            position: absolute;
+            position: fixed; /* Changed from absolute */
             width: 20px;
             height: 20px;
             border: 2px solid rgba(255, 255, 255, 0.6);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 15;
+            z-index: 1500; /* Increased z-index */
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
             transition: transform 0.1s ease;
         }
@@ -139,23 +142,23 @@
             display: flex;
             height: 60px;
             align-items: flex-end;
-            opacity: 0.7;
+            opacity: 0.8; /* Increased opacity */
         }
         
         .freq-bar {
             width: 3px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.5); /* Made more visible */
             margin: 0 1px;
             border-radius: 2px 2px 0 0;
             transition: height 0.1s ease;
         }
         
         .reset-btn {
-            position: absolute;
+            position: fixed; /* Changed from absolute */
             bottom: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 12px;
             border-radius: 50%;
@@ -168,14 +171,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            z-index: 1000; /* Increased z-index */
         }
         
         .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px) scale(1.1);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
         
         .reset-btn:active {
@@ -183,34 +186,40 @@
         }
         
         .controls-hint {
-            position: absolute;
+            position: fixed; /* Changed from absolute */
             bottom: 80px;
             left: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8); /* Made more visible */
+            font-size: 12px; /* Slightly larger */
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            background: rgba(20, 20, 20, 0.6); /* Added background */
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
     <div class="controls" id="controls">
-        <div>🎵 Audio-Reactive Pride Visualizer + YouTube v2</div>
-        <div style="font-size: 12px; margin-top: 5px;">Move and click to create patterns • Hover here for controls</div>
+        <div style="font-weight: bold; font-size: 16px;">🎵 Audio-Reactive Pride Visualizer + YouTube v2</div>
+        <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">Move and click to create patterns • Hover here for controls</div>
         <button class="audio-button" id="audioButton">🎤 Enable Audio Reactivity</button>
         <button class="youtube-button" id="youtubeButton">📺 Show Lofi Hip Hop Stream</button>
         <div class="youtube-player" id="youtubePlayer">
             <iframe 
-                width="200" 
-                height="113" 
-                src="https://www.youtube.com/embed/S_MOd40zlYU?controls=1&rel=0&modestbranding=1" 
+                width="280" 
+                height="160" 
+                src="https://www.youtube.com/embed/S_MOd40zlYU?controls=1&rel=0&modestbranding=0&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0" 
                 frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen
+                style="border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
             </iframe>
-            <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 8px; line-height: 1.3;">
-                🔊 <strong>Click PLAY & UNMUTE</strong> the video above!<br>
+            <div style="color: rgba(255,255,255,0.9); font-size: 11px; margin-top: 8px; line-height: 1.4;">
+                🎵 <strong>Click the ▶️ PLAY button in the video above</strong><br>
+                🔊 Look for the 🔊 speaker icon in the video controls to unmute<br>
                 🎧 Then enable microphone for reactive visuals!<br>
-                💡 Volume up on your speakers to hear the music!
+                💡 If no sound, try clicking directly on the YouTube logo to open in new tab
             </div>
         </div>
         <div class="audio-level">
@@ -387,7 +396,7 @@
             controls.classList.remove('fade');
             setTimeout(() => {
                 if (hasInteracted) controls.classList.add('fade');
-            }, 6000);
+            }, 8000); // Increased from 6000
             
             // Visual feedback
             btn.style.transform = 'scale(0.8)';
@@ -618,8 +627,8 @@
             }
             
             // Fade controls after interaction but allow hover to restore
-            if (controls.style.opacity !== '0') {
-                setTimeout(() => controls.classList.add('fade'), 6000);
+            if (!controls.classList.contains('fade')) {
+                setTimeout(() => controls.classList.add('fade'), 8000); // Increased delay
             }
         });
         
@@ -699,6 +708,12 @@
                 }
             }
         }, 2000);
+        
+        // Log to console for debugging
+        console.log('Visualizer initialized. Controls should be visible at top-left.');
+        console.log('Controls element:', controls);
+        console.log('Controls visibility:', window.getComputedStyle(controls).visibility);
+        console.log('Controls display:', window.getComputedStyle(controls).display);
     </script>
 </body>
 </html>
