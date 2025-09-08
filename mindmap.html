@@ -19,7 +19,7 @@
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      background: #000000;
       overflow:hidden;
       color:#fff;
     }
@@ -487,12 +487,31 @@
     function autoSizeNodes(){
       for(const id in NODES){
         const n = NODES[id];
-        const lines = n.label.split("\n");
-        ctx.font = "14px Inter, Arial, sans-serif"; // base size
-        let maxWidth = 0;
-        for(const line of lines){
-          maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
+        if(typeof n.size === "number" && n.size > 0){
+          // keep existing size unless label doesn't fit
+          const lines = n.label.split("\n");
+          ctx.font = "14px Inter, Arial, sans-serif";
+          let maxWidth = 0;
+          for(const line of lines){
+            maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
+          }
+          const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
+          if(needed/2 + 8 > n.size){
+            n.size = needed/2 + 8;
+          }
+        } else {
+          // if no size defined, compute new size
+          const lines = n.label.split("\n");
+          ctx.font = "14px Inter, Arial, sans-serif";
+          let maxWidth = 0;
+          for(const line of lines){
+            maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
+          }
+          const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
+          n.size = needed/2 + 8;
         }
+      }
+    }
         const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
         n.size = Math.max(n.size || 20, needed / 2 + 8); // grow radius so text fits
       }
