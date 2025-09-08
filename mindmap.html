@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Decolonial Thought & Embodied Knowledge — Interactive Mind Map</title>
+  <title>Decolonial Thought & Embodied Knowledge — Merged Mind Map</title>
   <style>
     :root{
       --bg1:#667eea;
@@ -43,15 +43,9 @@
       opacity:.85;font-weight:500;font-size:.9em
     }
 
-    /* Canvas sits *below* header/controls via a top offset */
-    #stage{
-      position:fixed; inset:0;
-      padding-top:120px; /* <-- 120px top offset so nodes don't hide under UI */
-    }
-    #canvas{
-      width:100%; height:100%;
-      display:block;
-    }
+    /* Canvas sits below header/controls via a top offset */
+    #stage{ position:fixed; inset:0; padding-top:120px; }
+    #canvas{ width:100%; height:100%; display:block; }
 
     /* Controls (left) */
     .controls{
@@ -82,6 +76,10 @@
     .legend h4{margin:0 0 8px 0; color:var(--gold); font-weight:800; letter-spacing:.35px}
     .legend-item{display:flex; align-items:center; gap:10px; margin:6px 0}
     .dot{width:14px; height:14px; border-radius:50%}
+    .badge-legend{
+      position:absolute; width:20px; height:20px; border-radius:50%; background:#fff; color:#000;
+      display:grid; place-items:center; font-size:12px; font-weight:800; border:1px solid rgba(0,0,0,.1);
+    }
 
     /* Info panel (bottom) */
     .info{
@@ -94,14 +92,6 @@
     .info h3{margin:0 0 6px 0; color:var(--gold); font-size:16px}
     .quote{border-left:3px solid var(--gold); padding-left:12px; font-style:italic; margin:8px 0}
 
-    /* Node count badge (white circle showing children count) */
-    .badge{
-      position:absolute; /* used only for measurement semantics in legend; canvas draws its own badges */
-      width:20px; height:20px; border-radius:50%; background:#fff; color:#000; display:grid; place-items:center;
-      font-size:12px; font-weight:800; border:1px solid rgba(0,0,0,.1);
-    }
-
-    /* Accessibility helpers (visually-hidden but screen-reader friendly) */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
@@ -140,7 +130,7 @@
     <div class="legend-item"><span class="dot" style="background:#95e77e"></span>Educational Practice</div>
     <div class="legend-item"><span class="dot" style="background:#b4a7d6"></span>Theory &amp; Critique</div>
     <div class="legend-item" title="Number of hidden sub-concepts">
-      <span class="badge" aria-hidden="true">#</span> White dot = hidden sub-concepts
+      <span class="badge-legend" aria-hidden="true">#</span> White dot = hidden sub-concepts
     </div>
   </aside>
 
@@ -175,7 +165,6 @@
     let time = 0;
 
     // ===== Node model =====
-    // Categories -> color mapping
     const COLORS = {
       colonial: '#ff6b6b',
       indigenous: '#4ecdc4',
@@ -185,61 +174,64 @@
       center: '#ffd700'
     };
 
-    /**
-     * Node structure:
-     * id, label, x, y, size, colorKey, content, quote, children: [ids], parent: id|null, expanded: bool
-     */
+    /** Node: id, label, x, y, size, colorKey, content, quote, children[], parent, expanded */
     const NODES = {};
-    const CONNECTIONS = []; // array of [id1, id2]
+    const CONNECTIONS = []; // [id1,id2]
 
     function addNode(n){
       NODES[n.id] = Object.assign({children:[], parent:null, expanded:false}, n);
     }
     function connect(a,b){ CONNECTIONS.push([a,b]); }
+    function addChild(parentId, child){
+      child.parent = parentId;
+      addNode(child);
+      NODES[parentId].children.push(child.id);
+      connect(parentId, child.id);
+    }
 
     // ---- Seed nodes (center + major clusters) ----
-    addNode({ id:'center', label:'Decolonial Thought\n& Embodied Knowledge', x:0, y:0, size:42, colorKey:'center',
+    addNode({ id:'center', label:'Decolonial Thought\\n& Embodied Knowledge', x:0, y:0, size:44, colorKey:'center',
       content:'The intersection of personal healing, indigenous wisdom, and resistance to colonial frameworks of knowledge.',
-      quote:'"Coming home begins with the self."' });
+      quote:'\"Coming home begins with the self.\"' });
 
     // Colonial / Western
-    addNode({ id:'colonial-transcendence', label:'Colonial\nTranscendence', x:-550, y:-220, size:30, colorKey:'colonial',
+    addNode({ id:'colonial-transcendence', label:'Colonial\\nTranscendence', x:-550, y:-220, size:32, colorKey:'colonial',
       content:'Push to transcend the so-called baseness of the body into abstract objectivity.',
-      quote:'"In trying to become objective, western culture made objects of things and people." — Anzaldúa' });
-    addNode({ id:'objectification', label:'Objectification\n& Violence', x:-700, y:70, size:26, colorKey:'colonial',
+      quote:'\"In trying to become objective, western culture made objects of things and people.\" — Anzaldúa' });
+    addNode({ id:'objectification', label:'Objectification\\n& Violence', x:-700, y:70, size:27, colorKey:'colonial',
       content:'Distancing from embodied experience becomes the root of violence through objectification.'});
-    addNode({ id:'planned-obsolescence', label:'Planned\nObsolescence', x:-380, y:-420, size:22, colorKey:'colonial',
+    addNode({ id:'planned-obsolescence', label:'Planned\\nObsolescence', x:-380, y:-420, size:24, colorKey:'colonial',
       content:'Rejecting lasting, mended relationships with the material world — the anti-rasquache logic.'});
 
     // Indigenous / Alternative
-    addNode({ id:'rasquachismo', label:'Rasquachismo', x:520, y:-220, size:32, colorKey:'indigenous',
+    addNode({ id:'rasquachismo', label:'Rasquachismo', x:520, y:-220, size:34, colorKey:'indigenous',
       content:'Bawdy, spunky consciousness of survival through remaking, mending, and subversion.',
-      quote:'"Down but not out."' });
-    addNode({ id:'blackfoot', label:'Blackfoot\nWisdom', x:740, y:-30, size:26, colorKey:'indigenous',
+      quote:'\"Down but not out.\"' });
+    addNode({ id:'blackfoot', label:'Blackfoot\\nWisdom', x:740, y:-30, size:28, colorKey:'indigenous',
       content:'We are part of every ecosystem; language is everything; no land without culture.'});
-    addNode({ id:'decolonization', label:'Decolonization\nProcess', x:620, y:170, size:26, colorKey:'indigenous',
+    addNode({ id:'decolonization', label:'Decolonization\\nProcess', x:620, y:170, size:26, colorKey:'indigenous',
       content:'Entails remembrance — Kaaahsinnooniksi, the teachings of the ancestors and ancients.'});
 
     // Personal
-    addNode({ id:'dissociation', label:'Dissociation\n& Survival', x:-40, y:340, size:26, colorKey:'personal',
+    addNode({ id:'dissociation', label:'Dissociation\\n& Survival', x:-40, y:340, size:26, colorKey:'personal',
       content:'Leaving the body as survival mirrors colonial schooling’s push away from embodied knowledge.'});
-    addNode({ id:'healing', label:'Embodied\nHealing', x:240, y:360, size:26, colorKey:'personal',
-      content:'Protecting space for presence, boredom, and reflection; returning to the body.', quote:'"I came to theory because I was hurting." — bell hooks' });
+    addNode({ id:'healing', label:'Embodied\\nHealing', x:240, y:360, size:28, colorKey:'personal',
+      content:'Protecting space for presence, boredom, and reflection; returning to the body.', quote:'\"I came to theory because I was hurting.\" — bell hooks' });
 
     // Practice (Education)
-    addNode({ id:'achievement-vs-opportunity', label:'Achievement Gap\nvs Opportunity Gap', x:230, y:-440, size:26, colorKey:'practice',
+    addNode({ id:'achievement-vs-opportunity', label:'Achievement Gap\\nvs Opportunity Gap', x:230, y:-440, size:28, colorKey:'practice',
       content:'Framing matters: opportunity gap recognizes systemic failure rather than blaming students.'});
-    addNode({ id:'silver-bullets', label:'Silver Bullet\nPolicies', x:10, y:-320, size:26, colorKey:'practice',
+    addNode({ id:'silver-bullets', label:'Silver Bullet\\nPolicies', x:10, y:-320, size:28, colorKey:'practice',
       content:'NCLB, Race to the Top — rhetoric of equity, same restrictive systems.'});
-    addNode({ id:'testing', label:'Testing &\nStratification', x:-180, y:-140, size:22, colorKey:'practice',
+    addNode({ id:'testing', label:'Testing &\\nStratification', x:-180, y:-140, size:24, colorKey:'practice',
       content:'High-stakes testing confirms stratification and measures assimilation, not learning.'});
-    addNode({ id:'csp', label:'Culturally Sustaining\nPedagogy', x:560, y:260, size:26, colorKey:'practice',
+    addNode({ id:'csp', label:'Culturally Sustaining\\nPedagogy', x:560, y:260, size:30, colorKey:'practice',
       content:'Asset-based pedagogy valuing students’ languages, cultures, funds of knowledge.'});
 
     // Theory
-    addNode({ id:'hooks', label:'bell hooks:\nTheory as Healing', x:-320, y:440, size:22, colorKey:'theory',
+    addNode({ id:'hooks', label:'bell hooks:\\nTheory as Healing', x:-320, y:440, size:22, colorKey:'theory',
       content:'Theory as a location for healing and comprehension.'});
-    addNode({ id:'anzaldua', label:'Anzaldúa:\nArt & Identity', x:780, y:420, size:22, colorKey:'theory',
+    addNode({ id:'anzaldua', label:'Anzaldúa:\\nArt & Identity', x:780, y:420, size:22, colorKey:'theory',
       content:'Art as identity; creativity is political; dichotomy breeds violence.'});
 
     // Connections
@@ -252,79 +244,63 @@
       ['achievement-vs-opportunity','csp'],['hooks','healing'],['anzaldua','objectification'],['anzaldua','rasquachismo']
     ].forEach(([a,b])=>connect(a,b));
 
-    // ---- Sub-nodes (interactive children) ----
-    // Each parent gets a set of children that are hidden by default. Clicking toggles expand/collapse.
-    function addChild(parentId, child){
-      child.parent = parentId;
-      addNode(child);
-      NODES[parentId].children.push(child.id);
-      connect(parentId, child.id);
-    }
-
-    // From notes: new items requested by user
+    // ---- Sub-nodes (children) ----
     const extraChildren = [
       // Educational critique & policy
-      ['silver-bullets',{ id:'ordinary-genocide', label:'Ordinary\nGenocide', x:-40, y:-430, size:18, colorKey:'practice',
+      ['silver-bullets',{ id:'ordinary-genocide', label:'Ordinary\\nGenocide', x:-40, y:-430, size:19, colorKey:'practice',
         content:'Policies and practices creating generations of people who function as “ghosts.”' }],
-      ['silver-bullets',{ id:'nclb-resegregated', label:'NCLB\nResegregated Schools', x:-120, y:-360, size:18, colorKey:'practice',
+      ['silver-bullets',{ id:'nclb-resegregated', label:'NCLB\\nResegregated Schools', x:-120, y:-360, size:19, colorKey:'practice',
         content:'Policy rhetoric of equity, outcomes of resegregation and testing compliance.' }],
-      ['achievement-vs-opportunity',{ id:'revisionist-history', label:'Revisionist History\n& Failure as Moral Flaw', x:360, y:-480, size:18, colorKey:'practice',
+      ['achievement-vs-opportunity',{ id:'revisionist-history', label:'Revisionist History\\n& Failure as Moral Flaw', x:360, y:-480, size:19, colorKey:'practice',
         content:'Deficit narratives frame systemic harm as individual failure.' }],
-      ['csp',{ id:'funds-of-knowledge', label:'Funds of\nKnowledge', x:700, y:230, size:18, colorKey:'practice',
+      ['csp',{ id:'funds-of-knowledge', label:'Funds of\\nKnowledge', x:700, y:230, size:18, colorKey:'practice',
         content:'Center learners’ experiences and community knowledge as assets.' }],
-      ['csp',{ id:'afrocentric-praxis', label:'Afrocentric\nPraxis', x:650, y:340, size:18, colorKey:'practice',
+      ['csp',{ id:'afrocentric-praxis', label:'Afrocentric\\nPraxis', x:650, y:340, size:18, colorKey:'practice',
         content:'Loved approach often ignored due to its name; centers African epistemologies.' }],
       // Rasquache extensions
-      ['rasquachismo',{ id:'problem-solving-ras', label:'Problem-Solving as\nRasquachismo', x:740, y:-300, size:18, colorKey:'indigenous',
+      ['rasquachismo',{ id:'problem-solving-ras', label:'Problem-Solving as\\nRasquachismo', x:740, y:-300, size:18, colorKey:'indigenous',
         content:'“F— shout it from the rooftops!” Improvisation and repair as brilliance.' }],
       ['rasquachismo',{ id:'drag-aesthetic', label:'Drag Aesthetic', x:620, y:-340, size:18, colorKey:'indigenous',
         content:'Pattern-on-pattern playfulness; exuberant recombination and mending.' }],
       // Personal & practice
-      ['healing',{ id:'reinterpreting-past', label:'Reinterpreting Past\nExperiences', x:180, y:470, size:18, colorKey:'personal',
+      ['healing',{ id:'reinterpreting-past', label:'Reinterpreting Past\\nExperiences', x:180, y:470, size:18, colorKey:'personal',
         content:'Fresh meanings emerge through embodied presence and reflection.' }],
-      ['dissociation',{ id:'busyness-dissociation', label:'Busyness as\nDissociation', x:-110, y:470, size:18, colorKey:'personal',
+      ['dissociation',{ id:'busyness-dissociation', label:'Busyness as\\nDissociation', x:-110, y:470, size:18, colorKey:'personal',
         content:'Productivity as avoidance; radical rest as counter-practice.' }],
       ['csp',{ id:'one-brave-student', label:'One Brave Student', x:500, y:360, size:16, colorKey:'practice',
         content:'Student voice naming math as a snake—vivid metaphor opening dialogue.' }],
-      ['csp',{ id:'traveling-teacher', label:'Traveling Teacher\nwith Cart', x:480, y:460, size:16, colorKey:'practice',
+      ['csp',{ id:'traveling-teacher', label:'Traveling Teacher\\nwith Cart', x:480, y:460, size:16, colorKey:'practice',
         content:'Resource constraints met with ingenuity in practice.' }],
       // More theory/critique
-      ['colonial-transcendence',{ id:'apolitical-is-political', label:'“Apolitical” is\nPolitical', x:-540, y:-330, size:18, colorKey:'theory',
+      ['colonial-transcendence',{ id:'apolitical-is-political', label:'“Apolitical” is\\nPolitical', x:-540, y:-330, size:18, colorKey:'theory',
         content:'Neutrality aligns with dominance; distancing enables harm.' }],
-      ['objectification',{ id:'statistics-are-people', label:'Statistics are\nPeople', x:-850, y:150, size:18, colorKey:'theory',
+      ['objectification',{ id:'statistics-are-people', label:'Statistics are\\nPeople', x:-850, y:150, size:18, colorKey:'theory',
         content:'Fight dehumanization by insisting on lived realities behind numbers.' }],
       // Blackfoot & land
-      ['blackfoot',{ id:'language-is-everything', label:'Language is\nEverything', x:900, y:0, size:18, colorKey:'indigenous',
+      ['blackfoot',{ id:'language-is-everything', label:'Language is\\nEverything', x:900, y:0, size:18, colorKey:'indigenous',
         content:'Embodiment through language, land, and lifeways.' }],
       ['blackfoot',{ id:'no-land-no-culture', label:'No Land ⇄ No Culture', x:860, y:80, size:18, colorKey:'indigenous',
         content:'Mutual constitution of place and culture.' }],
       // More schooling critique
-      ['testing',{ id:'assimilation-gap', label:'Achievement Gap ⇢\nAssimilation Gap', x:-320, y:-100, size:18, colorKey:'practice',
+      ['testing',{ id:'assimilation-gap', label:'Achievement Gap ⇢\\nAssimilation Gap', x:-320, y:-100, size:18, colorKey:'practice',
         content:'Tests gauge conformity to norms, not authentic learning.' }],
-      ['testing',{ id:'stratification-confirmed', label:'Stratification\nConfirmed', x:-260, y:-40, size:18, colorKey:'practice',
+      ['testing',{ id:'stratification-confirmed', label:'Stratification\\nConfirmed', x:-260, y:-40, size:18, colorKey:'practice',
         content:'High-stakes decisions preserve hierarchies.' }],
       // Misc from notes
-      ['rasquachismo',{ id:'minutia-everyday-life', label:'Minutia of\nEveryday Life', x:520, y:-110, size:18, colorKey:'indigenous',
+      ['rasquachismo',{ id:'minutia-everyday-life', label:'Minutia of\\nEveryday Life', x:520, y:-110, size:18, colorKey:'indigenous',
         content:'Attention to small, sustaining practices; Pasquache residency.' }],
     ];
-
     extraChildren.forEach(([p,c])=>addChild(p,c));
 
-    // Expand states default: keep parents collapsed initially (badges show counts)
-    // We'll expand just a couple for initial “overview” feel
+    // Expand defaults
     NODES['center'].expanded = true;
-    NODES['rasquachismo'].expanded = false;
-    NODES['csp'].expanded = false;
-    NODES['silver-bullets'].expanded = false;
-    NODES['blackfoot'].expanded = false;
 
-    // Helper: count hidden children (depth-1 only for badge simplicity)
+    // Helper: count hidden children
     function hiddenCount(parent){
       let cnt = 0;
       for(const id of parent.children){
         const child = NODES[id];
         if(!parent.expanded) cnt++;
-        // If parent expanded but we may someday nest deeper; here we keep it simple.
       }
       return cnt;
     }
@@ -345,7 +321,6 @@
     canvas.addEventListener('wheel', (e)=>{
       e.preventDefault();
       const zoom = Math.exp(-e.deltaY * 0.0012);
-      // Zoom around mouse
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
@@ -370,20 +345,14 @@
     let hoveredId = null;
     let selectedId = null;
 
-    function screenFromWorld(x,y){
-      return { x: x*scale + offsetX, y: y*scale + offsetY };
-    }
-    function worldFromScreen(x,y){
-      return { x: (x - offsetX)/scale, y: (y - offsetY)/scale };
-    }
+    function screenFromWorld(x,y){ return { x: x*scale + offsetX, y: y*scale + offsetY }; }
+    function worldFromScreen(x,y){ return { x: (x - offsetX)/scale, y: (y - offsetY)/scale }; }
 
     function getNodeAt(mx,my){
       const w = worldFromScreen(mx,my);
-      // iterate in reverse draw order to pick topmost
       const ids = Object.keys(NODES);
       for(let i=ids.length-1;i>=0;i--){
         const n = NODES[ids[i]];
-        // Skip children of collapsed parents
         if(n.parent && !NODES[n.parent].expanded) continue;
         const r = n.size * (hoveredId===n.id?1.2:1);
         const dx = w.x - n.x, dy = w.y - n.y;
@@ -404,7 +373,6 @@
       const n = getNodeAt(e.clientX-rect.left, e.clientY-rect.top);
       if(!n) { selectedId = null; setInfo(null); return; }
       selectedId = n.id;
-      // Toggle expand if node has children
       if(n.children && n.children.length){
         n.expanded = !n.expanded;
       }
@@ -430,14 +398,13 @@
     // ===== Layout helpers for expanded children (simple radial) =====
     function layoutChildren(n){
       const children = n.children.map(id => NODES[id]);
-      const R = n.size + 50; // base radius
+      const R = n.size + 52;
       const step = Math.PI * 2 / Math.max(1, children.length);
       children.forEach((c, i)=>{
-        if(!n.expanded) return; // we only layout when visible
+        if(!n.expanded) return;
         const angle = i*step - Math.PI/2;
         const targetX = n.x + Math.cos(angle) * (R + (i % 3) * 20);
         const targetY = n.y + Math.sin(angle) * (R + (i % 3) * 20);
-        // Gentle easing toward position to avoid jitter
         c.x += (targetX - c.x) * 0.12;
         c.y += (targetY - c.y) * 0.12;
       });
@@ -447,82 +414,96 @@
     function drawConnection(a,b){
       if(!connectionsEnabled) return;
       const n1 = NODES[a], n2 = NODES[b];
-      // Skip if either hidden due to collapsed parent
       if(n1.parent && !NODES[n1.parent].expanded) return;
       if(n2.parent && !NODES[n2.parent].expanded) return;
-
       const p1 = screenFromWorld(n1.x, n1.y + float(n1));
       const p2 = screenFromWorld(n2.x, n2.y + float(n2));
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = 'rgba(255,255,255,.35)';
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+      ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.stroke();
     }
-
     function float(n){ return animationEnabled ? Math.sin((time*0.001) + n.id.length)*3 : 0; }
 
-    function drawNode(n){
-      // Skip children of collapsed parents
-      if(n.parent && !NODES[n.parent].expanded) return;
+    // === Text-fitting helpers (from template idea) ===
+    function drawMultilineFittedText(text, centerX, centerY, radius){
+      const lines = text.split('\\n');
+      // Binary search font size that fits both width and total height constraints
+      let lo = 8, hi = Math.max(16, Math.floor(radius*0.9)), best = lo;
+      while(lo <= hi){
+        const mid = Math.floor((lo+hi)/2);
+        ctx.font = `${mid}px Inter, Arial, sans-serif`;
+        let maxWidth = 0;
+        for(const line of lines){
+          const w = ctx.measureText(line).width;
+          if(w > maxWidth) maxWidth = w;
+        }
+        const totalH = mid * lines.length * 1.2;
+        if(maxWidth <= radius*1.8 && totalH <= radius*1.8){
+          best = mid; lo = mid+1;
+        } else {
+          hi = mid-1;
+        }
+      }
+      ctx.font = `${best}px Inter, Arial, sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#fff';
+      lines.forEach((line,i)=>{
+        ctx.fillText(line, centerX, centerY + (i - (lines.length-1)/2)*best*1.2);
+      });
+    }
 
+    function drawNode(n){
+      if(n.parent && !NODES[n.parent].expanded) return;
       const p = screenFromWorld(n.x, n.y + float(n));
       const hovered = (hoveredId === n.id);
       const selected = (selectedId === n.id);
 
-      // Shadow glow on hover/selected
+      // Glow
       if(hovered || selected){
         ctx.shadowBlur = 18;
         ctx.shadowColor = COLORS[n.colorKey] || '#fff';
-      } else {
-        ctx.shadowBlur = 0;
-      }
+      } else ctx.shadowBlur = 0;
 
       // Circle
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, n.size * (hovered?1.2:1), 0, Math.PI*2);
+      const r = n.size * (hovered?1.2:1);
+      ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2);
       ctx.fillStyle = COLORS[n.colorKey] || '#fff';
       ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(255,255,255,.85)';
-      ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.stroke();
 
-      // Label (centered, multi-line)
+      // Label using fitted text
       ctx.shadowBlur = 0;
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.font = `${Math.max(12, Math.round(12*scale))}px Inter, Arial, sans-serif`;
-      n.label.split('\\n').forEach((line,i)=>{
-        ctx.fillText(line, p.x, p.y + (i - (n.label.split('\\n').length-1)/2) * 16);
-      });
+      drawMultilineFittedText(n.label, p.x, p.y, r);
 
-      // If node has hidden children, draw white badge with count
+      // Hidden children badge
       if(n.children && n.children.length){
         const count = hiddenCount(n);
         if(count>0){
-          const r = 12;
-          const bx = p.x + n.size + 4;
-          const by = p.y - n.size - 4;
-          ctx.beginPath();
-          ctx.arc(bx, by, r, 0, Math.PI*2);
-          ctx.fillStyle = '#fff';
-          ctx.fill();
-          ctx.lineWidth = 1;
-          ctx.strokeStyle = 'rgba(0,0,0,.25)';
-          ctx.stroke();
-          ctx.fillStyle = '#000';
-          ctx.font = 'bold 12px Inter, Arial, sans-serif';
+          const br = 12, bx = p.x + r + 4, by = p.y - r - 4;
+          ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI*2);
+          ctx.fillStyle = '#fff'; ctx.fill();
+          ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.stroke();
+          ctx.fillStyle = '#000'; ctx.font = 'bold 12px Inter, Arial, sans-serif';
           ctx.textAlign='center'; ctx.textBaseline='middle';
           ctx.fillText(String(count), bx, by+0.5);
         }
       }
     }
 
+    function autoSizeNodes(){
+      // Keep existing sizes if provided; otherwise compute by role
+      for(const id in NODES){
+        const n = NODES[id];
+        if(typeof n.size === 'number' && n.size>0) continue;
+        // base on hierarchy
+        if(id==='center') n.size = 44;
+        else if(n.children?.length) n.size = 28 + Math.min(10, n.children.length);
+        else n.size = 16 + (n.label.length % 6); // small variation to avoid uniformity
+      }
+    }
+
     function tick(){
       time += 16;
       ctx.clearRect(0,0,canvas.width,canvas.height);
+      autoSizeNodes();
 
       // Layout expanded children
       for(const id in NODES){
@@ -531,14 +512,8 @@
           layoutChildren(n);
         }
       }
-
-      // Draw connections
       CONNECTIONS.forEach(([a,b])=>drawConnection(a,b));
-
-      // Draw nodes
-      for(const id in NODES){
-        drawNode(NODES[id]);
-      }
+      for(const id in NODES){ drawNode(NODES[id]); }
 
       if(animationEnabled) requestAnimationFrame(tick);
     }
@@ -547,21 +522,15 @@
     // ===== Controls =====
     function resetView(){
       scale = 0.55;
-      // recenter to ensure good overview
       offsetX = canvas.width*0.5;
       offsetY = canvas.height*0.5;
     }
-    function expandAll(){
-      Object.values(NODES).forEach(n=>{ if(n.children?.length) n.expanded = true; });
-    }
+    function expandAll(){ Object.values(NODES).forEach(n=>{ if(n.children?.length) n.expanded = true; }); }
     function collapseAll(){
       Object.values(NODES).forEach(n=>{ if(n.children?.length) n.expanded = false; });
-      NODES['center'].expanded = true; // keep center visible
+      NODES['center'].expanded = true;
     }
-    function toggleAnim(){
-      animationEnabled = !animationEnabled;
-      if(animationEnabled) requestAnimationFrame(tick);
-    }
+    function toggleAnim(){ animationEnabled = !animationEnabled; if(animationEnabled) requestAnimationFrame(tick); }
     function toggleConn(){ connectionsEnabled = !connectionsEnabled; }
 
     document.getElementById('resetViewBtn').addEventListener('click', resetView);
@@ -570,10 +539,7 @@
     document.getElementById('toggleAnimBtn').addEventListener('click', toggleAnim);
     document.getElementById('toggleConnBtn').addEventListener('click', toggleConn);
 
-    // Initial view nudge: shift network slightly downward to account for header (already using 120px top padding),
-    // plus add a touch more spacing visually
-    offsetY += 10;
-
+    offsetY += 10; // initial nudge
   </script>
 </body>
 </html>
