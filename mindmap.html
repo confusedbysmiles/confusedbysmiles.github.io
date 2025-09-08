@@ -148,7 +148,7 @@
     fit();
 
     // ===== World transform (pan/zoom) =====
-    let scale = 0.55;          // start with overview zoom level
+    let scale = 1.2;          // start with overview zoom level
     let offsetX = canvas.width * 0.5;
     let offsetY = canvas.height * 0.5;
     let isDragging = false;
@@ -186,12 +186,12 @@
     }
 
     // ---- Seed nodes (center + major clusters) ----
-    addNode({ id:'center', label:'Decolonial Thought\\n& Embodied Knowledge', x:0, y:0, size:44, colorKey:'center',
+    addNode({ id:'center', label:'Decolonial Thought\\n& Embodied Knowledge', x:0, y:0, size:88, colorKey:'center',
       content:'The intersection of personal healing, indigenous wisdom, and resistance to colonial frameworks of knowledge.',
       quote:'\"Coming home begins with the self.\"' });
 
     // Colonial / Western
-    addNode({ id:'colonial-transcendence', label:'Colonial\\nTranscendence', x:-550, y:-220, size:32, colorKey:'colonial',
+    addNode({ id:'colonial-transcendence', label:'Colonial\\nTranscendence', x:-550, y:-220, size:64, colorKey:'colonial',
       content:'Push to transcend the so-called baseness of the body into abstract objectivity.',
       quote:'\"In trying to become objective, western culture made objects of things and people.\" — Anzaldúa' });
     addNode({ id:'objectification', label:'Objectification\\n& Violence', x:-700, y:70, size:27, colorKey:'colonial',
@@ -200,22 +200,22 @@
       content:'Rejecting lasting, mended relationships with the material world — the anti-rasquache logic.'});
 
     // Indigenous / Alternative
-    addNode({ id:'rasquachismo', label:'Rasquachismo', x:520, y:-220, size:34, colorKey:'indigenous',
+    addNode({ id:'rasquachismo', label:'Rasquachismo', x:520, y:-220, size:68, colorKey:'indigenous',
       content:'Bawdy, spunky consciousness of survival through remaking, mending, and subversion.',
       quote:'\"Down but not out.\"' });
-    addNode({ id:'blackfoot', label:'Blackfoot\\nWisdom', x:740, y:-30, size:28, colorKey:'indigenous',
+    addNode({ id:'blackfoot', label:'Blackfoot\\nWisdom', x:740, y:-30, size:56, colorKey:'indigenous',
       content:'We are part of every ecosystem; language is everything; no land without culture.'});
     addNode({ id:'decolonization', label:'Decolonization\\nProcess', x:620, y:170, size:26, colorKey:'indigenous',
       content:'Entails remembrance — Kaaahsinnooniksi, the teachings of the ancestors and ancients.'});
 
     // Personal
-    addNode({ id:'dissociation', label:'Dissociation\\n& Survival', x:-40, y:340, size:26, colorKey:'personal',
+    addNode({ id:'dissociation', label:'Dissociation\\n& Survival', x:-40, y:340, size:52, colorKey:'personal',
       content:'Leaving the body as survival mirrors colonial schooling’s push away from embodied knowledge.'});
     addNode({ id:'healing', label:'Embodied\\nHealing', x:240, y:360, size:28, colorKey:'personal',
       content:'Protecting space for presence, boredom, and reflection; returning to the body.', quote:'\"I came to theory because I was hurting.\" — bell hooks' });
 
     // Practice (Education)
-    addNode({ id:'achievement-vs-opportunity', label:'Achievement Gap\\nvs Opportunity Gap', x:230, y:-440, size:28, colorKey:'practice',
+    addNode({ id:'achievement-vs-opportunity', label:'Achievement Gap\\nvs Opportunity Gap', x:230, y:-440, size:54, colorKey:'practice',
       content:'Framing matters: opportunity gap recognizes systemic failure rather than blaming students.'});
     addNode({ id:'silver-bullets', label:'Silver Bullet\\nPolicies', x:10, y:-320, size:28, colorKey:'practice',
       content:'NCLB, Race to the Top — rhetoric of equity, same restrictive systems.'});
@@ -440,7 +440,7 @@
         }
       }
       ctx.font = `${best}px Inter, Arial, sans-serif`;
-      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#fff';
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle = '#222';
       lines.forEach((line,i)=>{
         ctx.fillText(line, centerX, centerY + (i - (lines.length-1)/2)*best*1.2);
       });
@@ -475,7 +475,7 @@
         if(count>0){
           const br = 12, bx = p.x + r + 4, by = p.y - r - 4;
           ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI*2);
-          ctx.fillStyle = '#fff'; ctx.fill();
+          ctx.fillStyle = COLORS[n.colorKey] || '#fff'; ctx.fill();
           ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.stroke();
           ctx.fillStyle = '#000'; ctx.font = 'bold 12px Inter, Arial, sans-serif';
           ctx.textAlign='center'; ctx.textBaseline='middle';
@@ -485,37 +485,15 @@
     }
 
     function autoSizeNodes(){
+      // Keep existing sizes if provided; otherwise compute by role
       for(const id in NODES){
         const n = NODES[id];
-        if(typeof n.size === "number" && n.size > 0){
-          // keep existing size unless label doesn't fit
-          const lines = n.label.split("\n");
-          ctx.font = "14px Inter, Arial, sans-serif";
-          let maxWidth = 0;
-          for(const line of lines){
-            maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
-          }
-          const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
-          if(needed/2 + 8 > n.size){
-            n.size = needed/2 + 8;
-          }
-        } else {
-          // if no size defined, compute new size
-          const lines = n.label.split("\n");
-          ctx.font = "14px Inter, Arial, sans-serif";
-          let maxWidth = 0;
-          for(const line of lines){
-            maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
-          }
-          const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
-          n.size = needed/2 + 8;
-        }
+        if(typeof n.size === 'number' && n.size>0) continue;
+        // base on hierarchy
+        if(id==='center') n.size = 44;
+        else if(n.children?.length) n.size = 28 + Math.min(10, n.children.length);
+        else n.size = 16 + (n.label.length % 6); // small variation to avoid uniformity
       }
-    }
-        const needed = Math.max(maxWidth, lines.length * 16 * 1.2);
-        n.size = Math.max(n.size || 20, needed / 2 + 8); // grow radius so text fits
-      }
-    }
     }
 
     function tick(){
