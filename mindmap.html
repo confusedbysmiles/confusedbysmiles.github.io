@@ -144,7 +144,7 @@
     fit();
 
     // ===== World transform (pan/zoom) =====
-    let scale = 1.2;          // start with overview zoom level
+    let scale = 1.1;          // start with overview zoom level
     let offsetX = canvas.width * 0.5;
     let offsetY = canvas.height * 0.5;
     let isDragging = false;
@@ -239,47 +239,47 @@
     // ---- Sub-nodes (children) ----
     const extraChildren = [
       // Educational critique & policy
-      ['silver-bullets',{ id:'ordinary-genocide', label:'Ordinary\\nGenocide', x:-40, y:-430, size:19, colorKey:'practice',
+      ['silver-bullets',{ id:'ordinary-genocide', label:'Ordinary\\nGenocide', x:-40, y:-430, size:40, colorKey:'practice',
         content:'Policies and practices creating generations of people who function as “ghosts.”' }],
-      ['silver-bullets',{ id:'nclb-resegregated', label:'NCLB\\nResegregated Schools', x:-120, y:-360, size:19, colorKey:'practice',
+      ['silver-bullets',{ id:'nclb-resegregated', label:'NCLB\\nResegregated Schools', x:-120, y:-360, size:40, colorKey:'practice',
         content:'Policy rhetoric of equity, outcomes of resegregation and testing compliance.' }],
-      ['achievement-vs-opportunity',{ id:'revisionist-history', label:'Revisionist History\\n& Failure as Moral Flaw', x:360, y:-480, size:19, colorKey:'practice',
+      ['achievement-vs-opportunity',{ id:'revisionist-history', label:'Revisionist History\\n& Failure as Moral Flaw', x:360, y:-480, size:40, colorKey:'practice',
         content:'Deficit narratives frame systemic harm as individual failure.' }],
-      ['csp',{ id:'funds-of-knowledge', label:'Funds of\\nKnowledge', x:700, y:230, size:18, colorKey:'practice',
+      ['csp',{ id:'funds-of-knowledge', label:'Funds of\\nKnowledge', x:700, y:230, size:38, colorKey:'practice',
         content:'Center learners’ experiences and community knowledge as assets.' }],
-      ['csp',{ id:'afrocentric-praxis', label:'Afrocentric\\nPraxis', x:650, y:340, size:18, colorKey:'practice',
+      ['csp',{ id:'afrocentric-praxis', label:'Afrocentric\\nPraxis', x:650, y:340, size:38, colorKey:'practice',
         content:'Loved approach often ignored due to its name; centers African epistemologies.' }],
       // Rasquache extensions
-      ['rasquachismo',{ id:'problem-solving-ras', label:'Problem-Solving as\\nRasquachismo', x:740, y:-300, size:18, colorKey:'indigenous',
+      ['rasquachismo',{ id:'problem-solving-ras', label:'Problem-Solving as\\nRasquachismo', x:740, y:-300, size:42, colorKey:'indigenous',
         content:'“F— shout it from the rooftops!” Improvisation and repair as brilliance.' }],
-      ['rasquachismo',{ id:'drag-aesthetic', label:'Drag Aesthetic', x:620, y:-340, size:18, colorKey:'indigenous',
+      ['rasquachismo',{ id:'drag-aesthetic', label:'Drag Aesthetic', x:620, y:-340, size:42, colorKey:'indigenous',
         content:'Pattern-on-pattern playfulness; exuberant recombination and mending.' }],
       // Personal & practice
-      ['healing',{ id:'reinterpreting-past', label:'Reinterpreting Past\\nExperiences', x:180, y:470, size:18, colorKey:'personal',
+      ['healing',{ id:'reinterpreting-past', label:'Reinterpreting Past\\nExperiences', x:180, y:470, size:36, colorKey:'personal',
         content:'Fresh meanings emerge through embodied presence and reflection.' }],
-      ['dissociation',{ id:'busyness-dissociation', label:'Busyness as\\nDissociation', x:-110, y:470, size:18, colorKey:'personal',
+      ['dissociation',{ id:'busyness-dissociation', label:'Busyness as\\nDissociation', x:-110, y:470, size:36, colorKey:'personal',
         content:'Productivity as avoidance; radical rest as counter-practice.' }],
-      ['csp',{ id:'one-brave-student', label:'One Brave Student', x:500, y:360, size:16, colorKey:'practice',
+      ['csp',{ id:'one-brave-student', label:'One Brave Student', x:500, y:360, size:36, colorKey:'practice',
         content:'Student voice naming math as a snake—vivid metaphor opening dialogue.' }],
-      ['csp',{ id:'traveling-teacher', label:'Traveling Teacher\\nwith Cart', x:480, y:460, size:16, colorKey:'practice',
+      ['csp',{ id:'traveling-teacher', label:'Traveling Teacher\\nwith Cart', x:480, y:460, size:36, colorKey:'practice',
         content:'Resource constraints met with ingenuity in practice.' }],
       // More theory/critique
-      ['colonial-transcendence',{ id:'apolitical-is-political', label:'“Apolitical” is\\nPolitical', x:-540, y:-330, size:18, colorKey:'theory',
+      ['colonial-transcendence',{ id:'apolitical-is-political', label:'“Apolitical” is\\nPolitical', x:-540, y:-330, size:35, colorKey:'theory',
         content:'Neutrality aligns with dominance; distancing enables harm.' }],
-      ['objectification',{ id:'statistics-are-people', label:'Statistics are\\nPeople', x:-850, y:150, size:18, colorKey:'theory',
+      ['objectification',{ id:'statistics-are-people', label:'Statistics are\\nPeople', x:-850, y:150, size:35, colorKey:'theory',
         content:'Fight dehumanization by insisting on lived realities behind numbers.' }],
       // Blackfoot & land
-      ['blackfoot',{ id:'language-is-everything', label:'Language is\\nEverything', x:900, y:0, size:18, colorKey:'indigenous',
+      ['blackfoot',{ id:'language-is-everything', label:'Language is\\nEverything', x:900, y:0, size:44, colorKey:'indigenous',
         content:'Embodiment through language, land, and lifeways.' }],
-      ['blackfoot',{ id:'no-land-no-culture', label:'No Land ⇄ No Culture', x:860, y:80, size:18, colorKey:'indigenous',
+      ['blackfoot',{ id:'no-land-no-culture', label:'No Land ⇄ No Culture', x:860, y:80, size:40, colorKey:'indigenous',
         content:'Mutual constitution of place and culture.' }],
       // More schooling critique
-      ['testing',{ id:'assimilation-gap', label:'Achievement Gap ⇢\\nAssimilation Gap', x:-320, y:-100, size:18, colorKey:'practice',
+      ['testing',{ id:'assimilation-gap', label:'Achievement Gap ⇢\\nAssimilation Gap', x:-320, y:-100, size:40, colorKey:'practice',
         content:'Tests gauge conformity to norms, not authentic learning.' }],
-      ['testing',{ id:'stratification-confirmed', label:'Stratification\\nConfirmed', x:-260, y:-40, size:18, colorKey:'practice',
+      ['testing',{ id:'stratification-confirmed', label:'Stratification\\nConfirmed', x:-260, y:-40, size:44, colorKey:'practice',
         content:'High-stakes decisions preserve hierarchies.' }],
       // Misc from notes
-      ['rasquachismo',{ id:'minutia-everyday-life', label:'Minutia of\\nEveryday Life', x:520, y:-110, size:18, colorKey:'indigenous',
+      ['rasquachismo',{ id:'minutia-everyday-life', label:'Minutia of\\nEveryday Life', x:520, y:-110, size:40, colorKey:'indigenous',
         content:'Attention to small, sustaining practices; Pasquache residency.' }],
     ];
     extraChildren.forEach(([p,c])=>addChild(p,c));
