@@ -1,579 +1,579 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decolonial Thought & Embodied Knowledge</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Decolonial Thought & Embodied Knowledge — Interactive Mind Map</title>
+  <style>
+    :root{
+      --bg1:#667eea;
+      --bg2:#764ba2;
+      --glass: rgba(0,0,0,.65);
+      --glass-light: rgba(255,255,255,.2);
+      --gold:#ffd700;
+      --white:#ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      overflow:hidden;
+      color:#fff;
+    }
+    /* Header */
+    header{
+      position:fixed;
+      top:0;left:0;right:0;
+      z-index:1100;
+      padding:14px 20px 10px 20px;
+      backdrop-filter:saturate(140%) blur(6px);
+      background: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.25));
+      border-bottom:1px solid rgba(255,255,255,.15);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    header h1{
+      margin:0;
+      font-weight:800;
+      font-size: clamp(16px, 3vw, 22px);
+      letter-spacing:.3px;
+    }
+    header .sub{
+      opacity:.85;font-weight:500;font-size:.9em
+    }
 
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
+    /* Canvas sits *below* header/controls via a top offset */
+    #stage{
+      position:fixed; inset:0;
+      padding-top:120px; /* <-- 120px top offset so nodes don't hide under UI */
+    }
+    #canvas{
+      width:100%; height:100%;
+      display:block;
+    }
 
-        #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+    /* Controls (left) */
+    .controls{
+      position:fixed; top:64px; left:16px; z-index:1200;
+      background:var(--glass); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.2);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      max-width:320px;
+    }
+    .controls h3{margin:0 0 8px 0; font-size:14px; font-weight:700; letter-spacing:.35px; color:#fff}
+    .controls .row{display:flex; flex-wrap:wrap; gap:8px}
+    .btn{
+      appearance:none; border:1px solid rgba(255,255,255,.25); background:var(--glass-light);
+      color:#fff; border-radius:999px; padding:8px 12px; font-weight:600; cursor:pointer;
+      transition:transform .12s ease, background .2s ease;
+      font-size:12px;
+    }
+    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.28)}
+    .hint{opacity:.8; font-size:12px; margin-top:6px}
 
-        .controls {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            color: white;
-        }
+    /* Legend (right) */
+    .legend{
+      position:fixed; top:64px; right:16px; z-index:1200;
+      background:var(--glass); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.2);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      min-width:210px;
+      font-size:13px;
+    }
+    .legend h4{margin:0 0 8px 0; color:var(--gold); font-weight:800; letter-spacing:.35px}
+    .legend-item{display:flex; align-items:center; gap:10px; margin:6px 0}
+    .dot{width:14px; height:14px; border-radius:50%}
 
-        .controls button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 15px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    /* Info panel (bottom) */
+    .info{
+      position:fixed; left:16px; right:16px; bottom:16px; z-index:1200;
+      background:var(--glass); border:1px solid rgba(255,255,255,.2);
+      border-radius:12px; padding:14px 16px; max-height:220px; overflow:auto;
+      opacity:0; transform:translateY(12px); transition:all .18s ease;
+    }
+    .info.active{opacity:1; transform:none}
+    .info h3{margin:0 0 6px 0; color:var(--gold); font-size:16px}
+    .quote{border-left:3px solid var(--gold); padding-left:12px; font-style:italic; margin:8px 0}
 
-        .controls button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
+    /* Node count badge (white circle showing children count) */
+    .badge{
+      position:absolute; /* used only for measurement semantics in legend; canvas draws its own badges */
+      width:20px; height:20px; border-radius:50%; background:#fff; color:#000; display:grid; place-items:center;
+      font-size:12px; font-weight:800; border:1px solid rgba(0,0,0,.1);
+    }
 
-        .info-panel {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-
-        .info-panel.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .info-panel h3 {
-            color: #ffd700;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .info-panel p {
-            line-height: 1.6;
-            font-family: 'Georgia', serif;
-        }
-
-        .info-panel .quote {
-            border-left: 3px solid #ffd700;
-            padding-left: 15px;
-            margin: 10px 0;
-            font-style: italic;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .legend {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            z-index: 1000;
-            font-size: 0.9em;
-        }
-
-        .legend h4 {
-            margin-bottom: 10px;
-            color: #ffd700;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    </style>
+    /* Accessibility helpers (visually-hidden but screen-reader friendly) */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    
-    <div class="controls">
-        <h3>Navigate the Map</h3>
-        <button onclick="resetView()">Reset View</button>
-        <button onclick="toggleAnimation()">Toggle Animation</button>
-        <button onclick="toggleConnections()">Toggle Connections</button>
-        <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.8;">
-            Click nodes to explore • Drag to pan • Scroll to zoom
-        </p>
+  <header>
+    <div>
+      <h1>Decolonial Thought &amp; Embodied Knowledge</h1>
+      <div class="sub">An interactive map of ideas, practices, and lived experience</div>
     </div>
+    <div aria-hidden="true" class="sr-only">Use arrow keys to pan; scroll to zoom; click nodes to expand/collapse.</div>
+  </header>
 
-    <div class="legend">
-        <h4>Themes</h4>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #ff6b6b;"></div>
-            <span>Colonial/Western Thought</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #4ecdc4;"></div>
-            <span>Indigenous Knowledge</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #ffe66d;"></div>
-            <span>Personal Experience</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #95e77e;"></div>
-            <span>Educational Practice</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #b4a7d6;"></div>
-            <span>Theory & Critique</span>
-        </div>
+  <div id="stage">
+    <canvas id="canvas" aria-label="Mind map canvas" role="img"></canvas>
+  </div>
+
+  <aside class="controls" aria-label="Map controls">
+    <h3>Navigate the Map</h3>
+    <div class="row" style="margin-bottom:8px">
+      <button class="btn" id="resetViewBtn" title="Reset pan/zoom">Reset View</button>
+      <button class="btn" id="expandAllBtn" title="Expand all sub-concepts">Expand All</button>
+      <button class="btn" id="collapseAllBtn" title="Collapse all sub-concepts">Collapse All</button>
     </div>
-
-    <div class="info-panel" id="infoPanel">
-        <h3 id="infoTitle">Click on a node to explore</h3>
-        <p id="infoContent"></p>
+    <div class="row">
+      <button class="btn" id="toggleAnimBtn">Toggle Animation</button>
+      <button class="btn" id="toggleConnBtn">Toggle Connections</button>
     </div>
+    <div class="hint">Click nodes to explore • Drag to pan • Scroll / pinch to zoom</div>
+  </aside>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let animationEnabled = true;
-        let connectionsEnabled = true;
-        let selectedNode = null;
-        let hoveredNode = null;
-        let mouseX = 0, mouseY = 0;
-        let offsetX = 0, offsetY = 0;
-        let scale = 1;
-        let isDragging = false;
-        let dragStart = { x: 0, y: 0 };
-        let lastOffset = { x: 0, y: 0 };
+  <aside class="legend" aria-label="Legend">
+    <h4>Themes</h4>
+    <div class="legend-item"><span class="dot" style="background:#ff6b6b"></span>Colonial / Western Thought</div>
+    <div class="legend-item"><span class="dot" style="background:#4ecdc4"></span>Indigenous &amp; Alternative Knowledge</div>
+    <div class="legend-item"><span class="dot" style="background:#ffe66d"></span>Personal Experience</div>
+    <div class="legend-item"><span class="dot" style="background:#95e77e"></span>Educational Practice</div>
+    <div class="legend-item"><span class="dot" style="background:#b4a7d6"></span>Theory &amp; Critique</div>
+    <div class="legend-item" title="Number of hidden sub-concepts">
+      <span class="badge" aria-hidden="true">#</span> White dot = hidden sub-concepts
+    </div>
+  </aside>
 
-        function resizeCanvas() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+  <section class="info" id="infoPanel" aria-live="polite">
+    <h3 id="infoTitle">Click a node to explore</h3>
+    <div id="infoContent"></div>
+  </section>
+
+  <script>
+    // ===== Canvas basics =====
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    function fit() {
+      const rect = document.getElementById('stage').getBoundingClientRect();
+      canvas.width = Math.floor(rect.width);
+      canvas.height = Math.floor(rect.height);
+    }
+    window.addEventListener('resize', fit);
+    fit();
+
+    // ===== World transform (pan/zoom) =====
+    let scale = 0.55;          // start with overview zoom level
+    let offsetX = canvas.width * 0.5;
+    let offsetY = canvas.height * 0.5;
+    let isDragging = false;
+    let dragStart = {x:0,y:0};
+    let lastOffset = {x:offsetX,y:offsetY};
+
+    // ===== Toggles =====
+    let animationEnabled = true;
+    let connectionsEnabled = true;
+    let time = 0;
+
+    // ===== Node model =====
+    // Categories -> color mapping
+    const COLORS = {
+      colonial: '#ff6b6b',
+      indigenous: '#4ecdc4',
+      personal: '#ffe66d',
+      practice: '#95e77e',
+      theory: '#b4a7d6',
+      center: '#ffd700'
+    };
+
+    /**
+     * Node structure:
+     * id, label, x, y, size, colorKey, content, quote, children: [ids], parent: id|null, expanded: bool
+     */
+    const NODES = {};
+    const CONNECTIONS = []; // array of [id1, id2]
+
+    function addNode(n){
+      NODES[n.id] = Object.assign({children:[], parent:null, expanded:false}, n);
+    }
+    function connect(a,b){ CONNECTIONS.push([a,b]); }
+
+    // ---- Seed nodes (center + major clusters) ----
+    addNode({ id:'center', label:'Decolonial Thought\n& Embodied Knowledge', x:0, y:0, size:42, colorKey:'center',
+      content:'The intersection of personal healing, indigenous wisdom, and resistance to colonial frameworks of knowledge.',
+      quote:'"Coming home begins with the self."' });
+
+    // Colonial / Western
+    addNode({ id:'colonial-transcendence', label:'Colonial\nTranscendence', x:-550, y:-220, size:30, colorKey:'colonial',
+      content:'Push to transcend the so-called baseness of the body into abstract objectivity.',
+      quote:'"In trying to become objective, western culture made objects of things and people." — Anzaldúa' });
+    addNode({ id:'objectification', label:'Objectification\n& Violence', x:-700, y:70, size:26, colorKey:'colonial',
+      content:'Distancing from embodied experience becomes the root of violence through objectification.'});
+    addNode({ id:'planned-obsolescence', label:'Planned\nObsolescence', x:-380, y:-420, size:22, colorKey:'colonial',
+      content:'Rejecting lasting, mended relationships with the material world — the anti-rasquache logic.'});
+
+    // Indigenous / Alternative
+    addNode({ id:'rasquachismo', label:'Rasquachismo', x:520, y:-220, size:32, colorKey:'indigenous',
+      content:'Bawdy, spunky consciousness of survival through remaking, mending, and subversion.',
+      quote:'"Down but not out."' });
+    addNode({ id:'blackfoot', label:'Blackfoot\nWisdom', x:740, y:-30, size:26, colorKey:'indigenous',
+      content:'We are part of every ecosystem; language is everything; no land without culture.'});
+    addNode({ id:'decolonization', label:'Decolonization\nProcess', x:620, y:170, size:26, colorKey:'indigenous',
+      content:'Entails remembrance — Kaaahsinnooniksi, the teachings of the ancestors and ancients.'});
+
+    // Personal
+    addNode({ id:'dissociation', label:'Dissociation\n& Survival', x:-40, y:340, size:26, colorKey:'personal',
+      content:'Leaving the body as survival mirrors colonial schooling’s push away from embodied knowledge.'});
+    addNode({ id:'healing', label:'Embodied\nHealing', x:240, y:360, size:26, colorKey:'personal',
+      content:'Protecting space for presence, boredom, and reflection; returning to the body.', quote:'"I came to theory because I was hurting." — bell hooks' });
+
+    // Practice (Education)
+    addNode({ id:'achievement-vs-opportunity', label:'Achievement Gap\nvs Opportunity Gap', x:230, y:-440, size:26, colorKey:'practice',
+      content:'Framing matters: opportunity gap recognizes systemic failure rather than blaming students.'});
+    addNode({ id:'silver-bullets', label:'Silver Bullet\nPolicies', x:10, y:-320, size:26, colorKey:'practice',
+      content:'NCLB, Race to the Top — rhetoric of equity, same restrictive systems.'});
+    addNode({ id:'testing', label:'Testing &\nStratification', x:-180, y:-140, size:22, colorKey:'practice',
+      content:'High-stakes testing confirms stratification and measures assimilation, not learning.'});
+    addNode({ id:'csp', label:'Culturally Sustaining\nPedagogy', x:560, y:260, size:26, colorKey:'practice',
+      content:'Asset-based pedagogy valuing students’ languages, cultures, funds of knowledge.'});
+
+    // Theory
+    addNode({ id:'hooks', label:'bell hooks:\nTheory as Healing', x:-320, y:440, size:22, colorKey:'theory',
+      content:'Theory as a location for healing and comprehension.'});
+    addNode({ id:'anzaldua', label:'Anzaldúa:\nArt & Identity', x:780, y:420, size:22, colorKey:'theory',
+      content:'Art as identity; creativity is political; dichotomy breeds violence.'});
+
+    // Connections
+    [
+      ['center','colonial-transcendence'],['center','rasquachismo'],['center','dissociation'],
+      ['center','csp'],['colonial-transcendence','objectification'],['colonial-transcendence','planned-obsolescence'],
+      ['objectification','dissociation'],['rasquachismo','blackfoot'],['rasquachismo','decolonization'],
+      ['rasquachismo','csp'],['blackfoot','decolonization'],['dissociation','healing'],
+      ['healing','csp'],['achievement-vs-opportunity','silver-bullets'],['silver-bullets','testing'],
+      ['achievement-vs-opportunity','csp'],['hooks','healing'],['anzaldua','objectification'],['anzaldua','rasquachismo']
+    ].forEach(([a,b])=>connect(a,b));
+
+    // ---- Sub-nodes (interactive children) ----
+    // Each parent gets a set of children that are hidden by default. Clicking toggles expand/collapse.
+    function addChild(parentId, child){
+      child.parent = parentId;
+      addNode(child);
+      NODES[parentId].children.push(child.id);
+      connect(parentId, child.id);
+    }
+
+    // From notes: new items requested by user
+    const extraChildren = [
+      // Educational critique & policy
+      ['silver-bullets',{ id:'ordinary-genocide', label:'Ordinary\nGenocide', x:-40, y:-430, size:18, colorKey:'practice',
+        content:'Policies and practices creating generations of people who function as “ghosts.”' }],
+      ['silver-bullets',{ id:'nclb-resegregated', label:'NCLB\nResegregated Schools', x:-120, y:-360, size:18, colorKey:'practice',
+        content:'Policy rhetoric of equity, outcomes of resegregation and testing compliance.' }],
+      ['achievement-vs-opportunity',{ id:'revisionist-history', label:'Revisionist History\n& Failure as Moral Flaw', x:360, y:-480, size:18, colorKey:'practice',
+        content:'Deficit narratives frame systemic harm as individual failure.' }],
+      ['csp',{ id:'funds-of-knowledge', label:'Funds of\nKnowledge', x:700, y:230, size:18, colorKey:'practice',
+        content:'Center learners’ experiences and community knowledge as assets.' }],
+      ['csp',{ id:'afrocentric-praxis', label:'Afrocentric\nPraxis', x:650, y:340, size:18, colorKey:'practice',
+        content:'Loved approach often ignored due to its name; centers African epistemologies.' }],
+      // Rasquache extensions
+      ['rasquachismo',{ id:'problem-solving-ras', label:'Problem-Solving as\nRasquachismo', x:740, y:-300, size:18, colorKey:'indigenous',
+        content:'“F— shout it from the rooftops!” Improvisation and repair as brilliance.' }],
+      ['rasquachismo',{ id:'drag-aesthetic', label:'Drag Aesthetic', x:620, y:-340, size:18, colorKey:'indigenous',
+        content:'Pattern-on-pattern playfulness; exuberant recombination and mending.' }],
+      // Personal & practice
+      ['healing',{ id:'reinterpreting-past', label:'Reinterpreting Past\nExperiences', x:180, y:470, size:18, colorKey:'personal',
+        content:'Fresh meanings emerge through embodied presence and reflection.' }],
+      ['dissociation',{ id:'busyness-dissociation', label:'Busyness as\nDissociation', x:-110, y:470, size:18, colorKey:'personal',
+        content:'Productivity as avoidance; radical rest as counter-practice.' }],
+      ['csp',{ id:'one-brave-student', label:'One Brave Student', x:500, y:360, size:16, colorKey:'practice',
+        content:'Student voice naming math as a snake—vivid metaphor opening dialogue.' }],
+      ['csp',{ id:'traveling-teacher', label:'Traveling Teacher\nwith Cart', x:480, y:460, size:16, colorKey:'practice',
+        content:'Resource constraints met with ingenuity in practice.' }],
+      // More theory/critique
+      ['colonial-transcendence',{ id:'apolitical-is-political', label:'“Apolitical” is\nPolitical', x:-540, y:-330, size:18, colorKey:'theory',
+        content:'Neutrality aligns with dominance; distancing enables harm.' }],
+      ['objectification',{ id:'statistics-are-people', label:'Statistics are\nPeople', x:-850, y:150, size:18, colorKey:'theory',
+        content:'Fight dehumanization by insisting on lived realities behind numbers.' }],
+      // Blackfoot & land
+      ['blackfoot',{ id:'language-is-everything', label:'Language is\nEverything', x:900, y:0, size:18, colorKey:'indigenous',
+        content:'Embodiment through language, land, and lifeways.' }],
+      ['blackfoot',{ id:'no-land-no-culture', label:'No Land ⇄ No Culture', x:860, y:80, size:18, colorKey:'indigenous',
+        content:'Mutual constitution of place and culture.' }],
+      // More schooling critique
+      ['testing',{ id:'assimilation-gap', label:'Achievement Gap ⇢\nAssimilation Gap', x:-320, y:-100, size:18, colorKey:'practice',
+        content:'Tests gauge conformity to norms, not authentic learning.' }],
+      ['testing',{ id:'stratification-confirmed', label:'Stratification\nConfirmed', x:-260, y:-40, size:18, colorKey:'practice',
+        content:'High-stakes decisions preserve hierarchies.' }],
+      // Misc from notes
+      ['rasquachismo',{ id:'minutia-everyday-life', label:'Minutia of\nEveryday Life', x:520, y:-110, size:18, colorKey:'indigenous',
+        content:'Attention to small, sustaining practices; Pasquache residency.' }],
+    ];
+
+    extraChildren.forEach(([p,c])=>addChild(p,c));
+
+    // Expand states default: keep parents collapsed initially (badges show counts)
+    // We'll expand just a couple for initial “overview” feel
+    NODES['center'].expanded = true;
+    NODES['rasquachismo'].expanded = false;
+    NODES['csp'].expanded = false;
+    NODES['silver-bullets'].expanded = false;
+    NODES['blackfoot'].expanded = false;
+
+    // Helper: count hidden children (depth-1 only for badge simplicity)
+    function hiddenCount(parent){
+      let cnt = 0;
+      for(const id of parent.children){
+        const child = NODES[id];
+        if(!parent.expanded) cnt++;
+        // If parent expanded but we may someday nest deeper; here we keep it simple.
+      }
+      return cnt;
+    }
+
+    // ===== Interaction: pan/zoom =====
+    canvas.addEventListener('mousedown', (e)=>{
+      isDragging = true;
+      dragStart.x = e.clientX; dragStart.y = e.clientY;
+      lastOffset.x = offsetX; lastOffset.y = offsetY;
+    });
+    window.addEventListener('mouseup', ()=>{ isDragging = false; });
+    window.addEventListener('mousemove', (e)=>{
+      if(isDragging){
+        offsetX = lastOffset.x + (e.clientX - dragStart.x);
+        offsetY = lastOffset.y + (e.clientY - dragStart.y);
+      }
+    });
+    canvas.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      const zoom = Math.exp(-e.deltaY * 0.0012);
+      // Zoom around mouse
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const wx = (mx - offsetX)/scale;
+      const wy = (my - offsetY)/scale;
+      scale *= zoom;
+      offsetX = mx - wx * scale;
+      offsetY = my - wy * scale;
+    }, { passive:false });
+
+    // Keyboard pan
+    window.addEventListener('keydown',(e)=>{
+      const step = 30;
+      if(e.key==='ArrowLeft') offsetX+=step;
+      if(e.key==='ArrowRight') offsetX-=step;
+      if(e.key==='ArrowUp') offsetY+=step;
+      if(e.key==='ArrowDown') offsetY-=step;
+      if(e.key==='0' && (e.ctrlKey||e.metaKey)) resetView();
+    });
+
+    // ===== Hit testing (click to expand/collapse, or select) =====
+    let hoveredId = null;
+    let selectedId = null;
+
+    function screenFromWorld(x,y){
+      return { x: x*scale + offsetX, y: y*scale + offsetY };
+    }
+    function worldFromScreen(x,y){
+      return { x: (x - offsetX)/scale, y: (y - offsetY)/scale };
+    }
+
+    function getNodeAt(mx,my){
+      const w = worldFromScreen(mx,my);
+      // iterate in reverse draw order to pick topmost
+      const ids = Object.keys(NODES);
+      for(let i=ids.length-1;i>=0;i--){
+        const n = NODES[ids[i]];
+        // Skip children of collapsed parents
+        if(n.parent && !NODES[n.parent].expanded) continue;
+        const r = n.size * (hoveredId===n.id?1.2:1);
+        const dx = w.x - n.x, dy = w.y - n.y;
+        if(dx*dx + dy*dy <= r*r) return n;
+      }
+      return null;
+    }
+
+    canvas.addEventListener('mousemove', (e)=>{
+      const rect = canvas.getBoundingClientRect();
+      const n = getNodeAt(e.clientX-rect.left, e.clientY-rect.top);
+      hoveredId = n ? n.id : null;
+      canvas.style.cursor = n ? 'pointer' : (isDragging ? 'grabbing' : 'default');
+    });
+
+    canvas.addEventListener('click', (e)=>{
+      const rect = canvas.getBoundingClientRect();
+      const n = getNodeAt(e.clientX-rect.left, e.clientY-rect.top);
+      if(!n) { selectedId = null; setInfo(null); return; }
+      selectedId = n.id;
+      // Toggle expand if node has children
+      if(n.children && n.children.length){
+        n.expanded = !n.expanded;
+      }
+      setInfo(n);
+    });
+
+    // ===== Info panel =====
+    const infoPanel = document.getElementById('infoPanel');
+    const infoTitle = document.getElementById('infoTitle');
+    const infoContent = document.getElementById('infoContent');
+
+    function setInfo(n){
+      if(!n){ infoPanel.classList.remove('active'); return; }
+      infoPanel.classList.add('active');
+      infoTitle.textContent = n.label.replaceAll('\\n',' ');
+      infoContent.innerHTML = `
+        <div style="line-height:1.6">${n.content ? n.content : ''}</div>
+        ${n.quote ? `<div class="quote">${n.quote}</div>` : ''}
+        ${n.children && n.children.length ? `<div style="opacity:.85;margin-top:6px">Sub-concepts: ${n.children.length} • Click node to ${n.expanded?'collapse':'expand'}.</div>`:''}
+      `;
+    }
+
+    // ===== Layout helpers for expanded children (simple radial) =====
+    function layoutChildren(n){
+      const children = n.children.map(id => NODES[id]);
+      const R = n.size + 50; // base radius
+      const step = Math.PI * 2 / Math.max(1, children.length);
+      children.forEach((c, i)=>{
+        if(!n.expanded) return; // we only layout when visible
+        const angle = i*step - Math.PI/2;
+        const targetX = n.x + Math.cos(angle) * (R + (i % 3) * 20);
+        const targetY = n.y + Math.sin(angle) * (R + (i % 3) * 20);
+        // Gentle easing toward position to avoid jitter
+        c.x += (targetX - c.x) * 0.12;
+        c.y += (targetY - c.y) * 0.12;
+      });
+    }
+
+    // ===== Drawing =====
+    function drawConnection(a,b){
+      if(!connectionsEnabled) return;
+      const n1 = NODES[a], n2 = NODES[b];
+      // Skip if either hidden due to collapsed parent
+      if(n1.parent && !NODES[n1.parent].expanded) return;
+      if(n2.parent && !NODES[n2.parent].expanded) return;
+
+      const p1 = screenFromWorld(n1.x, n1.y + float(n1));
+      const p2 = screenFromWorld(n2.x, n2.y + float(n2));
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255,255,255,.35)';
+      ctx.stroke();
+    }
+
+    function float(n){ return animationEnabled ? Math.sin((time*0.001) + n.id.length)*3 : 0; }
+
+    function drawNode(n){
+      // Skip children of collapsed parents
+      if(n.parent && !NODES[n.parent].expanded) return;
+
+      const p = screenFromWorld(n.x, n.y + float(n));
+      const hovered = (hoveredId === n.id);
+      const selected = (selectedId === n.id);
+
+      // Shadow glow on hover/selected
+      if(hovered || selected){
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = COLORS[n.colorKey] || '#fff';
+      } else {
+        ctx.shadowBlur = 0;
+      }
+
+      // Circle
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, n.size * (hovered?1.2:1), 0, Math.PI*2);
+      ctx.fillStyle = COLORS[n.colorKey] || '#fff';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255,255,255,.85)';
+      ctx.stroke();
+
+      // Label (centered, multi-line)
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `${Math.max(12, Math.round(12*scale))}px Inter, Arial, sans-serif`;
+      n.label.split('\\n').forEach((line,i)=>{
+        ctx.fillText(line, p.x, p.y + (i - (n.label.split('\\n').length-1)/2) * 16);
+      });
+
+      // If node has hidden children, draw white badge with count
+      if(n.children && n.children.length){
+        const count = hiddenCount(n);
+        if(count>0){
+          const r = 12;
+          const bx = p.x + n.size + 4;
+          const by = p.y - n.size - 4;
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI*2);
+          ctx.fillStyle = '#fff';
+          ctx.fill();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = 'rgba(0,0,0,.25)';
+          ctx.stroke();
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 12px Inter, Arial, sans-serif';
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(String(count), bx, by+0.5);
         }
+      }
+    }
 
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+    function tick(){
+      time += 16;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        // Node data structure
-        const nodes = [
-            // Central node
-            {
-                id: 'center',
-                x: width / 2,
-                y: height / 2,
-                label: 'Decolonial Thought\n& Embodied Knowledge',
-                color: '#ffd700',
-                size: 40,
-                content: 'The intersection of personal healing, indigenous wisdom, and resistance to colonial frameworks of knowledge.',
-                quote: '"Coming home begins with the self" - from your notes'
-            },
-            
-            // Colonial/Western cluster
-            {
-                id: 'colonial-transcendence',
-                x: width * 0.2,
-                y: height * 0.3,
-                label: 'Colonial\nTranscendence',
-                color: '#ff6b6b',
-                size: 30,
-                content: 'The colonial imperative to transcend the "baseness" of the body and daily functions to become a "higher self" lost in abstract thought.',
-                quote: '"In trying to become objective, western culture made objects of things and people" - Anzaldúa'
-            },
-            {
-                id: 'objectification',
-                x: width * 0.15,
-                y: height * 0.5,
-                label: 'Objectification\n& Violence',
-                color: '#ff6b6b',
-                size: 25,
-                content: 'The distancing from embodied experience creates the root of all violence through objectification.',
-                quote: '"This dichotomy is the root of all violence" - Gloria Anzaldúa (2012, p.59)'
-            },
-            {
-                id: 'planned-obsolescence',
-                x: width * 0.25,
-                y: height * 0.15,
-                label: 'Planned\nObsolescence',
-                color: '#ff6b6b',
-                size: 20,
-                content: 'The ultimate expression of colonial logic - rejecting lasting, embodied relationships with the material world.',
-                quote: 'The opposite of rasquachismo\'s remaking and mending'
-            },
-            
-            // Indigenous/Alternative Knowledge cluster
-            {
-                id: 'rasquachismo',
-                x: width * 0.8,
-                y: height * 0.3,
-                label: 'Rasquachismo',
-                color: '#4ecdc4',
-                size: 30,
-                content: 'A bawdy, spunky consciousness seeking to subvert ruling paradigms. The sensibility of survival through remaking, mending, and creative resourcefulness.',
-                quote: '"Down but not out" - A response to lived reality of non-western people'
-            },
-            {
-                id: 'blackfoot',
-                x: width * 0.75,
-                y: height * 0.15,
-                label: 'Blackfoot\nWisdom',
-                color: '#4ecdc4',
-                size: 25,
-                content: 'We don\'t manage anything - we are part of every ecosystem. Language is everything. There is no land without culture and no culture without land.',
-                quote: '"If you want to learn Blackfoot language, eat buffalo tongue. It\'s the closest to the earth you can get"'
-            },
-            {
-                id: 'decolonization',
-                x: width * 0.85,
-                y: height * 0.5,
-                label: 'Decolonization\nProcess',
-                color: '#4ecdc4',
-                size: 25,
-                content: 'Entails remembrance - remembering the teachings of Kaaahsinnooniksi, the ways of the ancestors and ancients.',
-                quote: '"Coming home begins with the self"'
-            },
-            
-            // Personal Experience cluster
-            {
-                id: 'dissociation',
-                x: width * 0.35,
-                y: height * 0.7,
-                label: 'Dissociation\n& Survival',
-                color: '#ffe66d',
-                size: 25,
-                content: 'Your personal experience: dissociation as survival mirrors colonial impulse to leave the body. Healing involves returning to embodied presence.',
-                quote: '"I came to theory because I was hurting... I saw theory then as a location for healing" - bell hooks'
-            },
-            {
-                id: 'healing',
-                x: width * 0.5,
-                y: height * 0.75,
-                label: 'Embodied\nHealing',
-                color: '#ffe66d',
-                size: 25,
-                content: 'Leaving dissociative states and becoming more in touch with life and the immediate world. Protecting space to be bored, to sit with things, to be present.',
-                quote: '"How have I not read more bell hooks?" - your margin note'
-            },
-            
-            // Education cluster
-            {
-                id: 'achievement-gap',
-                x: width * 0.6,
-                y: height * 0.2,
-                label: 'Achievement Gap\nvs Opportunity Gap',
-                color: '#95e77e',
-                size: 25,
-                content: 'The framing matters: "Achievement gap" places blame on students. "Opportunity gap" recognizes systemic failures.',
-                quote: '"BIPOC folx and white folx commentary is VERY different in this video"'
-            },
-            {
-                id: 'silver-bullets',
-                x: width * 0.55,
-                y: height * 0.35,
-                label: 'Silver Bullet\nPolicies',
-                color: '#95e77e',
-                size: 25,
-                content: 'NCLB, Race to the Top - policies that promise equity but deliver the same restrictive, White-oriented systems.',
-                quote: '"Just another silver bullet" - your note on pg. 71'
-            },
-            {
-                id: 'testing',
-                x: width * 0.45,
-                y: height * 0.15,
-                label: 'Testing &\nStratification',
-                color: '#95e77e',
-                size: 20,
-                content: 'Testing confirms social stratification rather than assessing cultural relevance, divergent thinking, or student well-being.',
-                quote: '"Advances political agendas more than anything else"'
-            },
-            {
-                id: 'culturally-sustaining',
-                x: width * 0.7,
-                y: height * 0.65,
-                label: 'Culturally Sustaining\nPedagogy',
-                color: '#95e77e',
-                size: 25,
-                content: 'Asset-based pedagogies that value students\' insights, languages, and cultural practices. Funds of knowledge approach.',
-                quote: '"Difference does not mean deficit, it means more human(ity)"'
-            },
-            
-            // Theory cluster
-            {
-                id: 'hooks',
-                x: width * 0.25,
-                y: height * 0.85,
-                label: 'bell hooks:\nTheory as Healing',
-                color: '#b4a7d6',
-                size: 20,
-                content: 'Theory as a location for healing when the pain becomes too intense to continue living.',
-                quote: '"I came to theory desperate, wanting to comprehend"'
-            },
-            {
-                id: 'anzaldua',
-                x: width * 0.75,
-                y: height * 0.85,
-                label: 'Anzaldúa:\nArt & Identity',
-                color: '#b4a7d6',
-                size: 20,
-                content: 'Art is about identity and creativity is political. The dichotomy of objectification is the root of violence.',
-                quote: '"Art is about identity, among other things, and her creativity is political"'
-            }
-        ];
-
-        // Define connections
-        const connections = [
-            ['center', 'colonial-transcendence'],
-            ['center', 'rasquachismo'],
-            ['center', 'dissociation'],
-            ['center', 'culturally-sustaining'],
-            ['colonial-transcendence', 'objectification'],
-            ['colonial-transcendence', 'planned-obsolescence'],
-            ['objectification', 'dissociation'],
-            ['rasquachismo', 'blackfoot'],
-            ['rasquachismo', 'decolonization'],
-            ['rasquachismo', 'culturally-sustaining'],
-            ['blackfoot', 'decolonization'],
-            ['dissociation', 'healing'],
-            ['healing', 'culturally-sustaining'],
-            ['achievement-gap', 'silver-bullets'],
-            ['silver-bullets', 'testing'],
-            ['achievement-gap', 'culturally-sustaining'],
-            ['hooks', 'healing'],
-            ['anzaldua', 'objectification'],
-            ['anzaldua', 'rasquachismo']
-        ];
-
-        // Animation variables
-        let time = 0;
-
-        function drawNode(node) {
-            ctx.save();
-            ctx.translate(offsetX, offsetY);
-            ctx.scale(scale, scale);
-
-            const isHovered = hoveredNode === node;
-            const isSelected = selectedNode === node;
-            
-            // Add glow effect for hovered/selected nodes
-            if (isHovered || isSelected) {
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = node.color;
-            }
-
-            // Animated float effect
-            const floatY = animationEnabled ? Math.sin(time * 0.001 + node.id.length) * 3 : 0;
-            
-            // Draw node circle
-            ctx.beginPath();
-            ctx.arc(node.x, node.y + floatY, node.size * (isHovered ? 1.2 : 1), 0, Math.PI * 2);
-            ctx.fillStyle = node.color;
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Draw label
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = 'white';
-            ctx.font = `${12 + (isHovered ? 2 : 0)}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            const lines = node.label.split('\n');
-            lines.forEach((line, i) => {
-                ctx.fillText(line, node.x, node.y + floatY + (i - (lines.length - 1) / 2) * 15);
-            });
-
-            ctx.restore();
+      // Layout expanded children
+      for(const id in NODES){
+        const n = NODES[id];
+        if(n.children && n.children.length && n.expanded){
+          layoutChildren(n);
         }
+      }
 
-        function drawConnection(conn) {
-            if (!connectionsEnabled) return;
-            
-            const node1 = nodes.find(n => n.id === conn[0]);
-            const node2 = nodes.find(n => n.id === conn[1]);
-            
-            if (!node1 || !node2) return;
+      // Draw connections
+      CONNECTIONS.forEach(([a,b])=>drawConnection(a,b));
 
-            ctx.save();
-            ctx.translate(offsetX, offsetY);
-            ctx.scale(scale, scale);
+      // Draw nodes
+      for(const id in NODES){
+        drawNode(NODES[id]);
+      }
 
-            const floatY1 = animationEnabled ? Math.sin(time * 0.001 + node1.id.length) * 3 : 0;
-            const floatY2 = animationEnabled ? Math.sin(time * 0.001 + node2.id.length) * 3 : 0;
+      if(animationEnabled) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 
-            ctx.beginPath();
-            ctx.moveTo(node1.x, node1.y + floatY1);
-            ctx.lineTo(node2.x, node2.y + floatY2);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+    // ===== Controls =====
+    function resetView(){
+      scale = 0.55;
+      // recenter to ensure good overview
+      offsetX = canvas.width*0.5;
+      offsetY = canvas.height*0.5;
+    }
+    function expandAll(){
+      Object.values(NODES).forEach(n=>{ if(n.children?.length) n.expanded = true; });
+    }
+    function collapseAll(){
+      Object.values(NODES).forEach(n=>{ if(n.children?.length) n.expanded = false; });
+      NODES['center'].expanded = true; // keep center visible
+    }
+    function toggleAnim(){
+      animationEnabled = !animationEnabled;
+      if(animationEnabled) requestAnimationFrame(tick);
+    }
+    function toggleConn(){ connectionsEnabled = !connectionsEnabled; }
 
-            ctx.restore();
-        }
+    document.getElementById('resetViewBtn').addEventListener('click', resetView);
+    document.getElementById('expandAllBtn').addEventListener('click', expandAll);
+    document.getElementById('collapseAllBtn').addEventListener('click', collapseAll);
+    document.getElementById('toggleAnimBtn').addEventListener('click', toggleAnim);
+    document.getElementById('toggleConnBtn').addEventListener('click', toggleConn);
 
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, width, height);
+    // Initial view nudge: shift network slightly downward to account for header (already using 120px top padding),
+    // plus add a touch more spacing visually
+    offsetY += 10;
 
-            // Draw connections
-            connections.forEach(drawConnection);
-
-            // Draw nodes
-            nodes.forEach(drawNode);
-
-            if (animationEnabled) {
-                time += 16;
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        // Mouse interactions
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-
-            // Check if clicking on a node
-            let clickedNode = null;
-            nodes.forEach(node => {
-                const transformedX = node.x * scale + offsetX;
-                const transformedY = node.y * scale + offsetY;
-                const dist = Math.sqrt(
-                    Math.pow(mouseX - transformedX, 2) + 
-                    Math.pow(mouseY - transformedY, 2)
-                );
-                if (dist < node.size * scale) {
-                    clickedNode = node;
-                }
-            });
-
-            if (clickedNode) {
-                selectedNode = clickedNode;
-                showInfo(clickedNode);
-            } else {
-                isDragging = true;
-                dragStart = { x: mouseX, y: mouseY };
-                lastOffset = { x: offsetX, y: offsetY };
-            }
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-
-            if (isDragging) {
-                offsetX = lastOffset.x + (mouseX - dragStart.x);
-                offsetY = lastOffset.y + (mouseY - dragStart.y);
-            } else {
-                // Check hover
-                hoveredNode = null;
-                nodes.forEach(node => {
-                    const transformedX = node.x * scale + offsetX;
-                    const transformedY = node.y * scale + offsetY;
-                    const dist = Math.sqrt(
-                        Math.pow(mouseX - transformedX, 2) + 
-                        Math.pow(mouseY - transformedY, 2)
-                    );
-                    if (dist < node.size * scale) {
-                        hoveredNode = node;
-                        canvas.style.cursor = 'pointer';
-                    }
-                });
-                if (!hoveredNode) {
-                    canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
-                }
-            }
-        });
-
-        canvas.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        canvas.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? 0.9 : 1.1;
-            scale *= delta;
-            scale = Math.max(0.5, Math.min(scale, 3));
-        });
-
-        function showInfo(node) {
-            const panel = document.getElementById('infoPanel');
-            const title = document.getElementById('infoTitle');
-            const content = document.getElementById('infoContent');
-            
-            title.textContent = node.label.replace('\n', ' ');
-            content.innerHTML = `
-                <p>${node.content}</p>
-                ${node.quote ? `<div class="quote">${node.quote}</div>` : ''}
-            `;
-            
-            panel.classList.add('active');
-        }
-
-        function resetView() {
-            offsetX = 0;
-            offsetY = 0;
-            scale = 1;
-            selectedNode = null;
-            document.getElementById('infoPanel').classList.remove('active');
-        }
-
-        function toggleAnimation() {
-            animationEnabled = !animationEnabled;
-        }
-
-        function toggleConnections() {
-            connectionsEnabled = !connectionsEnabled;
-        }
-
-        // Start animation
-        animate();
-    </script>
+  </script>
 </body>
 </html>
