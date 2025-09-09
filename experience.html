@@ -4,187 +4,495 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Experience & Education - Sam Servellon</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+            flex: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 2rem;
+            color: #333;
+            margin: 3rem 0 2rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        /* Experience Cards */
+        .experience-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .experience-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .job-header {
+            margin-bottom: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.5rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .company {
+            font-size: 1.15rem;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .date-location {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .job-description {
+            margin-top: 1rem;
+        }
+
+        .job-description ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .job-description li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .job-description li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Education Grid */
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .education-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 3px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .education-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .degree {
+            font-size: 1.15rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .school {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .edu-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .edu-details {
+            margin-top: 0.75rem;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Skills Section */
+        .skills-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-item {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .skill-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .education-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .experience-card,
+        .education-card,
+        .skills-section {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
             </div>
         </div>
     </header>
-    
+
     <nav class="main-nav">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="experience.html" class="active">Experience & Education</a></li>
-                <li><a href="publications.html">Presentations & Publications</a></li>
-                <li><a href="activities.html">Activities & Certifications</a></li>
-                <li><a href="classes.html" class="active">Classes</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/experience.html" class="active">Experience & Education</a></li>
+                <li><a href="/publications.html">Publications</a></li>
+                <li><a href="/activities.html">Activities</a></li>
+                <li><a href="/classes.html">Classes</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
             </ul>
         </div>
     </nav>
-    
+
     <main class="container">
         <div class="page-header">
-            <h2 class="page-title">Professional Experience & Education</h2>
+            <h1 class="page-title">Professional Experience & Education</h1>
+            <p class="page-subtitle">Analytical professional combining data expertise and educational leadership</p>
         </div>
-        
-        <section id="experience" class="section">
-            <h2 class="section-title">Professional Experience</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <h3>Insurance Data Analyst</h3>
-                    <p>National Indemnity Company, Omaha, NE</p>
-                    <p>May 2022 - Present</p>
-                    <ul>
-                        <li>Develop and maintain PC program applications using spreadsheet and database software</li>
-                        <li>Compile, review, analyze, reconcile, and interpret financial and insurance information</li>
-                        <li>Coordinate communication of accounting and financial statement information</li>
-                        <li>Assist in the development and maintenance of downloaded PC databases from mainframe computer systems</li>
-                        <li>Respond to inquiries from internal and external auditors regarding financial transactions, balances, and procedures</li>
-                    </ul>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Adjunct Faculty</h3>
-                    <p>Seton Hill University, Greensburg, PA</p>
-                    <p>January 2023 - Present</p>
-                    <ul>
-                        <li>Development and instruction of various computer science courses for online delivery to both traditional and non-traditional students</li>
-                        <li>Spring 2023 - SCS 141: Mobile Application Development (Xcode)</li>
-                        <li>Fall 2023 - SCS 297: Advanced Database Systems</li>
-                        <li>Spring 2024 & Spring 2025 - SBU 324: Management Information Systems</li>
-                    </ul>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Math Teacher</h3>
-                    <p>Ralston Public Schools, Omaha, NE</p>
-                    <p>August 2018 - May 2022</p>
-                    <ul>
-                        <li>Utilized multiple assessment strategies to measure student learning</li>
-                        <li>Incorporated technology such as mobile devices, Chromebooks, and DESMOS to enhance instruction</li>
-                        <li>Developed meaningful relationships with students and staff</li>
-                        <li>Updated and revised the Algebra 1 curriculum to align with state standards</li>
-                        <li>Co-taught EL and SPED math classes</li>
-                        <li>Developed tools to gather student feedback to inform instructional decisions</li>
-                        <li>Taught remote learning students during the 2020-2021 school year and developed tools to suit the unique needs of remote learners</li>
-                    </ul>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Summer School Teacher</h3>
-                    <p>Bellevue Public Schools, Bellevue, NE</p>
-                    <p>June 2017, 2018, 2019, 2021</p>
-                    <ul>
-                        <li>Created student directed materials for students needing credit recovery for geometry</li>
-                        <li>Collaborated with regular staff to ensure all key standards were met</li>
-                        <li>Provided self-paced, differentiated instruction to students</li>
-                    </ul>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Assistant Director</h3>
-                    <p>Huntington Learning Center, Omaha, NE</p>
-                    <p>July 2017 - March 2018</p>
-                    <ul>
-                        <li>Managed front end administrative office</li>
-                        <li>Hired, trained, scheduled and supervised part-time teachers</li>
-                        <li>Reviewed student programs and ensured academic achievement</li>
-                        <li>Participated in local marketing activities to help grow center's tutoring and test prep business</li>
-                    </ul>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>CADRE Teacher</h3>
-                    <p>University of Nebraska at Omaha and OPS, Omaha, NE</p>
-                    <p>June 2016 - August 2017</p>
-                    <ul>
-                        <li>Utilized multiple assessment strategies to aid instruction and measure student learning</li>
-                        <li>Incorporated technology such as mobile devices and Smart Board to enhance instruction</li>
-                        <li>Developed curriculum for a hybrid pre-algebra and Algebra 1 course for advanced 7th graders</li>
-                        <li>Collaborated with other math teachers to create meaningful activities</li>
-                    </ul>
+
+        <h2 class="section-header">Professional Experience</h2>
+
+        <div class="experience-card">
+            <div class="job-header">
+                <h3 class="job-title">Senior Insurance Data Analyst I</h3>
+                <div class="company">National Indemnity Company</div>
+                <div class="date-location">2022 - Present | Omaha, NE</div>
+            </div>
+            <div class="job-description">
+                <ul>
+                    <li>Define user stories and manage product backlog for financial application features, prioritizing spreadsheet and database integration capabilities</li>
+                    <li>Collaborate with engineering teams on requirements for mainframe-to-PC data integration pipelines through iterative development cycles</li>
+                    <li>Conduct user acceptance testing and analyze stakeholder feedback to inform financial reporting product roadmap decisions</li>
+                    <li>Facilitate sprint reviews and serve as product liaison between development teams and business stakeholders for accounting system releases</li>
+                    <li>Define compliance user stories and serve as primary product contact for audit processes during sprint demonstrations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="experience-card">
+            <div class="job-header">
+                <h3 class="job-title">Adjunct Faculty</h3>
+                <div class="company">Seton Hill University</div>
+                <div class="date-location">2023 - Present | Greensburg, PA</div>
+            </div>
+            <div class="job-description">
+                <ul>
+                    <li>Development and instruction of various computer science courses for online delivery to both traditional and non-traditional students</li>
+                    <li>Spring 2023 - SCS 141: Mobile Application Development (Xcode)</li>
+                    <li>Fall 2023 - SCS 297: Advanced Database Systems</li>
+                    <li>Spring 2024 & Spring 2025 - SBU 324: Management Information Systems</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="experience-card">
+            <div class="job-header">
+                <h3 class="job-title">Math Teacher</h3>
+                <div class="company">Ralston Public Schools</div>
+                <div class="date-location">2018 - 2022 | Omaha, NE</div>
+            </div>
+            <div class="job-description">
+                <ul>
+                    <li>Implemented varied assessment strategies to measure student learning and inform instruction</li>
+                    <li>Integrated technology tools (mobile devices, Chromebooks, DESMOS) to enhance instruction</li>
+                    <li>Built strong relationships with students and staff</li>
+                    <li>Collaborated in two-person team to revise Algebra 1 curriculum for state standards alignment</li>
+                    <li>Co-taught EL and SPED math classes with collaborative teaching partners</li>
+                    <li>Created student feedback tools to inform instructional decisions</li>
+                    <li>Taught remote students during 2020-2021, developing specialized tools for virtual learning needs</li>
+                    <li>Mentored practicum students and student teachers, providing guidance on classroom management and instructional strategies</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="section-header">Education</h2>
+
+        <div class="education-grid">
+            <div class="education-card">
+                <div class="degree">Doctor of Philosophy</div>
+                <div class="school">University of Nebraska-Lincoln</div>
+                <div class="edu-date">Expected 2027</div>
+                <div class="edu-details">
+                    Educational Studies<br>
+                    Focus: Innovative Learning Technologies<br>
+                    Certificate: Mixed Methods Research
                 </div>
             </div>
-        </section>
-        
-        <section id="education" class="section">
-            <h2 class="section-title">Education</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <h3>University of Nebraska-Lincoln</h3>
-                    <p>PhD in Educational Studies</p>
-                    <p>Specialization: Innovative Learning Technologies</p>
-                    <p>Certificate: Mixed Methods Research</p>
-                    <p>Anticipated Graduation: Spring 2026</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Doane University</h3>
-                    <p>Master of Science in Curriculum and Instruction</p>
-                    <p>Endorsement in Social Emotional Learning</p>
-                    <p>2022</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Concordia University</h3>
-                    <p>ELL Endorsement</p>
-                    <p>2020</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>University of Nebraska at Omaha</h3>
-                    <p>Master of Science in Secondary Education</p>
-                    <p>Concentration in STEM</p>
-                    <p>2017</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>University of Nebraska at Omaha</h3>
-                    <p>Bachelor of Science in Mathematics and Secondary Education</p>
-                    <p>2016</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>University of Nebraska at Omaha</h3>
-                    <p>Master of Arts in Recreation Administration</p>
-                    <p>2010</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>University of Dayton</h3>
-                    <p>Bachelor of Electrical Engineering</p>
-                    <p>2008</p>
+
+            <div class="education-card">
+                <div class="degree">Master of Science</div>
+                <div class="school">Doane University</div>
+                <div class="edu-date">2020 - 2022</div>
+                <div class="edu-details">
+                    Curriculum and Instruction<br>
+                    Endorsement in Social Emotional Learning
                 </div>
             </div>
-        </section>
+
+            <div class="education-card">
+                <div class="degree">Bachelor of Science</div>
+                <div class="school">University of Nebraska at Omaha</div>
+                <div class="edu-date">2013 - 2016</div>
+                <div class="edu-details">
+                    Mathematics and Secondary Education
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-header">Core Competencies</h2>
+
+        <div class="skills-section">
+            <div class="skills-grid">
+                <div class="skill-item">Data Analysis</div>
+                <div class="skill-item">Stakeholder Management</div>
+                <div class="skill-item">SQL</div>
+                <div class="skill-item">Database Systems</div>
+                <div class="skill-item">Product Management</div>
+                <div class="skill-item">User Acceptance Testing</div>
+                <div class="skill-item">Crisis Management</div>
+                <div class="skill-item">Creative Problem Solving</div>
+                <div class="skill-item">Educational Technology</div>
+                <div class="skill-item">Curriculum Development</div>
+                <div class="skill-item">Instructional Design</div>
+                <div class="skill-item">Team Collaboration</div>
+            </div>
+        </div>
     </main>
-    
+
     <footer class="footer">
         <div class="container">
-            <h3>Contact Information</h3>
-            <div class="contact-links">
-                <a href="mailto:sebservellon@gmail.com" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    sebservellon@gmail.com
-                </a>
-                <a href="sms:4023505157" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Text Message
-                </a>
-            </div>
-            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
+            <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a></p>
+            <p style="margin-top: 0.5rem;">
+                <a href="mailto:sam@servellon.net">sam@servellon.net</a> | 
+                <a href="tel:4023505157">402.350.5157</a> | 
+                Bellevue, NE
+            </p>
         </div>
     </footer>
 </body>
