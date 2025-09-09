@@ -3,16 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAC 259A</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <title>TEAC 259A - Sam Servellon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .site-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .site-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .site-title:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.25rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Embed Containers */
+        .embed-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .video-container {
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+
+        .slides-container {
+            padding-bottom: 62.5%; /* Slightly taller for slides */
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Note Box */
+        .note {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .note strong {
+            color: #667eea;
+        }
+
+        .note a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .note a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .chat-content {
+            padding: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-message,
+        .assistant-message {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .user-message {
+            background: white;
+            border: 1px solid #e0e0e0;
+            margin-right: 2rem;
+        }
+
+        .user-message::before {
+            content: "👤 User:";
+            display: block;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .assistant-message {
+            background: #f0f4ff;
+            border: 1px solid #d0d8ff;
+            margin-left: 2rem;
+        }
+
+        .assistant-message::before {
+            content: "🤖 Claude:";
+            display: block;
+            font-weight: 600;
+            color: #764ba2;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-secondary {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Scrollbar Styling */
+        .chat-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .chat-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .chat-content::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .user-message,
+            .assistant-message {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .chat-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading State for iframes */
+        .embed-container::before {
+            content: "Loading...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2rem;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
             </div>
         </div>
     </header>
@@ -31,12 +357,13 @@
             </div>
         </div>
     </nav>
+
     <div class="container">
         <main>
             <section class="section">
                 <h2>Course Introduction Video</h2>
                 <p class="description">
-                    Welcome to TEAC 259A! Please watch this introduction video to get to know me a little bit.
+                    Welcome to TEAC 259A! Please watch this introduction video to get to know me a little bit and learn about what we'll be exploring together in this course.
                 </p>
                 <div class="embed-container video-container">
                     <iframe 
@@ -51,7 +378,7 @@
             <section class="section">
                 <h2>Interactive Presentation</h2>
                 <p class="description">
-                    Navigate through the slides below. You can interact with the presentation directly using the controls or arrow keys. There are some easter eggs if you click around!
+                    Navigate through the slides below to explore course content and concepts. You can interact with the presentation directly using the controls or arrow keys. There are some easter eggs if you click around—see if you can find them!
                 </p>
                 <div class="embed-container slides-container">
                     <iframe 
@@ -76,17 +403,17 @@
             <section class="section">
                 <h2>Page Creation Process</h2>
                 <p class="description">
-                    This section shows the conversation used to create this webpage, demonstrating the collaborative process between instructor and AI assistant.
+                    This section shows the conversation used to create this webpage, demonstrating the collaborative process between instructor and AI assistant in developing educational resources.
                 </p>
                 
                 <div class="chat-section">
-                    <div class="chat-header">Chat Conversation:</div>
+                    <div class="chat-header">Chat Conversation</div>
                     <div class="chat-content">
                         <div class="user-message">
-                            User: Hey-o! I would love you to make a page for my servellon.net website that I can share with students for TEAC 259A that I am helping with for my practicum TEAC 905. Please embed the following slide deck (https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing) so that students can interact with it directly on the page and please also include the following video introduction I recorded for them (https://youtu.be/98C8G5wBgTE). Additionally, I would like a small space below dedicated to displaying this chat used to create the page.
+                            Hey-o! I would love you to make a page for my servellon.net website that I can share with students for TEAC 259A that I am helping with for my practicum TEAC 905. Please embed the following slide deck (https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing) so that students can interact with it directly on the page and please also include the following video introduction I recorded for them (https://youtu.be/98C8G5wBgTE). Additionally, I would like a small space below dedicated to displaying this chat used to create the page.
                         </div>
                         <div class="assistant-message">
-                            Claude: I'll create a professional educational webpage for your TEAC 259A students that includes the embedded presentation, video, and chat display. The page features a clean, responsive design with proper embedding of your Google Slides presentation and YouTube video, along with this conversation shown in a dedicated section.
+                            I'll create a professional educational webpage for your TEAC 259A students that includes the embedded presentation, video, and chat display. The page features a clean, responsive design with proper embedding of your Google Slides presentation and YouTube video, along with this conversation shown in a dedicated section. The layout ensures easy navigation and interaction with all course materials while maintaining a cohesive visual style that aligns with your servellon.net website.
                         </div>
                     </div>
                 </div>
