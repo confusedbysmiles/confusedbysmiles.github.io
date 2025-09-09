@@ -4,15 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEAC 859 - Sam Servellon</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+            min-height: calc(100vh - 400px);
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        /* Artifacts Grid */
+        .artifacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Card Styles */
+        .artifact-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .artifact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .artifact-card.placeholder {
+            background: #fafafa;
+            border-left-color: #ddd;
+            opacity: 0.6;
+        }
+
+        .card-date {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .card-title a:hover {
+            color: #667eea;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.3s;
+        }
+
+        .contact-link:hover {
+            opacity: 0.8;
+        }
+
+        .copyright {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .artifacts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
             </div>
         </div>
     </header>
@@ -22,48 +249,66 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="experience.html">Experience & Education</a></li>
-                <li><a href="publications.html" class="active">Presentations & Publications</a></li>
+                <li><a href="publications.html">Presentations & Publications</a></li>
                 <li><a href="activities.html">Activities & Certifications</a></li>
                 <li><a href="classes.html" class="active">Classes</a></li>
             </ul>
         </div>
     </nav>
-<main class="container">
-    <section id="artifacts" class="section">
+
+    <main class="container">
+        <section id="artifacts" class="section">
+            <h2 class="section-title">TEAC 859 Course Artifacts</h2>
+            
             <div class="artifacts-grid">
-                <div class="artifacts-item">
-                    <div class="artifacts-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                    </div>
-                    <div class="artifacts-content">
-                        <a href="https://servellon.net/waves.html" class="item-title">Waves</a>
-                        <div class="item-description">
-                        Audio-Reactive Visualizer vibe coding project
-                        </div>
-                    </div>
+                <!-- Existing Item 1 -->
+                <div class="artifact-card">
+                    <div class="card-date">Interactive Project</div>
+                    <h3 class="card-title">
+                        <a href="https://servellon.net/waves.html">Waves</a>
+                    </h3>
+                    <p class="card-description">
+                        Audio-Reactive Visualizer vibe coding project featuring dynamic visual elements that respond to sound input, creating an immersive multimedia experience.
+                    </p>
                 </div>
                 
-                <div class="artifacts-item">
-                    <div class="artifacts-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                    </div>
-                    <div class="artifacts-content">
-                        <a href="https://servellon.net/mindmap.html" class="item-title">Week 3 Reflection Mind Map</a>
-                        <div class="item-description">
-                        Visual representation of key concepts, connections, and frameworks central to our course discussions and research.
-                        </div>
-                    </div>
+                <!-- Existing Item 2 -->
+                <div class="artifact-card">
+                    <div class="card-date">Week 3 Assignment</div>
+                    <h3 class="card-title">
+                        <a href="https://servellon.net/mindmap.html">Reflection Mind Map</a>
+                    </h3>
+                    <p class="card-description">
+                        Visual representation of key concepts, connections, and frameworks central to our course discussions and research, demonstrating synthesis of learning materials.
+                    </p>
+                </div>
+                
+                <!-- Placeholder 1 -->
+                <div class="artifact-card placeholder">
+                    <div class="card-date">Coming Soon</div>
+                    <h3 class="card-title">
+                        Project Title
+                    </h3>
+                    <p class="card-description placeholder-text">
+                        This artifact will be added as the course progresses. Check back for updates on new projects and assignments.
+                    </p>
+                </div>
+                
+                <!-- Placeholder 2 -->
+                <div class="artifact-card placeholder">
+                    <div class="card-date">Coming Soon</div>
+                    <h3 class="card-title">
+                        Project Title
+                    </h3>
+                    <p class="card-description placeholder-text">
+                        This artifact will be added as the course progresses. Check back for updates on new projects and assignments.
+                    </p>
                 </div>
             </div>
         </section>
-</main>
-   <footer class="footer">
+    </main>
+
+    <footer class="footer">
         <div class="container">
             <h3>Contact Information</h3>
             <div class="contact-links">
@@ -85,5 +330,4 @@
         </div>
     </footer>
 </body>
-</html>
 </html>
