@@ -3,16 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNL PhD Coursework</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <title>UNL PhD Coursework - Sam Servellon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+            flex: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .intro-section h2 {
+            font-size: 1.75rem;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .intro-section p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Course Cards */
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #667eea;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .course-card h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .course-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            flex-grow: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .course-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .footer-secondary {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .intro-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animation for cards on load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .course-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .course-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .course-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .course-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .course-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
             </div>
         </div>
     </header>
@@ -30,60 +329,56 @@
     </nav>
 
     <main class="container">
-    <div class="page-header">
-    <h2 class="page-title">UNL PhD Coursework</h2>
+        <div class="page-header">
+            <h1 class="page-title">UNL PhD Coursework</h1>
+        </div>
+        
+        <section class="intro-section">
+            <h2>Course Artifacts</h2>
+            <p>
+                Welcome to my collection of TEAC course pages and projects. These pages document my journey through 
+                my PhD program in pursuit of a degree in Educational Studies with a focus on Innovative Learning Technologies 
+                and a certificate in Mixed Methods Research. Below is a selection of my coursework showcasing research and practical 
+                applications of educational philosophy. Each course represents a significant component 
+                of my professional development in educational studies and research methodologies.
+            </p>
+        </section>
 
-    </div>    
-    <main class="main-content">
-        <div class="container">
-            <section class="intro-section">
-                <h2>Course Artifacts</h2>
-                <p>
-                    Welcome to my collection of TEAC course pages and projects. These pages document my journey through 
-                    my PhD program in prusuit of a degree in Educational Studies with a focus on Innovative Learning Teachnologies 
-                    and a certificate in Mixed Methods Research. Below is a selection of my coursework showcasing, research, and practical 
-                    applications of educational philosophy. Each course represents a significant component 
-                    of my professional development in educational studies and reserach methodologies.
+        <div class="courses-grid">
+            <div class="course-card">
+                <h3>TEAC 860</h3>
+                <p class="course-title">Production and Utilization of Instructional Materials</p>
+                <p class="course-description">
+                    View my capstone project focused on AI integration in educational contexts, exploring innovative approaches to technology-enhanced learning.
                 </p>
-            </section>
+                <a href="teac860cap.html" class="course-link">View Course</a>
+            </div>
 
-            <div class="courses-grid">
-                <div class="course-card">
-                    <h3>TEAC 860</h3>
-                    <p class="course-title">Production and Utilization of Instructional Materials</p>
-                    <p class="course-description">
-                      View my capstone project focused on AI integration in educational contexts.
-                    </p>
-                    <a href="teac860cap.html" class="course-link">View Course</a>
-                </div>
+            <div class="course-card">
+                <h3>TEAC 859</h3>
+                <p class="course-title">Designing Learning Experiences</p>
+                <p class="course-description">
+                    A selection of artifacts from this class exploring course concepts and reflections on learning design principles and methodologies.
+                </p>
+                <a href="teac859.html" class="course-link">View Course</a>
+            </div>
 
-                <div class="course-card">
-                    <h3>TEAC 859</h3>
-                    <p class="course-title">Designing Learning Experiences</p>
-                    <p class="course-description">
-                        A selection of artifacts from this class exploring course concepts and reflections on learning.
-                    </p>
-                    <a href="teac859.html" class="course-link">View Course</a>
-                </div>
+            <div class="course-card">
+                <h3>TEAC 259A</h3>
+                <p class="course-title">Instructional Technology in Elementary Schools</p>
+                <p class="course-description">
+                    Artifacts from my practicum work for TEAC 905 assisting with this class in Fall 2025, focusing on elementary education technology integration.
+                </p>
+                <a href="teac259a.html" class="course-link">View Course</a>
+            </div>
 
-                <div class="course-card">
-                    <h3>TEAC 259A</h3>
-                    <p class="course-title">Instructional Technology in Elementary Schools</p>
-                    <p class="course-description">
-                        Artifacts from my practicum work for TEAC 905 assisting with this class in Fall 2025.
-                    </p>
-                    <a href="teac259a.html" class="course-link">View Course</a>
-                </div>
-
-                <div class="course-card">
-                    <h3>TEAC 995</h3>
-                    <p class="course-title">Doctoral Seminar</p>
-                    <p class="course-description">
-                        Extending work from EDPS 935, a pilot study conducted at an alternative school within a smaller district within
-                        a larger metro area in the Midwest.
-                    </p>
-                    <a href="teac995.html" class="course-link">View Course</a>
-                </div>
+            <div class="course-card">
+                <h3>TEAC 995</h3>
+                <p class="course-title">Doctoral Seminar</p>
+                <p class="course-description">
+                    Extending work from EDPS 935, a pilot study conducted at an alternative school within a smaller district in a larger metro area in the Midwest.
+                </p>
+                <a href="teac995.html" class="course-link">View Course</a>
             </div>
         </div>
     </main>
@@ -91,7 +386,7 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a> | Created for Educational Purposes</p>
-            <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+            <p class="footer-secondary">
                 Teaching and Educational Administration Program
             </p>
         </div>
