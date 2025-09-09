@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNL PhD Coursework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .navigation {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-list a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-list a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-list a.active {
+            background: #495057;
+            color: white;
+        }
+
+        .main-content {
+            padding: 3rem 0;
+            min-height: 60vh;
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .intro-section h2 {
+            color: #495057;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .intro-section p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .course-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .course-card h3 {
+            color: #495057;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .course-title {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .course-description {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .course-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .course-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .course-link.coming-soon {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .course-link.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-list {
+                gap: 1rem;
+            }
+
+            .nav-list a {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .course-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>UNL PhD Coursework</h1>
+                <p class="subtitle">Working towords a PhD in Educational Studies</p>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navigation">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/experience.html">Experience</a></li>
+                <li><a href="/publications.html">Publications</a></li>
+                <li><a href="/activities.html">Activities</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="intro-section">
+                <h2>Course Artifacts</h2>
+                <p>
+                    Welcome to my collection of TEAC course pages and projects. These pages document my journey through 
+                    my PhD program in prusuit of a degree in Educational Studies with a focus on Innovative Learning Teachnologies 
+                    and a certificate in Mixed Methods Research. Below is a selection of my coursework showcasing, research, and practical 
+                    applications of educational philosophy. Each course represents a significant component 
+                    of my professional development in educational studies and reserach methodologies.
+                </p>
+            </section>
+
+            <div class="courses-grid">
+                <div class="course-card">
+                    <h3>TEAC 860</h3>
+                    <p class="course-title">Production and Utilization of Instructional Materials</p>
+                    <p class="course-description">
+                      View my capstone project focused on AI integration in educational contexts.
+                    </p>
+                    <a href="teac860cap.html" class="course-link coming-soon">Coming Soon</a>
+                </div>
+
+                <div class="course-card">
+                    <h3>TEAC 859</h3>
+                    <p class="course-title">Designing Learning Experiences</p>
+                    <p class="course-description">
+                        A selection of artifacts from this class exploring course concepts and reflections on learning.
+                    </p>
+                    <a href="teac859.html" class="course-link coming-soon">Coming Soon</a>
+                </div>
+
+                <div class="course-card">
+                    <h3>TEAC 259</h3>
+                    <p class="course-title">Introduction to Educational Administration</p>
+                    <p class="course-description">
+                        Foundational course introducing principles of educational administration, organizational theory, 
+                        and leadership in educational contexts. Emphasis on practical application and case studies.
+                    </p>
+                    <a href="teac259.html" class="course-link">View Course</a>
+                </div>
+
+                <div class="course-card">
+                    <h3>TEAC 995</h3>
+                    <p class="course-title">Doctoral Seminar</p>
+                    <p class="course-description">
+                        Extending work from EDPS 935, a pilot study conducted at an alternative school within a smaller district within
+                        a larger metro area in the Midwest.
+                    </p>
+                    <a href="teac995.html" class="course-link coming-soon">Coming Soon</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a> | Created for Educational Purposes</p>
+            <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+                Teaching and Educational Administration Program
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
