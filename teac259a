@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAC 259A - Course Materials</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .embed-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            margin: 1rem 0;
+        }
+
+        .slides-container {
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+
+        .video-container {
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .chat-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .chat-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .chat-content {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .user-message {
+            color: #0066cc;
+            font-weight: bold;
+        }
+
+        .assistant-message {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .description {
+            margin-bottom: 1.5rem;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TEAC 259A</h1>
+            <p class="subtitle">Course Materials & Resources | TEAC 905 Practicum</p>
+        </header>
+
+        <div class="content-section">
+            <h2>Course Introduction Video</h2>
+            <p class="description">
+                Welcome to TEAC 259A! Please watch this introduction video to get started with the course.
+            </p>
+            <div class="embed-container video-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/98C8G5wBgTE" 
+                    title="TEAC 259A Introduction Video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Get To Know Me A Little More!</h2>
+            <p class="description">
+                Navigate around the slide below. You can interact with the presentation directly - there are some easter eggs if you poke around!
+            </p>
+            <div class="embed-container slides-container">
+                <iframe 
+                    src="https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/embed?start=false&loop=false&delayms=3000" 
+                    title="TEAC 259A Course Presentation"
+                    allowfullscreen="true" 
+                    mozallowfullscreen="true" 
+                    webkitallowfullscreen="true">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Page Creation Process</h2>
+            <p class="description">
+                This section shows the conversation with Claude AI used to create this webpage, demonstrating the collaborative process between instructor and AI assistant.
+            </p>
+            
+            <div class="chat-section">
+                <div class="chat-header">Chat Conversation:</div>
+                <div class="chat-content">
+                    <div class="user-message">
+                        👤 User: Hey-o! I would love you to make a page for my servellon.net website that I can share with students for TEAC 259A that I am helping with for my practicum TEAC 905. Please embed the following slide deck (https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing) so that students can interact with it directly on the page and please also include the following video introduction I recorded for them (https://youtu.be/98C8G5wBgTE). Additionally, I would like a small space below dedicated to displaying this chat used to create the page.
+                    </div>
+                    <div class="assistant-message">
+                        🤖 Claude: I'll create a professional educational webpage for your TEAC 259A students that includes the embedded presentation, video, and chat display. The page features a clean, responsive design with proper embedding of your Google Slides presentation and YouTube video, along with this conversation shown in a dedicated section.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 4rem; padding: 3rem 2rem; color: #95a5a6; border-top: 1px solid #ecf0f1; background: #fafafa;">
+            <p style="font-size: 0.95rem; margin-bottom: 0.5rem;">Created for TEAC 259A | Practicum TEAC 905 | servellon.net</p>
+            <p style="font-size: 0.85rem; color: #bdc3c7;">Page generated with AI assistance</p>
+        </footer>
+    </div>
+</body>
+</html>
