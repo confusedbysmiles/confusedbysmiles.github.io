@@ -4,104 +4,488 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presentations & Publications - Sam Servellon</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+            flex: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 2rem;
+            color: #333;
+            margin: 3rem 0 2rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        /* Conference Presentations */
+        .presentations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .presentation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .presentation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .presentation-date {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .presentation-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .presentation-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Research Projects */
+        .research-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .research-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #764ba2;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .research-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .research-title {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .research-description {
+            color: #555;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .research-status {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Publications Section */
+        .publications-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .publication-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .publication-item:last-child {
+            border-bottom: none;
+        }
+
+        .publication-item:first-child {
+            padding-top: 0;
+        }
+
+        .pub-authors {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .pub-title {
+            font-size: 1.1rem;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+            font-style: italic;
+        }
+
+        .pub-venue {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .presentations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .presentation-card,
+        .research-card,
+        .publications-section {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .presentation-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .presentation-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .presentation-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .research-card:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .research-card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .research-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
             </div>
         </div>
     </header>
-    
+
     <nav class="main-nav">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="experience.html">Experience & Education</a></li>
-                <li><a href="publications.html" class="active">Presentations & Publications</a></li>
-                <li><a href="activities.html">Activities & Certifications</a></li>
-                <li><a href="classes.html" class="active">Classes</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/experience.html">Experience & Education</a></li>
+                <li><a href="/publications.html" class="active">Publications</a></li>
+                <li><a href="/activities.html">Activities</a></li>
+                <li><a href="/classes.html">Classes</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
             </ul>
         </div>
     </nav>
-    
+
     <main class="container">
         <div class="page-header">
-            <h2 class="page-title">Presentations & Publications</h2>
+            <h1 class="page-title">Presentations & Publications</h1>
         </div>
-        
-        <section id="presentations" class="section">
-            <h2 class="section-title">Conference Presentations</h2>
-            <div class="publication-list">
-                <div class="publication-item">
-                    <h3>AI and ChatGPT in Education</h3>
-                    <p class="publication-meta">Workshop presented at Let's Chat about GPT, University of Nebraska - Lincoln</p>
-                    <p class="publication-authors">Olmanson, J. & Servellon, S.</p>
-                    <p class="publication-date">May 5, 2023</p>
-                    <div class="publication-content">
-                        <p>Workshop exploring the applications and implications of AI tools like ChatGPT in educational contexts.</p>
-                    </div>
-                </div>
-                
-                <div class="publication-item">
-                    <h3>Concentric Circles</h3>
-                    <p class="publication-meta">Presented at Nebraska Mental Health Schools Conference</p>
-                    <p class="publication-authors">Servellon, S.</p>
-                    <p class="publication-date">2020</p>
-                </div>
-                
-                <div class="publication-item">
-                    <h3>NE STEM 4U: A pre-professional training program for undergraduates through teaching, research, and mentorship with a focus on pre-service teacher training</h3>
-                    <p class="publication-meta">Presented at International Symposium on New Issues in Teacher Education</p>
-                    <p class="publication-date">2016</p>
-                </div>
+
+        <h2 class="section-header">Conference Presentations</h2>
+
+        <div class="presentations-grid">
+            <div class="presentation-card">
+                <div class="presentation-date">May 5, 2023</div>
+                <h3 class="presentation-title">AI and ChatGPT in Education</h3>
+                <p class="presentation-description">
+                    Workshop exploring the applications and implications of AI tools like ChatGPT in educational contexts, focusing on practical implementation strategies and ethical considerations.
+                </p>
             </div>
-        </section>
-        
-        <section id="ongoing-research" class="section">
-            <h2 class="section-title">Current Research Projects</h2>
-            <div class="research-projects">
-                <div class="project-item">
-                    <h3>Innovative Learning Technologies in Post-Pandemic Education</h3>
-                    <p>Examining how technology adoption accelerated during the pandemic has transformed educational practices and created opportunities for more inclusive learning environments.</p>
-                </div>
-                
-                <div class="project-item">
-                    <h3>Mixed Methods Approaches to Evaluating EdTech Implementation</h3>
-                    <p>Developing frameworks for assessing educational technology effectiveness through combined quantitative and qualitative analysis.</p>
-                </div>
-                
-                <div class="project-item">
-                    <h3>AI in the Classroom: Ethical Considerations and Practical Applications</h3>
-                    <p>Investigating the responsible integration of artificial intelligence tools in K-12 and higher education settings.</p>
-                </div>
+
+            <div class="presentation-card">
+                <div class="presentation-date">2020</div>
+                <h3 class="presentation-title">Concentric Circles</h3>
+                <p class="presentation-description">
+                    Presentation on innovative pedagogical approaches using concentric circle methodology for collaborative learning and knowledge construction.
+                </p>
             </div>
-        </section>
+
+            <div class="presentation-card">
+                <div class="presentation-date">2016</div>
+                <h3 class="presentation-title">NE STEM 4U</h3>
+                <p class="presentation-description">
+                    A pre-professional training program for undergraduates through teaching, research, and mentorship with a focus on pre-service teacher training in STEM education.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-header">Current Research Projects</h2>
+
+        <div class="research-grid">
+            <div class="research-card">
+                <h3 class="research-title">Innovative Learning Technologies in Post-Pandemic Education</h3>
+                <p class="research-description">
+                    Examining how technology adoption accelerated during the pandemic has transformed educational practices and created opportunities for more inclusive learning environments. This research explores the lasting impacts of rapid digital transformation on teaching methodologies and student engagement.
+                </p>
+                <span class="research-status">In Progress</span>
+            </div>
+
+            <div class="research-card">
+                <h3 class="research-title">Mixed Methods Approaches to Evaluating EdTech Implementation</h3>
+                <p class="research-description">
+                    Developing comprehensive frameworks for assessing educational technology effectiveness through combined quantitative and qualitative analysis. This project aims to create practical evaluation tools for educators and administrators to measure the impact of technology initiatives.
+                </p>
+                <span class="research-status">In Progress</span>
+            </div>
+
+            <div class="research-card">
+                <h3 class="research-title">AI in the Classroom: Ethical Considerations and Practical Applications</h3>
+                <p class="research-description">
+                    Investigating the responsible integration of artificial intelligence tools in K-12 and higher education settings. This research focuses on developing guidelines for ethical AI use, addressing concerns about academic integrity, and exploring innovative pedagogical applications.
+                </p>
+                <span class="research-status">In Progress</span>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3 class="cta-title">Collaboration Opportunities</h3>
+            <p class="cta-text">
+                I'm always interested in collaborating on research projects related to educational technology, 
+                innovative learning design, and mixed methods research. Feel free to reach out to discuss potential partnerships.
+            </p>
+            <a href="mailto:sam@servellon.net" class="cta-button">Get in Touch</a>
+        </div>
     </main>
-    
+
     <footer class="footer">
         <div class="container">
-            <h3>Contact Information</h3>
-            <div class="contact-links">
-                <a href="mailto:sebservellon@gmail.com" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    sebservellon@gmail.com
-                </a>
-                <a href="sms:4023505157" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Text Message
-                </a>
-            </div>
-            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
+            <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a></p>
+            <p style="margin-top: 0.5rem;">
+                <a href="mailto:sam@servellon.net">sam@servellon.net</a> | 
+                Educational Studies PhD Student | University of Nebraska-Lincoln
+            </p>
         </div>
     </footer>
 </body>
