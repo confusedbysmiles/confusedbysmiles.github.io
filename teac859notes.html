@@ -311,7 +311,13 @@
 
     function displayFiles(weekData) {
       fileList.innerHTML = '';
-      weekSubheader.textContent = `${weekData.folderName} (${weekData.start} → ${weekData.end})`;
+    function formatDate(dateStr) {
+      const options = { month: 'short', day: 'numeric' };
+      return new Date(dateStr).toLocaleDateString(undefined, options);
+    }
+    
+    weekSubheader.textContent = `${weekData.folderName} (${formatDate(weekData.start)} – ${formatDate(weekData.end)})`;
+      
       if (weekData.files.length === 0) {
         fileList.innerHTML = '<div style="padding:1rem;color:#999;text-align:center;">No files available</div>';
         resetViewer();
