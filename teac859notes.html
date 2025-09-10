@@ -206,7 +206,6 @@
     <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
   </footer>
   <script>
-    
 const weeklyMaterials = {
   week1: {
     folderName: "Week 1: Knowledge Work, Learning, & Design",
@@ -215,6 +214,7 @@ const weeklyMaterials = {
     files: [
       {
         name: "Week 1 Slides",
+        icon: "📊",
         url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/embed?start=false&loop=false&delayms=3000"
       }
     ]
@@ -224,6 +224,11 @@ const weeklyMaterials = {
     start: "2025-08-29",
     end: "2025-09-04",
     files: [
+      {
+        name: "Week 2 Overview.pdf",
+        icon: "📄",
+        url: "https://drive.google.com/file/d/1s6Lo43wlg5BbN06gVwqY1EoOCFQZ6A4G/preview"
+      },
       {
         name: "Week 2 Slides",
         icon: "📑",
@@ -254,7 +259,7 @@ const weeklyMaterials = {
     ]
   },
   week4: {
-    folderName: "Week 4: Epistemology Ontology, and HCD",
+    folderName: "Week 4: Epistemology, Ontology, and HCD",
     start: "2025-09-12",
     end: "2025-09-18",
     files: [
@@ -288,7 +293,6 @@ const weeklyMaterials = {
   week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
   week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
 };
-
     const weekSelect = document.getElementById('weekSelect');
     const fileList = document.getElementById('fileList');
     const embedContainer = document.getElementById('embedContainer');
