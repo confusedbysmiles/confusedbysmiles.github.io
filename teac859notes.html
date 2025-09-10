@@ -21,23 +21,24 @@
             flex-direction: column;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Full width container for header and nav */
+        .full-width-container {
+            width: 100%;
         }
 
         /* Header Styles */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem 0;
+            padding: 2rem;
         }
 
         .profile-container {
             display: flex;
             align-items: center;
             gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .profile-image {
@@ -71,6 +72,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            padding: 0 2rem;
         }
 
         .nav-links {
@@ -79,6 +81,8 @@
             gap: 2rem;
             padding: 1rem 0;
             flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .nav-links a {
@@ -97,8 +101,8 @@
         /* Page Title */
         .page-header {
             background: white;
-            padding: 2rem;
-            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             text-align: center;
@@ -115,26 +119,30 @@
             font-size: 1.1rem;
         }
 
-        /* Main Layout */
+        /* Main Layout - Full Width */
         .content-wrapper {
             display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            min-height: 600px;
+            gap: 1.5rem;
+            padding: 0 2rem 2rem;
+            flex: 1;
+            height: calc(100vh - 300px); /* Adjust based on header/nav height */
         }
 
-        /* Left Sidebar */
+        /* Left Sidebar - 20% width */
         .sidebar {
-            width: 350px;
+            width: 20%;
+            min-width: 250px;
             background: white;
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .week-selector {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .week-selector label {
@@ -167,7 +175,10 @@
 
         /* File List */
         .file-list-container {
-            margin-top: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .file-list-header {
@@ -179,7 +190,7 @@
         }
 
         .file-list {
-            max-height: 400px;
+            flex: 1;
             overflow-y: auto;
         }
 
@@ -215,9 +226,10 @@
             flex: 1;
             color: #333;
             font-size: 0.95rem;
+            word-break: break-word;
         }
 
-        /* Content Viewer */
+        /* Content Viewer - 80% width */
         .content-viewer {
             flex: 1;
             background: white;
@@ -226,6 +238,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
 
         .viewer-header {
@@ -243,7 +256,7 @@
         .viewer-content {
             flex: 1;
             position: relative;
-            min-height: 500px;
+            overflow: hidden;
         }
 
         .embed-container {
@@ -316,8 +329,7 @@
         .footer {
             background: #2c3e50;
             color: white;
-            padding: 2rem 0;
-            margin-top: auto;
+            padding: 2rem;
             text-align: center;
         }
 
@@ -327,17 +339,20 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 968px) {
+        @media (max-width: 1024px) {
             .content-wrapper {
                 flex-direction: column;
+                height: auto;
             }
 
             .sidebar {
                 width: 100%;
+                height: auto;
+                max-height: 400px;
             }
 
             .content-viewer {
-                min-height: 500px;
+                min-height: 600px;
             }
         }
 
@@ -362,91 +377,83 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="profile-container">
-                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
-                <div class="profile-info">
-                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                    <p>PhD Student in Educational Studies</p>
-                </div>
+    <header class="header full-width-container">
+        <div class="profile-container">
+            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+            <div class="profile-info">
+                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                <p>PhD Student in Educational Studies</p>
             </div>
         </div>
     </header>
     
-    <nav class="main-nav">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="experience.html">Experience & Education</a></li>
-                <li><a href="publications.html">Presentations & Publications</a></li>
-                <li><a href="activities.html">Activities & Certifications</a></li>
-                <li><a href="classes.html" class="active">Classes</a></li>
-            </ul>
-        </div>
+    <nav class="main-nav full-width-container">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="experience.html">Experience & Education</a></li>
+            <li><a href="publications.html">Presentations & Publications</a></li>
+            <li><a href="activities.html">Activities & Certifications</a></li>
+            <li><a href="classes.html" class="active">Classes</a></li>
+        </ul>
     </nav>
 
-    <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">TEAC 859: Designing Learning Experiences</h1>
-            <p class="page-subtitle">Weekly Notes & Reflections</p>
-        </div>
+    <div class="page-header">
+        <h1 class="page-title">TEAC 859: Designing Learning Experiences</h1>
+        <p class="page-subtitle">Weekly Notes & Reflections</p>
+    </div>
 
-        <div class="content-wrapper">
-            <!-- Left Sidebar -->
-            <div class="sidebar">
-                <div class="week-selector">
-                    <label for="weekSelect">Select Week:</label>
-                    <select id="weekSelect" class="week-dropdown">
-                        <option value="">Choose a week...</option>
-                        <option value="week2">Week 2</option>
-                        <option value="week3">Week 3</option>
-                        <option value="week4">Week 4</option>
-                        <option value="week5">Week 5</option>
-                        <option value="week6">Week 6</option>
-                        <option value="week7">Week 7</option>
-                        <option value="week8">Week 8</option>
-                        <option value="week9">Week 9</option>
-                        <option value="week10">Week 10</option>
-                        <option value="week11">Week 11</option>
-                        <option value="week12">Week 12</option>
-                        <option value="week13">Week 13</option>
-                        <option value="week14">Week 14</option>
-                        <option value="week15">Week 15</option>
-                    </select>
-                </div>
-
-                <div class="file-list-container">
-                    <div class="file-list-header">Files & Resources</div>
-                    <div id="fileList" class="file-list">
-                        <!-- Files will be populated here -->
-                    </div>
-                </div>
+    <div class="content-wrapper">
+        <!-- Left Sidebar - 20% -->
+        <div class="sidebar">
+            <div class="week-selector">
+                <label for="weekSelect">Select Week:</label>
+                <select id="weekSelect" class="week-dropdown">
+                    <option value="">Choose a week...</option>
+                    <option value="week2">Week 2</option>
+                    <option value="week3">Week 3</option>
+                    <option value="week4">Week 4</option>
+                    <option value="week5">Week 5</option>
+                    <option value="week6">Week 6</option>
+                    <option value="week7">Week 7</option>
+                    <option value="week8">Week 8</option>
+                    <option value="week9">Week 9</option>
+                    <option value="week10">Week 10</option>
+                    <option value="week11">Week 11</option>
+                    <option value="week12">Week 12</option>
+                    <option value="week13">Week 13</option>
+                    <option value="week14">Week 14</option>
+                    <option value="week15">Week 15</option>
+                </select>
             </div>
 
-            <!-- Right Content Viewer -->
-            <div class="content-viewer">
-                <div class="viewer-header">
-                    <div id="viewerTitle" class="viewer-title">Document Viewer</div>
+            <div class="file-list-container">
+                <div class="file-list-header">Files & Resources</div>
+                <div id="fileList" class="file-list">
+                    <!-- Files will be populated here -->
                 </div>
-                <div class="viewer-content">
-                    <div id="embedContainer" class="embed-container">
-                        <div class="empty-state">
-                            <div class="empty-icon">📁</div>
-                            <div class="empty-text">No Document Selected</div>
-                            <div class="empty-subtext">Select a week and choose a file to view</div>
-                        </div>
+            </div>
+        </div>
+
+        <!-- Right Content Viewer - 80% -->
+        <div class="content-viewer">
+            <div class="viewer-header">
+                <div id="viewerTitle" class="viewer-title">Document Viewer</div>
+            </div>
+            <div class="viewer-content">
+                <div id="embedContainer" class="embed-container">
+                    <div class="empty-state">
+                        <div class="empty-icon">📁</div>
+                        <div class="empty-text">No Document Selected</div>
+                        <div class="empty-subtext">Select a week and choose a file to view</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a></p>
-            <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
-        </div>
+    <footer class="footer full-width-container">
+        <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a></p>
+        <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
     </footer>
 
     <script>
