@@ -206,46 +206,87 @@
     <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
   </footer>
   <script>
-    const weeklyMaterials = {
-      week1: {
-        folderName: "Week 1: Knowledge Work, Learning, & Design",
-        start: "2025-08-21",
-        end: "2025-08-28",
-        files: [
-          { name: "Week 1 Slides", icon: "📄", url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/embed?start=false&loop=false&delayms=3000" }
-        ]
+    
+const weeklyMaterials = {
+  week1: {
+    folderName: "Week 1: Knowledge Work, Learning, & Design",
+    start: "2025-08-21",
+    end: "2025-08-28",
+    files: [
+      {
+        name: "Week 1 Slides",
+        url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/embed?start=false&loop=false&delayms=3000"
+      }
+    ]
+  },
+  week2: {
+    folderName: "Week 2: Rhizome, Weak Theory, Math, and Speculative Design",
+    start: "2025-08-29",
+    end: "2025-09-04",
+    files: [
+      {
+        name: "Week 2 Slides",
+        url: "https://docs.google.com/presentation/d/1nQT7JYMuRVYSdb2IZ5Xr-6svKJhAt9F8SzCjqjsYwR0/embed?start=false&loop=false&delayms=3000"
+      }
+    ]
+  },
+  week3: {
+    folderName: "Week 3: Decentering Education",
+    start: "2025-09-05",
+    end: "2025-09-11",
+    files: [
+      {
+        name: "Week 3 Slides",
+        icon: "📊",
+        url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000"
       },
-      week2: {
-        folderName: "Week 2: Rhizome, Weak Theory, Math, and Speculative Design",
-        start: "2025-08-29",
-        end: "2025-09-04",
-        files: [
-          { name: "Week 2 Overview.pdf", icon: "📄", url: "https://drive.google.com/file/d/1s6Lo43wlg5BbN06gVwqY1EoOCFQZ6A4G/embed?start=false&loop=false&delayms=3000" }
-        ]
+      {
+        name: "Claude Reading Work.docx",
+        icon: "📑",
+        url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview"
       },
-      week3: {
-        folderName: "Week 3: Decentering Education",
-        start: "2025-09-05",
-        end: "2025-09-11",
-        files: [
-          { name: "Week 3 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000" },
-          { name: "Claude Reading Work.docx", icon: "📑", url: "https://docs.google.com/document/d/1sICHHmyyV9IlKjMTD-pj7yFsU2GNARGB/preview" },
-          { name: "Week 3 Notes & Reflection.pdf", icon: "📘", url: "https://drive.google.com/file/d/13PZ96y0TmZx_UkcOd9RqIVME1Sho54fk/preview" }
-        ]
-      },
-      week4: { folderName: "Week 4: Epistemology Ontology, and HCD", start: "2025-09-12", end: "2025-09-18", files: [] },
-      week5: { folderName: "Week 5: Curriculum Theory", start: "2025-09-19", end: "2025-09-25", files: [] },
-      week6: { folderName: "Week 6", start: "2025-09-26", end: "2025-10-02", files: [] },
-      week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
-      week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
-      week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
-      week10: { folderName: "Week 10", start: "2025-10-24", end: "2025-10-30", files: [] },
-      week11: { folderName: "Week 11", start: "2025-10-31", end: "2025-11-06", files: [] },
-      week12: { folderName: "Week 12", start: "2025-11-07", end: "2025-11-13", files: [] },
-      week13: { folderName: "Week 13", start: "2025-11-14", end: "2025-11-20", files: [] },
-      week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
-      week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
-    };
+      {
+        name: "Additional Reading.pdf",
+        icon: "📘",
+        url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview"
+      }
+    ]
+  },
+  week4: {
+    folderName: "Week 4: Epistemology Ontology, and HCD",
+    start: "2025-09-12",
+    end: "2025-09-18",
+    files: [
+      {
+        name: "Week 4 Reading.docx",
+        icon: "📑",
+        url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview"
+      }
+    ]
+  },
+  week5: {
+    folderName: "Week 5: Curriculum Theory",
+    start: "2025-09-19",
+    end: "2025-09-25",
+    files: [
+      {
+        name: "Week 5 Resources.pdf",
+        icon: "📂",
+        url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview"
+      }
+    ]
+  },
+  week6: { folderName: "Week 6", start: "2025-09-26", end: "2025-10-02", files: [] },
+  week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
+  week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
+  week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
+  week10: { folderName: "Week 10", start: "2025-10-24", end: "2025-10-30", files: [] },
+  week11: { folderName: "Week 11", start: "2025-10-31", end: "2025-11-06", files: [] },
+  week12: { folderName: "Week 12", start: "2025-11-07", end: "2025-11-13", files: [] },
+  week13: { folderName: "Week 13", start: "2025-11-14", end: "2025-11-20", files: [] },
+  week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
+  week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
+};
 
     const weekSelect = document.getElementById('weekSelect');
     const fileList = document.getElementById('fileList');
