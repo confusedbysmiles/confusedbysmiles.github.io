@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TEAC 859 Notes & Reflections - Sam Servellon</title>
   <style>
-    /* --- Base site-wide styles --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -18,7 +17,6 @@
     .header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white; padding: 2rem;
-      animation: fadeDown 1s ease;
     }
     .profile-container { display: flex; align-items: center; gap: 2rem; max-width: 1400px; margin: 0 auto; }
     .profile-image { width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; object-fit: cover; }
@@ -27,103 +25,59 @@
     .profile-info p { font-size: 1.1rem; opacity: 0.95; }
 
     /* Nav */
-    .main-nav {
-      background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: sticky; top: 0; z-index: 100; padding: 0 2rem;
-      animation: fadeDown 1s ease 0.3s both;
-    }
+    .main-nav { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; padding: 0 2rem; }
     .nav-links { list-style: none; display: flex; gap: 2rem; padding: 1rem 0; flex-wrap: wrap; max-width: 1400px; margin: 0 auto; }
     .nav-links a { color: #666; text-decoration: none; font-weight: 500; transition: color 0.3s; padding: 0.5rem 0; }
     .nav-links a:hover, .nav-links a.active { color: #667eea; }
 
     /* Page header */
-    .page-header {
-      background: white; padding: 1.5rem 2rem; margin: 1.5rem 2rem;
-      border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center; animation: fadeUp 1s ease 0.6s both;
-    }
+    .page-header { background: white; padding: 1.5rem 2rem; margin: 1.5rem 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
     .page-title { font-size: 2rem; color: #333; margin-bottom: 0.5rem; }
     .page-subtitle { color: #666; font-size: 1.1rem; }
 
     /* Layout */
     .content-wrapper { display: flex; gap: 1.5rem; padding: 0 2rem 2rem; flex: 1; height: calc(100vh - 300px); }
-    .sidebar {
-      width: 20%; min-width: 250px; background: white; border-radius: 8px;
-      padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex; flex-direction: column; height: 100%;
-      animation: fadeRight 1s ease 0.9s both;
-    }
+    .sidebar { width: 20%; min-width: 250px; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 100%; }
 
     /* Week selector */
     .week-selector { margin-bottom: 1.5rem; }
     .week-selector label { display: block; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
-    .week-dropdown {
-      width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0;
-      border-radius: 6px; font-size: 1rem; background: white;
-      cursor: pointer; transition: all 0.3s;
-    }
+    .week-dropdown { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; background: white; cursor: pointer; transition: all 0.3s; }
     .week-dropdown:hover { border-color: #667eea; }
     .week-dropdown:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
 
     /* File list */
     .file-list-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .file-list-header { font-weight: 600; color: #333; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #667eea; }
-    .file-list { flex: 1; overflow-y: auto; opacity: 0; animation: fadeIn 0.8s ease forwards; }
-    .file-item {
-      padding: 0.75rem; margin-bottom: 0.5rem; background: #f8f9fa;
-      border-radius: 6px; cursor: pointer; border-left: 3px solid transparent;
-      display: flex; align-items: center; gap: 0.75rem;
-      transition: all 0.3s ease, transform 0.2s ease;
-    }
-    .file-item:hover { background: #e8ecff; border-left-color: #667eea; transform: translateX(4px) scale(1.02); }
+    .file-list { flex: 1; overflow-y: auto; }
+    .file-item { padding: 0.75rem; margin-bottom: 0.5rem; background: #f8f9fa; border-radius: 6px; cursor: pointer; border-left: 3px solid transparent; display: flex; align-items: center; gap: 0.75rem; transition: all 0.3s ease; }
+    .file-item:hover { background: #e8ecff; border-left-color: #667eea; transform: translateX(4px); }
     .file-item.active { background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%); border-left-color: #667eea; }
     .file-icon { font-size: 1.25rem; }
     .file-name { flex: 1; color: #333; font-size: 0.95rem; word-break: break-word; }
 
     /* Viewer */
-    .content-viewer {
-      flex: 1; background: white; border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden; display: flex; flex-direction: column; height: 100%;
-      animation: fadeLeft 1s ease 0.9s both;
-    }
-    .viewer-header {
-      padding: 1.5rem; background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
-      border-bottom: 1px solid #e0e0e0;
-    }
+    .content-viewer { flex: 1; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 100%; }
+    .viewer-header { padding: 1.5rem; background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%); border-bottom: 1px solid #e0e0e0; }
     .viewer-title { font-size: 1.25rem; color: #333; font-weight: 600; }
     .viewer-content { flex: 1; position: relative; overflow: hidden; }
-    .embed-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.6s ease; }
-    .embed-container.active { opacity: 1; }
+    .embed-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transition: opacity 0.6s ease; opacity: 1; }
     .embed-container iframe { width: 100%; height: 100%; border: none; }
 
     /* Empty + loading states */
-    .empty-state, .loading {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100%; text-align: center; opacity: 0; animation: fadeIn 0.8s ease forwards;
-    }
+    .empty-state, .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
     .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; }
     .empty-text { font-size: 1.1rem; margin-bottom: 0.5rem; color: #666; }
     .empty-subtext { font-size: 0.95rem; color: #aaa; }
-    .spinner {
-      border: 3px solid #f3f3f3; border-top: 3px solid #667eea;
-      border-radius: 50%; width: 40px; height: 40px;
-      animation: spin 1s linear infinite; margin-bottom: 1rem;
-    }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 1rem; }
 
     /* Footer */
     .footer { background: #2c3e50; color: white; padding: 2rem; text-align: center; }
     .footer a { color: #667eea; text-decoration: none; }
 
     /* Animations */
-    @keyframes fadeDown { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
-    @keyframes fadeUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
-    @keyframes fadeRight { from {opacity:0; transform: translateX(-20px);} to {opacity:1; transform: translateX(0);} }
-    @keyframes fadeLeft { from {opacity:0; transform: translateX(20px);} to {opacity:1; transform: translateX(0);} }
-    @keyframes fadeIn { to {opacity:1;} }
     @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
 
-    /* Responsive */
     @media (max-width: 1024px) {
       .content-wrapper { flex-direction: column; height: auto; }
       .sidebar { width: 100%; height: auto; max-height: 400px; }
@@ -191,7 +145,7 @@
         <div id="viewerTitle" class="viewer-title">Document Viewer</div>
       </div>
       <div class="viewer-content">
-        <div id="embedContainer" class="embed-container active">
+        <div id="embedContainer" class="embed-container">
           <div class="empty-state">
             <div class="empty-icon">📁</div>
             <div class="empty-text">No Document Selected</div>
@@ -206,88 +160,48 @@
     <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
   </footer>
   <script>
-const weeklyMaterials = {
-  week1: {
-    folderName: "Week 1: Knowledge Work, Learning, & Design",
-    start: "2025-08-21",
-    end: "2025-08-28",
-    files: [
-      {
-        name: "Week 1 Slides",
-        icon: "📑",
-        url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/embed?start=false&loop=false&delayms=3000"
-      }
-    ]
-  },
-  week2: {
-    folderName: "Week 2: Rhizome, Weak Theory, Math, and Speculative Design",
-    start: "2025-08-29",
-    end: "2025-09-04",
-    files: [
-      {
-        name: "Week 2 Slides",
-        icon: "📑",
-        url: "https://docs.google.com/presentation/d/1nQT7JYMuRVYSdb2IZ5Xr-6svKJhAt9F8SzCjqjsYwR0/embed?start=false&loop=false&delayms=3000"
-      }
-    ]
-  },
-  week3: {
-    folderName: "Week 3: Decentering Education",
-    start: "2025-09-05",
-    end: "2025-09-11",
-    files: [
-      {
-        name: "Week 3 Slides",
-        icon: "📊",
-        url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000"
+    const weeklyMaterials = {
+      week1: {
+        folderName: "Week 1: Knowledge Work, Learning, & Design",
+        start: "2025-08-21",
+        end: "2025-08-28",
+        files: [
+          { name: "Week 1 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/embed?start=false&loop=false&delayms=3000" }
+        ]
       },
-      {
-        name: "Claude Reading Work.docx",
-        icon: "📑",
-        url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview"
+      week2: {
+        folderName: "Week 2: Rhizome, Weak Theory, Math, and Speculative Design",
+        start: "2025-08-29",
+        end: "2025-09-04",
+        files: [
+          { name: "Week 2 Overview.pdf", icon: "📄", url: "https://drive.google.com/file/d/1s6Lo43wlg5BbN06gVwqY1EoOCFQZ6A4G/preview" },
+          { name: "Week 2 Slides", icon: "📑", url: "https://docs.google.com/presentation/d/1nQT7JYMuRVYSdb2IZ5Xr-6svKJhAt9F8SzCjqjsYwR0/embed?start=false&loop=false&delayms=3000" }
+        ]
       },
-      {
-        name: "Additional Reading.pdf",
-        icon: "📘",
-        url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview"
-      }
-    ]
-  },
-  week4: {
-    folderName: "Week 4: Epistemology, Ontology, and HCD",
-    start: "2025-09-12",
-    end: "2025-09-18",
-    files: [
-      {
-        name: "Week 4 Reading.docx",
-        icon: "📑",
-        url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview"
-      }
-    ]
-  },
-  week5: {
-    folderName: "Week 5: Curriculum Theory",
-    start: "2025-09-19",
-    end: "2025-09-25",
-    files: [
-      {
-        name: "Week 5 Resources.pdf",
-        icon: "📂",
-        url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview"
-      }
-    ]
-  },
-  week6: { folderName: "Week 6", start: "2025-09-26", end: "2025-10-02", files: [] },
-  week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
-  week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
-  week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
-  week10: { folderName: "Week 10", start: "2025-10-24", end: "2025-10-30", files: [] },
-  week11: { folderName: "Week 11", start: "2025-10-31", end: "2025-11-06", files: [] },
-  week12: { folderName: "Week 12", start: "2025-11-07", end: "2025-11-13", files: [] },
-  week13: { folderName: "Week 13", start: "2025-11-14", end: "2025-11-20", files: [] },
-  week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
-  week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
-};
+      week3: {
+        folderName: "Week 3: Decentering Education",
+        start: "2025-09-05",
+        end: "2025-09-11",
+        files: [
+          { name: "Week 3 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000" },
+          { name: "Claude Reading Work.docx", icon: "📑", url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview" },
+          { name: "Additional Reading.pdf", icon: "📘", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" }
+        ]
+      },
+      week4: { folderName: "Week 4: Epistemology, Ontology, and HCD", start: "2025-09-12", end: "2025-09-18", files: [{ name: "Week 4 Reading.docx", icon: "📑", url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview" }] },
+      week5: { folderName: "Week 5: Curriculum Theory", start: "2025-09-19", end: "2025-09-25", files: [{ name: "Week 5 Resources.pdf", icon: "📂", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" }] },
+      week6: { folderName: "Week 6", start: "2025-09-26", end: "2025-10-02", files: [] },
+      week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
+      week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
+      week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
+      week10: { folderName: "Week 10", start: "2025-10-24", end: "2025-10-30", files: [] },
+      week11: { folderName: "Week 11", start: "2025-10-31", end: "2025-11-06", files: [] },
+      week12: { folderName: "Week 12", start: "2025-11-07", end: "2025-11-13", files: [] },
+      week13: { folderName: "Week 13", start: "2025-11-14", end: "2025-11-20", files: [] },
+      week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
+      week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
+    };
+
     const weekSelect = document.getElementById('weekSelect');
     const fileList = document.getElementById('fileList');
     const embedContainer = document.getElementById('embedContainer');
@@ -303,28 +217,6 @@ const weeklyMaterials = {
       }
     });
 
-    function getCurrentWeekKey() {
-      const today = new Date();
-      for (const [weekKey, weekData] of Object.entries(weeklyMaterials)) {
-        const startDate = new Date(weekData.start);
-        const endDate = new Date(weekData.end);
-        if (today >= startDate && today <= endDate) {
-          return weekKey;
-        }
-      }
-      return null;
-    }
-
-    function initWeek() {
-      const currentWeek = getCurrentWeekKey();
-      if (currentWeek && weeklyMaterials[currentWeek]) {
-        weekSelect.value = currentWeek;
-        displayFiles(weeklyMaterials[currentWeek]);
-      } else {
-        resetViewer();
-      }
-    }
-
     function displayFiles(weekData) {
       fileList.innerHTML = '';
       if (!weekData.files.length) {
@@ -336,7 +228,11 @@ const weeklyMaterials = {
         const item = document.createElement('div');
         item.className = 'file-item';
         item.innerHTML = `<div class="file-icon">${file.icon}</div><div class="file-name">${file.name}</div>`;
-        item.onclick = () => { document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); loadFile(file); };
+        item.onclick = () => {
+          document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          loadFile(file);
+        };
         fileList.appendChild(item);
       });
       resetViewer();
@@ -344,10 +240,9 @@ const weeklyMaterials = {
 
     function loadFile(file) {
       viewerTitle.textContent = file.name;
-      embedContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+      embedContainer.innerHTML = `<div class="loading"><div class="spinner"></div>Loading...</div>`;
       setTimeout(() => {
         embedContainer.innerHTML = `<iframe src="${file.url}" allow="autoplay; fullscreen; clipboard-write" allowfullscreen></iframe>`;
-        embedContainer.classList.add('active');
       }, 800);
     }
 
@@ -358,11 +253,23 @@ const weeklyMaterials = {
           <div class="empty-icon">📁</div>
           <div class="empty-text">No Document Selected</div>
           <div class="empty-subtext">Select a week and choose a file to view</div>
-        </div>`;
-      embedContainer.classList.add('active');
+        </div>
+      `;
     }
 
-    window.onload = initWeek;
+    // Auto-select current week
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      for (const [key, week] of Object.entries(weeklyMaterials)) {
+        const start = new Date(week.start);
+        const end = new Date(week.end);
+        if (today >= start && today <= end) {
+          weekSelect.value = key;
+          displayFiles(week);
+          break;
+        }
+      }
+    });
   </script>
 </body>
 </html>
