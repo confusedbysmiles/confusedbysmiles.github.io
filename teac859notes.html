@@ -468,10 +468,10 @@
                 ]
             },
             week3: {
-                folderName: "Week 3: Decentering Education",
+                folderName: "Week 3: Instructional Strategies",
                 files: [
-                    { name: "Week 3 Slides.pptx", icon: "📊", url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/edit?pli=1&slide=id.g38840503928_0_324#slide=id.g38840503928_0_324" },
-                    { name: "Claude Reading Work.docs", icon: "📄", url: "https://docs.google.com/document/d/1sICHHmyyV9IlKjMTD-pj7yFsU2GNARGB/preview?tab=t.0" },
+                    { name: "Week 3 Slides.pptx", icon: "📊", url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/preview" },
+                    { name: "Claude Reading Work.docs", icon: "📄", url: "https://docs.google.com/document/d/1sICHHmyyV9IlKjMTD-pj7yFsU2GNARGB/preview" },
                     { name: "Week 3 Notes.pdf", icon: "📝", url: "https://drive.google.com/file/d/13PZ96y0TmZx_UkcOd9RqIVME1Sho54fk/preview" }
                 ]
             },
@@ -544,7 +544,11 @@
             // Simulate loading delay then show iframe
             setTimeout(() => {
                 embedContainer.innerHTML = `
-                    <iframe src="${file.url}" allowfullscreen="true"></iframe>
+                    <iframe src="${file.url}" 
+                            allowfullscreen="true"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-downloads">
+                    </iframe>
                 `;
             }, 500);
         }
