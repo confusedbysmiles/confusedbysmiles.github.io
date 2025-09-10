@@ -1,572 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAC 859 Notes & Reflections - Sam Servellon</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Full width container for header and nav */
-        .full-width-container {
-            width: 100%;
-        }
-
-        /* Header Styles */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid white;
-            object-fit: cover;
-        }
-
-        .profile-info h1 {
-            font-size: 2rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .pronouns {
-            font-size: 1rem;
-            font-weight: normal;
-            opacity: 0.9;
-        }
-
-        .profile-info p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        /* Navigation */
-        .main-nav {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 0 2rem;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-            padding: 1rem 0;
-            flex-wrap: wrap;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .nav-links a {
-            color: #666;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #667eea;
-        }
-
-        /* Page Title */
-        .page-header {
-            background: white;
-            padding: 1.5rem 2rem;
-            margin: 1.5rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-subtitle {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        /* Main Layout - Full Width */
-        .content-wrapper {
-            display: flex;
-            gap: 1.5rem;
-            padding: 0 2rem 2rem;
-            flex: 1;
-            height: calc(100vh - 300px); /* Adjust based on header/nav height */
-        }
-
-        /* Left Sidebar - 20% width */
-        .sidebar {
-            width: 20%;
-            min-width: 250px;
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .week-selector {
-            margin-bottom: 1.5rem;
-        }
-
-        .week-selector label {
-            display: block;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .week-dropdown {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .week-dropdown:hover {
-            border-color: #667eea;
-        }
-
-        .week-dropdown:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        /* File List */
-        .file-list-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .file-list-header {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .file-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .file-item {
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: #f8f9fa;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .file-item:hover {
-            background: #e8ecff;
-            border-left-color: #667eea;
-            transform: translateX(4px);
-        }
-
-        .file-item.active {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-left-color: #667eea;
-        }
-
-        .file-icon {
-            font-size: 1.25rem;
-        }
-
-        .file-name {
-            flex: 1;
-            color: #333;
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
-
-        /* Content Viewer - 80% width */
-        .content-viewer {
-            flex: 1;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .viewer-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .viewer-title {
-            font-size: 1.25rem;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .viewer-content {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .embed-container {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .embed-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #999;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .empty-text {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-subtext {
-            font-size: 0.95rem;
-            color: #aaa;
-        }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            font-size: 1.1rem;
-            color: #667eea;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-right: 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Footer */
-        .footer {
-            background: #2c3e50;
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .content-wrapper {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                max-height: 400px;
-            }
-
-            .content-viewer {
-                min-height: 600px;
-            }
-        }
-
-        /* Scrollbar Styling */
-        .file-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .file-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .file-list::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 4px;
-        }
-
-        .file-list::-webkit-scrollbar-thumb:hover {
-            background: #5568d3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Materials Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 280px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+    .sidebar h2 {
+      margin: 0 0 15px 0;
+      font-size: 18px;
+    }
+    .week-select {
+      margin-bottom: 20px;
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+    }
+    .file-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      transition: background 0.2s;
+    }
+    .file-item:hover {
+      background: #34495e;
+    }
+    .file-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+    .viewer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .viewer-header {
+      background: #34495e;
+      color: #fff;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .viewer-content {
+      flex: 1;
+      min-height: 400px; /* fallback so iframe doesn't collapse */
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .embed-container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .embed-container iframe {
+      width: 100%; height: 100%;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <header class="header full-width-container">
-        <div class="profile-container">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
-            <div class="profile-info">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
-            </div>
-        </div>
-    </header>
-    
-    <nav class="main-nav full-width-container">
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="experience.html">Experience & Education</a></li>
-            <li><a href="publications.html">Presentations & Publications</a></li>
-            <li><a href="activities.html">Activities & Certifications</a></li>
-            <li><a href="classes.html" class="active">Classes</a></li>
-        </ul>
-    </nav>
-
-    <div class="page-header">
-        <h1 class="page-title">TEAC 859: Designing Learning Experiences</h1>
-        <p class="page-subtitle">Weekly Notes & Reflections</p>
+  <div class="sidebar">
+    <h2>Weekly Materials</h2>
+    <select class="week-select" id="weekSelect">
+      <option value="week2">Week 1</option>
+      <option value="week2">Week 2</option>
+      <option value="week3">Week 3</option>
+      <option value="week4">Week 4</option>
+      <option value="week5">Week 5</option>
+      <option value="week5">Week 6</option>
+      <option value="week5">Week 7</option>
+      <option value="week5">Week 8</option>
+      <option value="week5">Week 9</option>
+      <option value="week5">Week 10</option>
+      <option value="week5">Week 11</option>
+      <option value="week5">Week 12</option>
+      <option value="week5">Week 13</option>
+      <option value="week5">Week 14</option>
+      <option value="week5">Week 15</option>
+      <!-- Add more weeks as needed -->
+    </select>
+    <div class="file-list" id="fileList">
+      Select a week to view files.
     </div>
+  </div>
 
-    <div class="content-wrapper">
-        <!-- Left Sidebar - 20% -->
-        <div class="sidebar">
-            <div class="week-selector">
-                <label for="weekSelect">Select Week:</label>
-                <select id="weekSelect" class="week-dropdown">
-                    <option value="">Choose a week...</option>
-                    <option value="week2">Week 2</option>
-                    <option value="week3">Week 3</option>
-                    <option value="week4">Week 4</option>
-                    <option value="week5">Week 5</option>
-                    <option value="week6">Week 6</option>
-                    <option value="week7">Week 7</option>
-                    <option value="week8">Week 8</option>
-                    <option value="week9">Week 9</option>
-                    <option value="week10">Week 10</option>
-                    <option value="week11">Week 11</option>
-                    <option value="week12">Week 12</option>
-                    <option value="week13">Week 13</option>
-                    <option value="week14">Week 14</option>
-                    <option value="week15">Week 15</option>
-                </select>
-            </div>
-
-            <div class="file-list-container">
-                <div class="file-list-header">Files & Resources</div>
-                <div id="fileList" class="file-list">
-                    <!-- Files will be populated here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Content Viewer - 80% -->
-        <div class="content-viewer">
-            <div class="viewer-header">
-                <div id="viewerTitle" class="viewer-title">Document Viewer</div>
-            </div>
-            <div class="viewer-content">
-                <div id="embedContainer" class="embed-container">
-                    <div class="empty-state">
-                        <div class="empty-icon">📁</div>
-                        <div class="empty-text">No Document Selected</div>
-                        <div class="empty-subtext">Select a week and choose a file to view</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="viewer">
+    <div class="viewer-header" id="viewerHeader">No file selected</div>
+    <div class="viewer-content" id="viewerContent">
+      <div class="embed-container">
+        <iframe id="fileViewer"
+          src=""
+          allow="autoplay; fullscreen"
+          allowfullscreen>
+        </iframe>
+      </div>
     </div>
+  </div>
 
-    <footer class="footer full-width-container">
-        <p>&copy; 2025 Sam Servellon | <a href="https://servellon.net">servellon.net</a></p>
-        <p style="margin-top: 0.5rem;">TEAC 859 Course Materials</p>
-    </footer>
+  <script>
+    const weeklyMaterials = {
+      week1: {
+        folderName: "Week 1: Knowledge Work, Learning, & Design",
+        start: "2025-08-21",
+        end: "2025-08-28",
+        files: [
+          { name: "Week 1 Slides", icon: "📄", url: "https://docs.google.com/presentation/d/1F6TU4_e1wvPbWXYkCm3m_BSDSKRumptvUbje1IDRL2M/eembed?start=false&loop=false&delayms=3000" }
+        ]
+      },
+      week2: {
+        folderName: "Week 2: Rhizome, Weak Theory, Math, and Speculative Design",
+        start: "2025-08-29",
+        end: "2025-09-03",
+        files: [
+          { name: "Week 2 Overview.pdf", icon: "📄", url: "https://drive.google.com/file/d/1s6Lo43wlg5BbN06gVwqY1EoOCFQZ6A4G/preview" }
+        ]
+      },
+    week3: {
+      folderName: "Week 3: Decentering Education",
+      start: "2025-09-04",
+      end: "2025-09-10",
+      files: [
+        {
+          name: "Week 3 Slides",
+          icon: "📊",
+          url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000"
+        },
+        {
+          name: "Claude Reading Work.docx",
+          icon: "📑",
+          url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview"
+        },
+        {
+          name: "Additional Reading.pdf",
+          icon: "📘",
+          url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview"
+        }
+      ]
+    },
 
-    <script>
-        // Sample data structure - Replace with your actual Google Drive links
-        const weeklyMaterials = {
-            week2: {
-                folderName: "Week 2: Introduction to Learning Design",
-                files: [
-                    { name: "Week 2 Overview.pdf", icon: "📄", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" },
-                    { name: "Reading: Learning Theories.pdf", icon: "📚", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" },
-                    { name: "Assignment 2 Instructions.docx", icon: "📝", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" }
-                ]
-            },
-            week3: {
-                folderName: "Week 3: Instructional Strategies",
-                files: [
-                    { name: "Week 3 Slides.pptx", icon: "📊", url: "https://docs.google.com/presentation/d/1EYQPPFCJhH0kP0ckije6zcApFi3nqJ6lx6WgUdBfigA/embed?start=false&loop=false&delayms=3000" },
-                    { name: "Claude Reading Work.docs", icon: "📄", url: "https://docs.google.com/document/d/1sICHHmyyV9IlKjMTD-pj7yFsU2GNARGB/preview" },
-                    { name: "Week 3 Notes.pdf", icon: "📝", url: "https://drive.google.com/file/d/13PZ96y0TmZx_UkcOd9RqIVME1Sho54fk/preview" }
-                ]
-            },
-            // Add more weeks as needed
+      week4: {
+        folderName: "Week 4: Epistemology Ontology, and HCD",
+        start: "2025-09-11",
+        end: "2025-09-17",
+        files: [
+          { name: "Week 4 Reading.docx", icon: "📑", url: "https://docs.google.com/document/d/YOUR_FILE_ID/preview" }
+        ]
+      },
+      week5: {
+        folderName: "Week 5: Curriculum Theory",
+        start: "2025-09-18",
+        end: "2025-09-24",
+        files: [
+          { name: "Week 5 Resources.pdf", icon: "📂", url: "https://drive.google.com/file/d/YOUR_FILE_ID/preview" }
+        ]
+      }
+    };
+
+    const weekSelect = document.getElementById("weekSelect");
+    const fileList = document.getElementById("fileList");
+    const fileViewer = document.getElementById("fileViewer");
+    const viewerHeader = document.getElementById("viewerHeader");
+
+    function displayFiles(week) {
+      fileList.innerHTML = "";
+      if (!week || !week.files || week.files.length === 0) {
+        fileList.innerHTML = "<p>No files available.</p>";
+        return;
+      }
+      week.files.forEach(file => {
+        const div = document.createElement("div");
+        div.className = "file-item";
+        div.innerHTML = `<span class="file-icon">${file.icon}</span>${file.name}`;
+        div.onclick = () => {
+          viewerHeader.textContent = file.name;
+          fileViewer.src = file.url;
         };
+        fileList.appendChild(div);
+      });
+    }
 
-        // Get DOM elements
-        const weekSelect = document.getElementById('weekSelect');
-        const fileList = document.getElementById('fileList');
-        const embedContainer = document.getElementById('embedContainer');
-        const viewerTitle = document.getElementById('viewerTitle');
-
-        // Handle week selection
-        weekSelect.addEventListener('change', function() {
-            const selectedWeek = this.value;
-            
-            if (selectedWeek && weeklyMaterials[selectedWeek]) {
-                displayFiles(weeklyMaterials[selectedWeek]);
-            } else if (!selectedWeek) {
-                fileList.innerHTML = '<div style="padding: 1rem; color: #999; text-align: center;">Select a week to view files</div>';
-                resetViewer();
-            } else {
-                // Placeholder for weeks without content yet
-                fileList.innerHTML = '<div style="padding: 1rem; color: #999; text-align: center;">No files available for this week yet</div>';
-                resetViewer();
-            }
-        });
-
-        // Display files for selected week
-        function displayFiles(weekData) {
-            fileList.innerHTML = '';
-            
-            weekData.files.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <span class="file-icon">${file.icon}</span>
-                    <span class="file-name">${file.name}</span>
-                `;
-                
-                fileItem.addEventListener('click', function() {
-                    // Remove active class from all items
-                    document.querySelectorAll('.file-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked item
-                    this.classList.add('active');
-                    
-                    // Display the file
-                    displayFile(file);
-                });
-                
-                fileList.appendChild(fileItem);
-            });
+    function getCurrentWeekKey() {
+      const today = new Date();
+      for (const [weekKey, weekData] of Object.entries(weeklyMaterials)) {
+        if (!weekData.start || !weekData.end) continue; // skip placeholders
+        const startDate = new Date(weekData.start);
+        const endDate = new Date(weekData.end);
+        if (today >= startDate && today <= endDate) {
+          return weekKey;
         }
+      }
+      return null;
+    }
 
-        // Display selected file in viewer
-        function displayFile(file) {
-            viewerTitle.textContent = file.name;
-            
-            // Show loading state
-            embedContainer.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    Loading document...
-                </div>
-            `;
-            
-            // Simulate loading delay then show iframe
-            setTimeout(() => {
-                embedContainer.innerHTML = `
-                    <iframe src="${file.url}" 
-                            allowfullscreen="true"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-downloads">
-                    </iframe>
-                `;
-            }, 500);
-        }
+    // Initialize page
+    const currentWeek = getCurrentWeekKey();
+    if (currentWeek && weeklyMaterials[currentWeek]) {
+      weekSelect.value = currentWeek;
+      displayFiles(weeklyMaterials[currentWeek]);
+    } else {
+      // fallback to Week 2
+      weekSelect.value = "week2";
+      displayFiles(weeklyMaterials.week2);
+    }
 
-        // Reset viewer to empty state
-        function resetViewer() {
-            viewerTitle.textContent = 'Document Viewer';
-            embedContainer.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">📁</div>
-                    <div class="empty-text">No Document Selected</div>
-                    <div class="empty-subtext">Select a week and choose a file to view</div>
-                </div>
-            `;
-        }
-
-        // Initialize with empty state
-        fileList.innerHTML = '<div style="padding: 1rem; color: #999; text-align: center;">Select a week to view files</div>';
-    </script>
+    weekSelect.addEventListener("change", () => {
+      const week = weekSelect.value;
+      displayFiles(weeklyMaterials[week]);
+      viewerHeader.textContent = "No file selected";
+      fileViewer.src = "";
+    });
+  </script>
 </body>
 </html>
