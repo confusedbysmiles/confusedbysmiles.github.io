@@ -636,6 +636,9 @@
     // Auto-select current week and load first file on page load
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
+      // Strip time component for date-only comparison
+      today.setHours(0, 0, 0, 0);
+      
       let weekFound = false;
       
       // Debug: Log current date
@@ -646,8 +649,11 @@
         const start = new Date(week.start);
         const end = new Date(week.end);
         
-        // Set end date to end of day to include the entire last day
+        // Strip time components for date-only comparison
+        start.setHours(0, 0, 0, 0);
         end.setHours(23, 59, 59, 999);
+        
+        console.log(`Checking ${key}: ${start.toDateString()} to ${end.toDateString()}`);
 
         if (today >= start && today <= end) {
           console.log(`Found current week: ${key} (${week.folderName})`);
@@ -671,7 +677,7 @@
 
       // If no current week found, find the most recent past week or next upcoming week
       if (!weekFound) {
-        console.log('No current week found, finding best match...');
+        console.log('No current week found, finding closest match...');
         
         let closestWeek = null;
         let closestDistance = Infinity;
