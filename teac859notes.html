@@ -626,6 +626,17 @@
       
       if (selectedWeek && weeklyMaterials[selectedWeek]) {
         displayFiles(weeklyMaterials[selectedWeek]);
+        
+        // Auto-load first file if available
+        if (weeklyMaterials[selectedWeek].files.length > 0) {
+          setTimeout(() => {
+            const firstItem = document.querySelector('.file-item');
+            if (firstItem) {
+              firstItem.classList.add('active');
+              loadFile(weeklyMaterials[selectedWeek].files[0]);
+            }
+          }, 100);
+        }
       } else {
         fileList.innerHTML = '<div style="padding:1rem;color:#999;text-align:center;">Select a week to view files</div>';
         weekSubheader.textContent = "";
