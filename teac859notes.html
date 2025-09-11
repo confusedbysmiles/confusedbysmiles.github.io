@@ -337,7 +337,30 @@
       });
       resetViewer();
     }
-
+    // Auto-select current week & load first file if available
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+    
+      for (const [key, week] of Object.entries(weeklyMaterials)) {
+        const start = new Date(week.start);
+        const end = new Date(week.end);
+    
+        if (today >= start && today <= end) {
+          weekSelect.value = key;          // set dropdown
+          displayFiles(week);              // show file list
+    
+          if (week.files.length > 0) {
+            // mark first file active + load it
+            const firstItem = document.querySelector('.file-item');
+            if (firstItem) {
+              firstItem.classList.add('active');
+              loadFile(week.files[0]);
+            }
+          }
+          break; // stop once we’ve found the current week
+        }
+      }
+    });
     function loadFile(file) {
       viewerTitle.textContent = file.name;
       embedContainer.innerHTML = `<div class="loading"><div class="spinner"></div>Loading...</div>`;
@@ -356,6 +379,46 @@
         </div>`;
     }
 
+   // Auto-select current week (with fallback to Week 1)
+window.addEventListener('DOMContentLoaded', () => {
+  const today = new Date();
+  let matched = false;
+
+  for (const [key, week] of Object.entries(weeklyMaterials)) {
+    const start = new Date(week.start);
+    const end = new Date(week.end);
+
+    if (today >= start && today <= end) {
+      matched = true;
+      weekSelect.value = key;          // set dropdown
+      displayFiles(week);              // show file list
+
+      if (week.files.length > 0) {
+        const firstItem = document.querySelector('.file-item');
+        if (firstItem) {
+          firstItem.classList.add('active');
+          loadFile(week.files[0]);
+        }
+      }
+      break;
+    }
+  }
+
+  // Fallback: load Week 1 if no match
+  if (!matched && weeklyMaterials.week1) {
+    weekSelect.value = "week1";
+    displayFiles(weeklyMaterials.week1);
+    if (weeklyMaterials.week1.files.length > 0) {
+      const firstItem = document.querySelector('.file-item');
+      if (firstItem) {
+        firstItem.classList.add('active');
+        loadFile(weeklyMaterials.week1.files[0]);
+      }
+    }
+  }
+});
+
+    
     // Auto-select current week & open first file if available
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
