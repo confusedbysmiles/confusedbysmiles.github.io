@@ -637,13 +637,20 @@
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
       let weekFound = false;
+      
+      // Debug: Log current date
+      console.log('Current date:', today.toDateString());
 
       // Try to find current week
       for (const [key, week] of Object.entries(weeklyMaterials)) {
         const start = new Date(week.start);
         const end = new Date(week.end);
+        
+        // Set end date to end of day to include the entire last day
+        end.setHours(23, 59, 59, 999);
 
         if (today >= start && today <= end) {
+          console.log(`Found current week: ${key} (${week.folderName})`);
           weekFound = true;
           weekSelect.value = key;
           displayFiles(week);
@@ -662,19 +669,37 @@
         }
       }
 
-      // Fallback to Week 1 if no current week found
-      if (!weekFound && weeklyMaterials.week1) {
-        weekSelect.value = "week1";
-        displayFiles(weeklyMaterials.week1);
+      // If no current week found, find the most recent past week or next upcoming week
+      if (!weekFound) {
+        console.log('No current week found, finding best match...');
         
-        if (weeklyMaterials.week1.files.length > 0) {
-          setTimeout(() => {
-            const firstItem = document.querySelector('.file-item');
-            if (firstItem) {
-              firstItem.classList.add('active');
-              loadFile(weeklyMaterials.week1.files[0]);
-            }
-          }, 100);
+        let closestWeek = null;
+        let closestDistance = Infinity;
+        
+        for (const [key, week] of Object.entries(weeklyMaterials)) {
+          const start = new Date(week.start);
+          const distance = Math.abs(today - start);
+          
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestWeek = { key, week };
+          }
+        }
+        
+        if (closestWeek) {
+          console.log(`Loading closest week: ${closestWeek.key}`);
+          weekSelect.value = closestWeek.key;
+          displayFiles(closestWeek.week);
+          
+          if (closestWeek.week.files.length > 0) {
+            setTimeout(() => {
+              const firstItem = document.querySelector('.file-item');
+              if (firstItem) {
+                firstItem.classList.add('active');
+                loadFile(closestWeek.week.files[0]);
+              }
+            }, 100);
+          }
         }
       }
     });
