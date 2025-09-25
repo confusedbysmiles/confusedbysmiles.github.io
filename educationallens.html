@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Lens</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .framework {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .category {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .category h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .term {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+            font-weight: 500;
+        }
+        
+        .term:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+        
+        .term.selected {
+            border: 2px solid #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            transform: scale(1.05);
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            max-width: 350px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 20px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn.clear {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+            border-left: 5px solid #28a745;
+        }
+        
+        .output h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+        
+        .selected-terms {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .selected-term-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .selected-term-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .selected-term-item .category-label {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .selected-term-item p {
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Educational Lens</h1>
+            <p>Hover over terms to see definitions, click to select those that align with your educational philosophy</p>
+        </div>
+        
+        <div class="framework">
+            <div class="category">
+                <h2>Theories</h2>
+                <div class="term" data-category="Theories" data-definition="Strong theories in education provide comprehensive, systematic explanations for learning and teaching phenomena with clear predictive power. They offer robust frameworks that can be consistently applied across diverse educational contexts.">Strong</div>
+                <div class="term" data-category="Theories" data-definition="Weak theories offer partial explanations or loose frameworks that may lack empirical support or comprehensive scope. They provide suggestive insights but have limited predictive power or applicability across contexts.">Weak</div>
+            </div>
+            
+            <div class="category">
+                <h2>Experience</h2>
+                <div class="term" data-category="Experience" data-definition="Educational experiences that are uniform and standardized across all learners, assuming similar backgrounds, needs, and learning styles. This approach treats all students as essentially the same, providing identical content, pacing, and instructional methods.">Homogeneous</div>
+                <div class="term" data-category="Experience" data-definition="Educational approaches that present knowledge, identities, or experiences in either/or terms with clear oppositions. This perspective sees learning outcomes, student abilities, or cultural perspectives as falling into distinct, separate categories.">Binary</div>
+                <div class="term" data-category="Experience" data-definition="Educational experiences that recognize and accommodate diverse learners with varying backgrounds, abilities, interests, and learning styles. This approach celebrates difference and designs multiple pathways for learning and expression.">Heterogeneous</div>
+                <div class="term" data-category="Experience" data-definition="Educational approaches where one student's success doesn't require another's failure, emphasizing collaborative learning and shared achievement. This perspective views learning as expandable, where helping others learn enhances everyone's understanding.">Non-Zero-Sum Game</div>
+            </div>
+            
+            <div class="category">
+                <h2>Epistemology</h2>
+                <div class="term" data-category="Epistemology" data-definition="The belief that knowledge exists independently of the knower and can be discovered through objective, scientific methods. In education, this translates to evidence-based practices, standardized assessments, and the search for universal laws of learning.">Positivism/Post-positivism</div>
+                <div class="term" data-category="Epistemology" data-definition="The view that knowledge is constructed through human interpretation and understanding of social phenomena. In educational contexts, this emphasizes the importance of meaning-making, cultural context, and subjective experience in learning.">Interpretivism</div>
+                <div class="term" data-category="Epistemology" data-definition="An epistemological stance that views knowledge as inherently political and seeks to uncover and challenge power structures and inequalities. In education, critical theory examines how schooling can perpetuate or transform social injustices.">Critical Theory</div>
+                <div class="term" data-category="Epistemology" data-definition="The belief that knowledge, meaning, and identity are unstable, multiple, and constantly shifting rather than fixed or essential. In education, this challenges traditional notions of curriculum, authority, and student identity.">Poststructuralism</div>
+                <div class="term" data-category="Epistemology" data-definition="Derived from Deleuze and Guattari, this concept views knowledge as interconnected, non-hierarchical networks rather than tree-like structures with clear origins and branches. In education, rhizomatic thinking encourages non-linear learning pathways and connections across disciplines.">Rhizome</div>
+            </div>
+            
+            <div class="category">
+                <h2>Curriculum Theory</h2>
+                <div class="term" data-category="Curriculum Theory" data-definition="Traditional curriculum development model emphasizing clear objectives, systematic content organization, and measurable outcomes. Ralph Tyler's rationale focuses on four fundamental questions: purposes, experiences, organization, and evaluation.">Taylor/Tyler</div>
+                <div class="term" data-category="Curriculum Theory" data-definition="William Pinar's reconceptualized curriculum theory moves beyond technical models to emphasize curriculum as autobiographical and phenomenological text. It focuses on understanding lived experience, personal meaning-making, and the relationship between self and world.">Reconceptualized: Pinar</div>
+                <div class="term" data-category="Curriculum Theory" data-definition="Postcolonial or decolonizing curriculum approaches that challenge Western-centric knowledge systems. It emphasizes indigenous ways of knowing, cultural responsiveness, and the need to 're-story' education from marginalized perspectives.">Re: Roy</div>
+            </div>
+            
+            <div class="category">
+                <h2>Learning Theories</h2>
+                <div class="term" data-category="Learning Theories" data-definition="Learning theory that focuses on observable changes in behavior through stimulus-response associations and reinforcement. In education, this translates to clear expectations, immediate feedback, and systematic rewards or consequences.">Behaviorism</div>
+                <div class="term" data-category="Learning Theories" data-definition="Learning theory that emphasizes internal mental processes like memory, thinking, and problem-solving rather than just observable behavior. It views learners as active processors of information who construct understanding through mental schemas.">Cognitivism</div>
+                <div class="term" data-category="Learning Theories" data-definition="Learning theory proposing that learners actively build their own understanding through experience, reflection, and social interaction. Knowledge is not transmitted but constructed by individuals as they make sense of their world.">Constructivism</div>
+                <div class="term" data-category="Learning Theories" data-definition="Learning theory that emphasizes the social and cultural context of learning, viewing knowledge as distributed across people, tools, and environments. Learning happens through participation in communities of practice and cultural activities.">Situative/Cultural</div>
+                <div class="term" data-category="Learning Theories" data-definition="Learning theory that views cognition as emerging through dynamic interaction between learner, environment, and activity rather than as mental representation. Knowledge is enacted through embodied experience and action in the world.">Enactivism</div>
+            </div>
+            
+            <div class="category">
+                <h2>Pedagogical Approaches</h2>
+                <div class="term" data-category="Pedagogical Approaches" data-definition="Teacher-centered approach where educators explicitly present information, model skills, and guide student practice through structured lessons. This method emphasizes clear learning objectives, systematic presentation of content, and frequent assessment of student understanding.">Direct Instruction</div>
+                <div class="term" data-category="Pedagogical Approaches" data-definition="Pedagogical approach that prioritizes understanding and building upon students' existing ideas, misconceptions, and reasoning processes. Teachers elicit student thinking through questioning, discussion, and problem-solving before introducing new concepts.">Student Thinking Focused</div>
+                <div class="term" data-category="Pedagogical Approaches" data-definition="Problem-Based Learning creates authentic challenges where students investigate real-world problems and develop solutions collaboratively. Universal Design for Learning provides multiple means of representation, engagement, and expression to accommodate diverse learners.">PBL/UDL</div>
+                <div class="term" data-category="Pedagogical Approaches" data-definition="Pedagogical approach where students take primary responsibility for their learning through self-direction, choice in topics and methods, and peer collaboration. Teachers act as facilitators and resources rather than directors of learning.">Student-led Study</div>
+            </div>
+            
+            <div class="category">
+                <h2>Assessment Approaches</h2>
+                <div class="term" data-category="Assessment Approaches" data-definition="Assessment methods that use uniform procedures, scoring criteria, and statistical analysis to measure student achievement across large populations. These assessments prioritize reliability, comparability, and objective measurement of predetermined learning outcomes.">Standardized/Quantified</div>
+                <div class="term" data-category="Assessment Approaches" data-definition="Assessment approaches that focus on understanding and evaluating students' cognitive processes, reasoning patterns, and problem-solving strategies. Rather than just measuring correct answers, these assessments reveal how students think and approach learning tasks.">Models of Thinking</div>
+                <div class="term" data-category="Assessment Approaches" data-definition="Assessment method that collects and evaluates student work over time to demonstrate growth, reflection, and authentic learning experiences. Portfolios showcase student voice, choice, and self-assessment while providing rich evidence of learning processes.">Artifacts & Portfolios</div>
+                <div class="term" data-category="Assessment Approaches" data-definition="Assessment approach that requires students to demonstrate their learning through complex, authentic tasks that mirror real-world applications. These assessments evaluate not just knowledge recall but the ability to transfer and apply learning in meaningful contexts.">Performances of Understanding</div>
+            </div>
+            
+            <div class="category">
+                <h2>Motivation</h2>
+                <div class="term" data-category="Motivation" data-definition="Motivational approach based on competition, ranking, and relative achievement compared to peers or external standards. Students are motivated by the desire to outperform others or meet benchmarks for recognition and rewards.">Comparative Success</div>
+                <div class="term" data-category="Motivation" data-definition="Motivational approach focused on developing competence, understanding, and skill improvement over time rather than comparing to others. Students are motivated by the intrinsic satisfaction of learning and personal growth.">Mastery</div>
+                <div class="term" data-category="Motivation" data-definition="Motivational approach that connects learning to students' sense of self, cultural identity, and personal values. Students are motivated when they see their identities reflected and valued in the curriculum and when learning supports their identity development.">Identity-Centric</div>
+                <div class="term" data-category="Motivation" data-definition="Motivational approach based on belonging, relationships, and connection to learning communities. Students are motivated by their desire to contribute to and be accepted by groups they value.">Social Affinity</div>
+                <div class="term" data-category="Motivation" data-definition="Motivational approach that recognizes learning motivation as situational, emerging from specific experiences, interactions, or discoveries rather than stable individual traits. This perspective emphasizes creating powerful learning moments through surprise, wonder, relevance, or connection.">Moments</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="generateLens()">Generate My Educational Lens</button>
+            <button class="btn clear" onclick="clearSelections()">Clear All Selections</button>
+        </div>
+        
+        <div class="output" id="output">
+            <h3>Your Educational Lens</h3>
+            <div class="selected-terms" id="selectedTerms"></div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <script>
+        let selectedTerms = new Set();
+        
+        // Add hover and click functionality to all terms
+        document.querySelectorAll('.term').forEach(term => {
+            // Hover functionality for tooltips
+            term.addEventListener('mouseenter', function(e) {
+                const tooltip = document.getElementById('tooltip');
+                tooltip.innerHTML = this.dataset.definition;
+                tooltip.style.display = 'block';
+                
+                // Position tooltip
+                const rect = this.getBoundingClientRect();
+                tooltip.style.left = (rect.left + rect.width / 2 - 175) + 'px';
+                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+            });
+            
+            term.addEventListener('mouseleave', function() {
+                document.getElementById('tooltip').style.display = 'none';
+            });
+            
+            // Click functionality for selection
+            term.addEventListener('click', function() {
+                const termData = {
+                    text: this.textContent,
+                    category: this.dataset.category,
+                    definition: this.dataset.definition
+                };
+                
+                const termKey = `${termData.category}:${termData.text}`;
+                
+                if (selectedTerms.has(termKey)) {
+                    selectedTerms.delete(termKey);
+                    this.classList.remove('selected');
+                } else {
+                    selectedTerms.add(termKey);
+                    this.classList.add('selected');
+                }
+            });
+        });
+        
+        function generateLens() {
+            const output = document.getElementById('output');
+            const selectedTermsDiv = document.getElementById('selectedTerms');
+            
+            if (selectedTerms.size === 0) {
+                alert('Please select at least one term to generate your educational lens.');
+                return;
+            }
+            
+            // Convert selectedTerms to objects with full data
+            const termsData = [];
+            selectedTerms.forEach(termKey => {
+                const [category, text] = termKey.split(':');
+                const termElement = document.querySelector(`.term[data-category="${category}"][data-definition]`);
+                if (termElement && termElement.textContent.trim() === text) {
+                    termsData.push({
+                        text: text,
+                        category: category,
+                        definition: termElement.dataset.definition
+                    });
+                }
+            });
+            
+            // Group by category
+            const groupedTerms = {};
+            termsData.forEach(term => {
+                if (!groupedTerms[term.category]) {
+                    groupedTerms[term.category] = [];
+                }
+                groupedTerms[term.category].push(term);
+            });
+            
+            // Generate output HTML
+            let html = '';
+            Object.keys(groupedTerms).forEach(category => {
+                groupedTerms[category].forEach(term => {
+                    html += `
+                        <div class="selected-term-item">
+                            <div class="category-label">${term.category}</div>
+                            <h4>${term.text}</h4>
+                            <p>${term.definition}</p>
+                        </div>
+                    `;
+                });
+            });
+            
+            selectedTermsDiv.innerHTML = html;
+            output.style.display = 'block';
+            
+            // Scroll to output
+            output.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function clearSelections() {
+            selectedTerms.clear();
+            document.querySelectorAll('.term.selected').forEach(term => {
+                term.classList.remove('selected');
+            });
+            document.getElementById('output').style.display = 'none';
+        }
+        
+        // Hide tooltip when scrolling
+        window.addEventListener('scroll', function() {
+            document.getElementById('tooltip').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
