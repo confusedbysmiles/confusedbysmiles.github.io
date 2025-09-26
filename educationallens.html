@@ -3,179 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Lens Selector</title>
+    <title>Educational Lens Selector - Sam Servellon</title>
     <style>
-        * {
+        /* CSS Reset */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        /* Variables */
+        :root {
+            --primary: #4a2b7f;
+            --primary-light: #6940a5;
+            --primary-dark: #362059;
+            --secondary: #e6e6e6;
+            --accent: #c678dd;
+            --accent-dark: #a952c5;
+            --text: #333333;
+            --text-light: #666666;
+            --light: #ffffff;
+            --light-gray: #f5f5f5;
+            --dark: #222222;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+            --container-width: 1200px;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --transition: all 0.3s ease;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--light);
+        }
+
+        /* Header */
+        .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 0;
-            margin: 0;
+            color: var(--light);
+            padding: var(--spacing-lg) 0;
         }
-        
-        .site-header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 0;
-            margin-bottom: 20px;
+
+        .container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
         }
-        
+
         .profile-container {
             display: flex;
             align-items: center;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 30px;
+            gap: var(--spacing-lg);
         }
-        
+
         .profile-image {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 5px 10px var(--shadow);
         }
-        
+
         .profile-info h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 5px;
+            font-size: 1.8rem;
+            color: var(--light);
+            margin-bottom: var(--spacing-sm);
         }
-        
+
         .pronouns {
-            font-size: 0.8em;
-            color: #666;
-            font-weight: normal;
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--light);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: var(--spacing-sm);
         }
-        
+
         .profile-info p {
-            color: #666;
-            font-size: 1.1em;
+            font-size: 1rem;
+            color: var(--light);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-xs);
         }
-        
+
+        /* Navigation */
         .main-nav {
-            background: rgba(51, 51, 51, 0.95);
-            padding: 15px 0;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px var(--shadow);
         }
-        
+
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 30px;
+            gap: var(--spacing-lg);
+            padding: 0;
+            margin: 0;
+            justify-content: center;
         }
-        
+
+        .nav-links li {
+            margin: 0;
+        }
+
         .nav-links a {
-            color: white;
-            text-decoration: none;
+            color: var(--light);
             font-weight: 500;
-            transition: color 0.3s ease;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            display: block;
+            text-decoration: none;
+            transition: var(--transition);
         }
-        
-        .nav-links a:hover,
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
         .nav-links a.active {
-            color: #667eea;
+            background-color: var(--accent);
+            color: var(--light);
         }
-        
-        .main-container {
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+
+        /* Main Content */
+        .main-content {
             background: rgba(255, 255, 255, 0.95);
+            margin: var(--spacing-lg);
             border-radius: 15px;
-            padding: 30px;
+            padding: var(--spacing-xl);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
-        
-        .header {
+
+        .content-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: var(--spacing-xl);
         }
-        
-        .header h1 {
-            color: #333;
+
+        .content-header h1 {
+            color: var(--primary);
             font-size: 2.5em;
-            margin-bottom: 10px;
+            margin-bottom: var(--spacing-sm);
         }
-        
-        .header p {
-            color: #666;
+
+        .content-header p {
+            color: var(--text-light);
             font-size: 1.1em;
         }
-        
+
         .framework {
             display: flex;
             flex-direction: column;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
         }
-        
+
         .category {
-            background: #f8f9fa;
-            border-radius: 12px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-lg);
             padding: 25px;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid var(--primary);
         }
-        
+
         .category h2 {
-            color: #333;
-            margin-bottom: 20px;
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
             font-size: 1.4em;
             border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: var(--spacing-sm);
         }
-        
+
         .term {
             display: inline-block;
             margin: 8px;
             padding: 12px 18px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             position: relative;
             border: 2px solid transparent;
             font-weight: 500;
         }
-        
+
         .term:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-            background: linear-gradient(135deg, #764ba2, #667eea);
+            box-shadow: 0 8px 20px rgba(74, 43, 127, 0.3);
+            background: linear-gradient(135deg, var(--accent), var(--primary));
         }
-        
+
         .term.selected {
             border: 2px solid #ff6b6b;
             background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
             transform: scale(1.05);
         }
-        
+
         .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
             color: white;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             font-size: 14px;
             line-height: 1.4;
             max-width: 350px;
-            z-index: 1000;
+            z-index: 2000;
             display: none;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
-        
+
         .tooltip::before {
             content: '';
             position: absolute;
@@ -183,16 +235,16 @@
             left: 20px;
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
-            border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+            border-bottom: 5px solid rgba(0, 0, 0, 0.95);
         }
-        
+
         .controls {
             text-align: center;
-            margin: 30px 0;
+            margin: var(--spacing-xl) 0;
         }
-        
+
         .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
             padding: 15px 30px;
@@ -201,91 +253,119 @@
             font-weight: 600;
             cursor: pointer;
             margin: 0 10px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(74, 43, 127, 0.4);
         }
-        
+
         .btn.clear {
             background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
         }
-        
+
         .output {
-            background: #f8f9fa;
-            border-radius: 12px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius-lg);
             padding: 25px;
-            margin-top: 30px;
+            margin-top: var(--spacing-xl);
             display: none;
             border-left: 5px solid #28a745;
         }
-        
+
         .output h3 {
-            color: #333;
-            margin-bottom: 20px;
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
             font-size: 1.6em;
         }
-        
+
         .selected-terms {
             display: grid;
             gap: 15px;
         }
-        
+
         .selected-term-item {
             background: white;
             padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary);
         }
-        
+
         .selected-term-item h4 {
-            color: #333;
+            color: var(--primary);
             margin-bottom: 8px;
             font-size: 1.1em;
         }
-        
-        .selected-term-item .category-label {
-            background: #667eea;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        
+
         .selected-term-item p {
-            color: #666;
+            color: var(--text-light);
             line-height: 1.5;
+        }
+
+        .category-header {
+            color: var(--primary);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.3em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: var(--spacing-sm);
+            }
+
+            .main-content {
+                margin: var(--spacing-sm);
+                padding: var(--spacing-lg);
+            }
+
+            .content-header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="profile-container">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
-            <div class="profile-info">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/she</span></h1>
+                    <p>PhD Student, Educational Studies</p>
+                    <p>University of Nebraska-Lincoln</p>
+                </div>
             </div>
         </div>
     </header>
-    
+
+    <!-- Navigation -->
     <nav class="main-nav">
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="experience.html">Experience & Education</a></li>
-            <li><a href="publications.html">Presentations & Publications</a></li>
-            <li><a href="activities.html">Activities & Certifications</a></li>
-            <li><a href="classes.html" class="active">Classes</a></li>
-        </ul>
-    </nav>
-    
-    <div class="main-container">
         <div class="container">
-        <div class="header">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="experience.html">Experience & Education</a></li>
+                <li><a href="publications.html">Presentations & Publications</a></li>
+                <li><a href="activities.html">Activities & Certifications</a></li>
+                <li><a href="classes.html" class="active">Classes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
             <h1>Educational Lens Selector</h1>
             <p>Hover over terms to see definitions, click to select those that align with your educational philosophy</p>
         </div>
@@ -365,23 +445,37 @@
             <h3>Your Educational Lens</h3>
             <div class="selected-terms" id="selectedTerms"></div>
         </div>
-        </div>
     </div>
     
     <div class="tooltip" id="tooltip"></div>
     
     <script>
         let selectedTerms = new Set();
-        let activeTooltip = null;
-        let activeElement = null;
+        let currentHoveredElement = null;
         
-        function updateTooltipPosition() {
-            if (activeTooltip && activeElement) {
-                const tooltip = document.getElementById('tooltip');
-                const rect = activeElement.getBoundingClientRect();
-                tooltip.style.left = (rect.left + rect.width / 2 - 175) + 'px';
-                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+        function updateTooltipPosition(element) {
+            const tooltip = document.getElementById('tooltip');
+            if (!tooltip || !element) return;
+            
+            const rect = element.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            
+            // Calculate position
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            let top = rect.top - tooltipRect.height - 10;
+            
+            // Keep tooltip within viewport
+            const padding = 10;
+            if (left < padding) left = padding;
+            if (left + tooltipRect.width > window.innerWidth - padding) {
+                left = window.innerWidth - tooltipRect.width - padding;
             }
+            if (top < padding) {
+                top = rect.bottom + 10; // Show below if no room above
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
         }
         
         // Add hover and click functionality to all terms
@@ -392,18 +486,18 @@
                 tooltip.innerHTML = this.dataset.definition;
                 tooltip.style.display = 'block';
                 
-                activeTooltip = tooltip;
-                activeElement = this;
+                currentHoveredElement = this;
                 
-                // Position tooltip
-                updateTooltipPosition();
+                // Small delay to ensure tooltip dimensions are calculated
+                requestAnimationFrame(() => {
+                    updateTooltipPosition(this);
+                });
             });
             
             term.addEventListener('mouseleave', function() {
                 const tooltip = document.getElementById('tooltip');
                 tooltip.style.display = 'none';
-                activeTooltip = null;
-                activeElement = null;
+                currentHoveredElement = null;
             });
             
             // Click functionality for selection
@@ -454,18 +548,22 @@
                 groupedTerms[term.category].push(term);
             });
             
-            // Generate output HTML
+            // Generate output HTML grouped by category
             let html = '';
-            Object.keys(groupedTerms).forEach(category => {
-                groupedTerms[category].forEach(term => {
-                    html += `
-                        <div class="selected-term-item">
-                            <div class="category-label">${term.category}</div>
-                            <h4>${term.text}</h4>
-                            <p>${term.definition}</p>
-                        </div>
-                    `;
-                });
+            const categoryOrder = ['Theories', 'Experience', 'Epistemology', 'Curriculum Theory', 'Learning Theories', 'Pedagogical Approaches', 'Assessment Approaches', 'Motivation'];
+            
+            categoryOrder.forEach(category => {
+                if (groupedTerms[category]) {
+                    html += `<h4 class="category-header">${category}</h4>`;
+                    groupedTerms[category].forEach(term => {
+                        html += `
+                            <div class="selected-term-item">
+                                <h4>${term.text}</h4>
+                                <p>${term.definition}</p>
+                            </div>
+                        `;
+                    });
+                }
             });
             
             selectedTermsDiv.innerHTML = html;
@@ -483,9 +581,17 @@
             document.getElementById('output').style.display = 'none';
         }
         
-        // Hide tooltip when scrolling
+        // Update tooltip position on scroll and resize
         window.addEventListener('scroll', function() {
-            document.getElementById('tooltip').style.display = 'none';
+            if (currentHoveredElement) {
+                updateTooltipPosition(currentHoveredElement);
+            }
+        });
+        
+        window.addEventListener('resize', function() {
+            if (currentHoveredElement) {
+                updateTooltipPosition(currentHoveredElement);
+            }
         });
     </script>
 </body>
