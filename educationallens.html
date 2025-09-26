@@ -231,11 +231,21 @@
         .tooltip::before {
             content: '';
             position: absolute;
+            border: 5px solid transparent;
+        }
+        
+        .tooltip.above::before {
             top: -5px;
-            left: 20px;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 5px solid rgba(0, 0, 0, 0.95);
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-color: rgba(0, 0, 0, 0.95);
+        }
+        
+        .tooltip.below::before {
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top-color: rgba(0, 0, 0, 0.95);
         }
 
         .controls {
@@ -463,6 +473,7 @@
             // Calculate position
             let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
             let top = rect.top - tooltipRect.height - 10;
+            let showBelow = false;
             
             // Keep tooltip within viewport
             const padding = 10;
@@ -472,7 +483,12 @@
             }
             if (top < padding) {
                 top = rect.bottom + 10; // Show below if no room above
+                showBelow = true;
             }
+            
+            // Update tooltip orientation class
+            tooltip.classList.remove('above', 'below');
+            tooltip.classList.add(showBelow ? 'below' : 'above');
             
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
@@ -521,9 +537,6 @@
         });
         
         function generateLens() {
-            const output = document.getElementById('output');
-            const selectedTermsDiv = document.getElementById('selectedTerms');
-            
             if (selectedTerms.size === 0) {
                 alert('Please select at least one term to generate your educational lens.');
                 return;
@@ -548,29 +561,143 @@
                 groupedTerms[term.category].push(term);
             });
             
-            // Generate output HTML grouped by category
-            let html = '';
+            // Generate HTML for new window
+            let resultsHTML = '';
             const categoryOrder = ['Theories', 'Experience', 'Epistemology', 'Curriculum Theory', 'Learning Theories', 'Pedagogical Approaches', 'Assessment Approaches', 'Motivation'];
             
             categoryOrder.forEach(category => {
                 if (groupedTerms[category]) {
-                    html += `<h4 class="category-header">${category}</h4>`;
-                    groupedTerms[category].forEach(term => {
-                        html += `
-                            <div class="selected-term-item">
-                                <h4>${term.text}</h4>
-                                <p>${term.definition}</p>
-                            </div>
-                        `;
-                    });
+                    resultsHTML += `
+                        <div class="category-section">
+                            <h2>${category}</h2>
+                            ${groupedTerms[category].map(term => `
+                                <div class="term-item">
+                                    <h3>${term.text}</h3>
+                                    <p>${term.definition}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
                 }
             });
             
-            selectedTermsDiv.innerHTML = html;
-            output.style.display = 'block';
+            // Create new window content
+            const newWindowContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Educational Lens</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: #fff;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #4a2b7f;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: #4a2b7f;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        .category-section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #4a2b7f;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .term-item {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #c678dd;
+            border-radius: 5px;
+        }
+        h3 {
+            color: #4a2b7f;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4a2b7f, #c678dd);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(74, 43, 127, 0.3);
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 43, 127, 0.4);
+        }
+        @media print {
+            .download-btn { display: none; }
+            body { margin: 0; padding: 20px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+    <div class="header">
+        <h1>My Educational Lens</h1>
+        <p class="subtitle">A personalized framework for educational philosophy and practice</p>
+        <p class="subtitle">Generated on ${new Date().toLocaleDateString()}</p>
+    </div>
+    <div class="content">
+        ${resultsHTML}
+    </div>
+    
+    <script>
+        function downloadPDF() {
+            const element = document.body;
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'my-educational-lens.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
+            `;
             
-            // Scroll to output
-            output.scrollIntoView({ behavior: 'smooth' });
+            // Open in new window
+            const newWindow = window.open('', '_blank', 'width=900,height=700');
+            newWindow.document.write(newWindowContent);
+            newWindow.document.close();
         }
         
         function clearSelections() {
