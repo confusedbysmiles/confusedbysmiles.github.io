@@ -15,6 +15,77 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .site-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+        
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+        
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .profile-info h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .pronouns {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: normal;
+        }
+        
+        .profile-info p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .main-nav {
+            background: rgba(51, 51, 51, 0.95);
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+        
+        .main-container {
             padding: 20px;
         }
         
@@ -192,7 +263,28 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <header class="site-header">
+        <div class="profile-container">
+            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+            <div class="profile-info">
+                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                <p>PhD Student in Educational Studies</p>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="experience.html">Experience & Education</a></li>
+            <li><a href="publications.html">Presentations & Publications</a></li>
+            <li><a href="activities.html">Activities & Certifications</a></li>
+            <li><a href="classes.html" class="active">Classes</a></li>
+        </ul>
+    </nav>
+    
+    <div class="main-container">
+        <div class="container">
         <div class="header">
             <h1>Educational Lens Selector</h1>
             <p>Hover over terms to see definitions, click to select those that align with your educational philosophy</p>
@@ -273,12 +365,24 @@
             <h3>Your Educational Lens</h3>
             <div class="selected-terms" id="selectedTerms"></div>
         </div>
+        </div>
     </div>
     
     <div class="tooltip" id="tooltip"></div>
     
     <script>
         let selectedTerms = new Set();
+        let activeTooltip = null;
+        let activeElement = null;
+        
+        function updateTooltipPosition() {
+            if (activeTooltip && activeElement) {
+                const tooltip = document.getElementById('tooltip');
+                const rect = activeElement.getBoundingClientRect();
+                tooltip.style.left = (rect.left + rect.width / 2 - 175) + 'px';
+                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+            }
+        }
         
         // Add hover and click functionality to all terms
         document.querySelectorAll('.term').forEach(term => {
@@ -288,14 +392,18 @@
                 tooltip.innerHTML = this.dataset.definition;
                 tooltip.style.display = 'block';
                 
+                activeTooltip = tooltip;
+                activeElement = this;
+                
                 // Position tooltip
-                const rect = this.getBoundingClientRect();
-                tooltip.style.left = (rect.left + rect.width / 2 - 175) + 'px';
-                tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+                updateTooltipPosition();
             });
             
             term.addEventListener('mouseleave', function() {
-                document.getElementById('tooltip').style.display = 'none';
+                const tooltip = document.getElementById('tooltip');
+                tooltip.style.display = 'none';
+                activeTooltip = null;
+                activeElement = null;
             });
             
             // Click functionality for selection
