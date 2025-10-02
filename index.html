@@ -7,6 +7,23 @@
     
     <!-- Unified CSS -->
     <link rel="stylesheet" href="sam-servellon-styles.css">
+    
+    <!-- Inline fix for CTA cards - DELETE THIS once CSS is updated -->
+    <style>
+        .cta-cards {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 2rem !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+        }
+        
+        @media (max-width: 900px) {
+            .cta-cards {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header with larger profile image for homepage -->
@@ -100,7 +117,7 @@
             </div>
         </section>
 
-        <!-- Call to Action Section -->
+        <!-- Call to Action Section - THE FIXED VERSION -->
         <div class="cta-section">
             <h3>Learn More About My Work</h3>
             <div class="cta-cards">
