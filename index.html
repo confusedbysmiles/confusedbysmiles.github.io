@@ -3,580 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sam Servellon - PhD Student</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Hero Header */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4rem 0 3rem;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid white;
-            object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .profile-info h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .pronouns {
-            font-size: 1.1rem;
-            font-weight: normal;
-            opacity: 0.9;
-        }
-
-        .profile-info p {
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-            opacity: 0.95;
-        }
-
-        /* Navigation */
-        .main-nav {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-            padding: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: #666;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #667eea;
-        }
-
-        /* Main Content */
-        main {
-            padding: 3rem 0;
-            flex: 1;
-        }
-
-        /* Sections */
-        .section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .section p {
-            color: #555;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
-
-        .section ul {
-            list-style: none;
-            padding-left: 0;
-            margin-top: 1rem;
-        }
-
-        .section li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: #555;
-            line-height: 1.7;
-        }
-
-        .section li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        /* Strengths Section */
-        .strengths {
-            margin-top: 2rem;
-        }
-
-        .strengths h3 {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .tag {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            color: #667eea;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            transition: all 0.3s;
-        }
-
-        .tag:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            margin-top: 3rem;
-        }
-
-        .cta-section h3 {
-            font-size: 2rem;
-            color: #333;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .cta-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .cta-card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-top: 4px solid #667eea;
-            transition: all 0.3s;
-            display: block;
-        }
-
-        .cta-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-
-        .cta-card h4 {
-            color: #333;
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .cta-card p {
-            color: #666;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        /* Footer - Updated with gradient and CC styling */
-        .footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-top: auto;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
-        }
-
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .contact-link {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 6px;
-        }
-
-        .contact-link:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .contact-link svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Creative Commons Section */
-        .cc-section {
-            background: rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 10px;
-            margin: 30px 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .cc-section:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .cc-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .cc-license {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .cc-icons {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .cc-icon {
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .cc-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .cc-icon svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .cc-text {
-            flex: 1;
-        }
-
-        .cc-text h4 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .cc-text p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.95;
-            line-height: 1.5;
-        }
-
-        .cc-text a {
-            color: #ffd700;
-            text-decoration: none;
-            border-bottom: 1px dotted #ffd700;
-            transition: color 0.2s ease;
-        }
-
-        .cc-text a:hover {
-            color: #fff;
-            border-bottom-color: #fff;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        @media (max-width: 768px) {
-            .footer {
-                border-radius: 0;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .contact-link {
-                width: fit-content;
-            }
-
-            .cc-container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .cc-license {
-                flex-direction: column;
-                min-width: auto;
-            }
-        }
-    </style>
+    <title>Sam Servellon - PhD Student in Educational Studies</title>
+    
+    <!-- Unified CSS -->
+    <link rel="stylesheet" href="sam-servellon-styles.css">
 </head>
 <body>
+    <!-- Header with larger profile image for homepage -->
     <header class="header">
         <div class="container">
             <div class="profile-container">
                 <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
                 <div class="profile-info">
                     <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                    <p>PhD Student, Educational Studies</p>
-                    <p>Specialization in Innovative Learning Technologies</p>
-                    <p>Certificate in Mixed Methods Research</p>
+                    <p>PhD Student in Educational Studies</p>
                     <p>University of Nebraska-Lincoln</p>
                 </div>
             </div>
         </div>
     </header>
-    
+
+    <!-- Navigation -->
     <nav class="main-nav">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="pedagogy.html">Pedagogy & Praxis</a></li>
-                <li><a href="experience.html">Experience & Education</a></li>
-                <li><a href="publications.html">Presentations & Publications</a></li>
-                <li><a href="activities.html">Activities & Certifications</a></li>
-                <li><a href="classes.html">Classes</a></li>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/pedagogy.html">Pedagogy & Praxis</a></li>
+                <li><a href="/experience.html">Experience & Education</a></li>
+                <li><a href="/publications.html">Publications</a></li>
+                <li><a href="/activities.html">Activities</a></li>
+                <li><a href="/classes.html">Classes</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
             </ul>
         </div>
     </nav>
-    
+
+    <!-- Main Content -->
     <main class="container">
-        <section id="about" class="section">
+        <!-- About Me Section -->
+        <section class="section">
             <h2 class="section-title">About Me</h2>
-            <p>I am a PhD student in Educational Studies at the University of Nebraska-Lincoln, specializing in Innovative Learning Technologies with a certificate in Mixed Methods Research. My research explores the intersection of technology, education, and inclusive learning environments.</p>
-            <p>My academic journey is driven by a passion for understanding how emerging technologies can transform educational experiences and create more accessible and equitable learning opportunities for diverse populations.</p>
-            
-            <div class="strengths">
-                <h3>Gallup Strengths</h3>
-                <div class="tags-container">
-                    <span class="tag">Learner</span>
-                    <span class="tag">Intellection</span>
-                    <span class="tag">Responsibility</span>
-                    <span class="tag">Input</span>
-                    <span class="tag">Achiever</span>
-                </div>
+            <div class="page-intro">
+                <p>
+                    I am a PhD student in Educational Studies at the University of Nebraska-Lincoln, specializing in <span class="academic-focus">Innovative Learning Technologies</span> with a certificate in <span class="academic-focus">Mixed Methods Research</span>. My research explores the intersection of technology, education, and inclusive learning environments.
+                </p>
+                <p>
+                    My academic journey is driven by a passion for understanding how emerging technologies can transform educational experiences and create more accessible and equitable learning opportunities for diverse populations.
+                </p>
             </div>
-            
-            <div class="strengths">
-                <h3>Key Strengths & Skills</h3>
-                <div class="tags-container">
-                    <span class="tag">Student Focused</span>
-                    <span class="tag">Self Motivated</span>
-                    <span class="tag">Problem Solver</span>
-                    <span class="tag">Adaptable</span>
-                    <span class="tag">Creating Inclusive Environments</span>
-                    <span class="tag">Strong Time Management</span>
-                    <span class="tag">Data Driven</span>
-                    <span class="tag">Effective Communicator</span>
+        </section>
+
+        <!-- Gallup Strengths Section -->
+        <section class="section strengths">
+            <h2 class="section-title">Gallup Strengths</h2>
+            <div class="tags-container">
+                <span class="tag">Learner</span>
+                <span class="tag">Input</span>
+                <span class="tag">Intellection</span>
+                <span class="tag">Restorative</span>
+                <span class="tag">Individualization</span>
+            </div>
+        </section>
+
+        <!-- Key Strengths & Skills -->
+        <section class="section">
+            <h2 class="section-title">Key Strengths & Skills</h2>
+            <div class="skills-section">
+                <div class="skills-grid">
+                    <div class="skill-item">Educational Technology Integration</div>
+                    <div class="skill-item">Mixed Methods Research</div>
+                    <div class="skill-item">Data Analysis & Visualization</div>
+                    <div class="skill-item">Curriculum Development</div>
+                    <div class="skill-item">Inclusive Pedagogy</div>
+                    <div class="skill-item">AI in Education</div>
+                    <div class="skill-item">Database Systems</div>
+                    <div class="skill-item">Python & R Programming</div>
                 </div>
             </div>
         </section>
-        
-        <section id="research" class="section">
+
+        <!-- Research Focus Section -->
+        <section class="section">
             <h2 class="section-title">Research Focus</h2>
-            <p>My research examines how innovative technologies can be leveraged to create more accessible and effective learning environments. I employ mixed methods approaches to gain comprehensive insights into the complex dynamics of technology-enhanced learning spaces.</p>
-            <p>Research interests include:</p>
-            <ul>
-                <li>AI integration in educational contexts</li>
-                <li>Creating student-centered learning environments</li>
-                <li>Developing innovative tools for inclusive education</li>
-                <li>Data-driven approaches to educational technology</li>
-                <li>Social-emotional learning through technology</li>
-            </ul>
+            <div class="content-section">
+                <p>
+                    My research examines how innovative technologies can be leveraged to create more accessible and effective learning environments. I employ mixed methods approaches to gain comprehensive insights into the complex dynamics of technology-enhanced learning spaces.
+                </p>
+                <h3>Research interests include:</h3>
+                <ul>
+                    <li>AI integration in educational contexts</li>
+                    <li>Creating student-centered learning environments</li>
+                    <li>Developing innovative tools for inclusive education</li>
+                    <li>Data-driven approaches to educational technology</li>
+                    <li>Social-emotional learning through technology</li>
+                </ul>
+            </div>
         </section>
-        
-        <div class="cta-section">
+
+        <!-- Call to Action Section -->
+        <section class="cta-section">
             <h3>Learn More About My Work</h3>
             <div class="cta-cards">
-                <a href="experience.html" class="cta-card">
+                <div class="cta-card">
                     <h4>Professional Experience & Education</h4>
                     <p>View my academic journey and professional roles in education and technology.</p>
-                </a>
-                <a href="publications.html" class="cta-card">
+                    <a href="/experience.html" class="course-link">View Experience</a>
+                </div>
+
+                <div class="cta-card">
                     <h4>Presentations & Publications</h4>
                     <p>Explore my research contributions and academic presentations.</p>
-                </a>
-                <a href="activities.html" class="cta-card">
+                    <a href="/publications.html" class="course-link">View Publications</a>
+                </div>
+
+                <div class="cta-card">
                     <h4>Activities & Certifications</h4>
                     <p>Learn about my community involvement and professional certifications.</p>
-                </a>
-                <a href="classes.html" class="cta-card">
+                    <a href="/activities.html" class="course-link">View Activities</a>
+                </div>
+
+                <div class="cta-card">
                     <h4>Classes</h4>
                     <p>View coursework and projects from my PhD program.</p>
-                </a>
-            </div>
-        </div>
-    </main>
-     <footer class="footer">
-        <div class="container">
-            <h3>Contact Information</h3>
-            <div class="contact-links">
-                <a href="mailto:sam@servellon.net" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    sam@servellon.net
-                </a>
-                <a href="tel:4023505157" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                    </svg>
-                    402.350.5157
-                </a>
-                <a href="https://www.linkedin.com/in/sam-s-2b88ba27/" target="_blank" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
-                    LinkedIn
-                </a>
-                <a href="https://www.unl.edu" target="_blank" class="contact-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 10.93c-.73 4.03-5 7.07-5 7.07s-5-3-5-7a5 5 0 1 1 10 0z"></path>
-                        <circle cx="17" cy="11" r="1"></circle>
-                        <path d="M7 20.98c-3.04-.51-5-2.98-5-6.98 0-5 4-9 9-9 .38 0 .74.03 1.1.08"></path>
-                    </svg>
-                    University of Nebraska-Lincoln
-                </a>
-            </div>
-
-            <!-- Creative Commons License Section -->
-            <div class="cc-section">
-                <div class="cc-container">
-                    <div class="cc-license">
-                        <div class="cc-icons">
-                            <!-- CC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-9c0-3.03 2.47-5.5 5.5-5.5 1.41 0 2.7.53 3.68 1.4l-1.42 1.42C13.54 7.56 12.54 7 11.5 7 9.57 7 8 8.57 8 10.5S9.57 14 11.5 14c1.04 0 2.04-.56 2.76-1.32l1.42 1.42C14.7 14.97 13.41 15.5 12 15.5c-3.03 0-5.5-2.47-5.5-5.5z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- BY Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- NC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1.41-9.41L9.17 9.17C9.62 8.72 10.21 8.5 10.83 8.5h2.34c.62 0 1.21.22 1.66.67l1.41 1.41c-.45-.45-1.04-.67-1.66-.67h-2.34c-.62 0-1.21.22-1.66.67zm4.82 4.82l-1.41-1.41c.45.45 1.04.67 1.66.67h-2.34c-.62 0-1.21-.22-1.66-.67l-1.41 1.41c.45.45 1.04.67 1.66.67h2.34c.62 0 1.21-.22 1.66-.67zM2.81 2.81L1.39 4.22 7.17 10H8v.83l1.59 1.59C9.22 12.79 9 13.37 9 14h6l3.78 3.78 1.41-1.41L2.81 2.81z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- SA Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-1.84 0-3.5.8-4.65 2.08l1.43 1.39A3.98 3.98 0 0112 10c2.21 0 4 1.79 4 4s-1.79 4-4 4a3.98 3.98 0 01-3.22-1.63l-1.43 1.39C8.5 18.96 10.16 20 12 20c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#333"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="cc-text">
-                            <h4>Creative Commons License</h4>
-                            <p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
-                        </div>
-                    </div>
+                    <a href="/classes.html" class="course-link">View Classes</a>
                 </div>
             </div>
+        </section>
+    </main>
 
-            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Load footer only (header is custom for homepage) -->
+    <script>
+        // Custom loader for homepage - only load footer
+        async function loadFooter() {
+            try {
+                const response = await fetch('footer.html');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const html = await response.text();
+                const element = document.getElementById('footer-placeholder');
+                if (element) element.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading footer:', error);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadFooter);
+    </script>
 </body>
 </html>
