@@ -13,7 +13,7 @@
 // Store the SHA-256 hash of your password (not the actual password!)
 // Current hash is for the password: "TEAC860"
 // To change: generate a new hash using the function below
-const PASSWORD_HASH = '8a5c4f1e9d3b2a7f6e8c9d4b5a3f7e2c1d9b8a6f4e3c2b1a9e8d7c6b5a4f3e2d1';
+const PASSWORD_HASH = '1bd88af43d449299fef376c4b5517c73888d71714b05616a1368ee176c3b03f7';
 
 /**
  * Generate SHA-256 hash of a password
