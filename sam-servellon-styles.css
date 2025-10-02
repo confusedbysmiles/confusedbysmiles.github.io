@@ -89,7 +89,8 @@ a:hover {
 /* Main Content Area */
 main {
     flex: 1;
-    padding: var(--spacing-xl) 0;
+    padding: 4rem 0;
+    min-height: 60vh;
 }
 
 /* Header Styles */
@@ -98,6 +99,7 @@ main {
     color: var(--light);
     padding: var(--spacing-lg) 0;
     box-shadow: 0 2px 8px var(--shadow);
+    margin-bottom: 3rem;
 }
 
 .profile-container {
@@ -538,7 +540,7 @@ main {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: var(--light);
     padding: var(--spacing-xl) 0;
-    margin-top: auto;
+    margin-top: 4rem;
     box-shadow: 0 -5px 30px var(--shadow);
 }
 
