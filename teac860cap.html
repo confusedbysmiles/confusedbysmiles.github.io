@@ -3,428 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAC 860 Capstone Project - Sam Servellon</title>
+    <title>TEAC 860 Capstone - Sam Servellon</title>
+    
+    <!-- Unified CSS -->
     <link rel="stylesheet" href="sam-servellon-styles.css">
-    <style>
-        /* Additional styles specific to this page */
-        .content-container {
-            display: none; /* Hidden by default until password is entered */
-        }
-        
-        .password-container {
-            max-width: 500px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: var(--light-gray);
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px var(--shadow);
-            text-align: center;
-        }
-        
-        .password-input {
-            padding: 0.5rem 1rem;
-            width: 100%;
-            margin: 1rem 0;
-            border: 1px solid var(--primary-light);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-        }
-        
-        .password-button {
-            background-color: var(--primary);
-            color: var(--light);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: bold;
-            transition: var(--transition);
-        }
-        
-        .password-button:hover {
-            background-color: var(--accent);
-        }
-        
-        .incorrect-password {
-            color: red;
-            margin-top: 1rem;
-            display: none;
-        }
-        
-        .media-container {
-            margin: 2rem 0;
-            padding: 2rem;
-            background-color: var(--light-gray);
-            border-radius: var(--border-radius);
-        }
-        
-        .video-container {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background-color: var(--secondary);
-            border-radius: var(--border-radius);
-        }
-        
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        
-        .drive-container {
-            width: 100%;
-            background-color: var(--light-gray);
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 10px var(--shadow);
-            overflow: hidden;
-            margin-top: 1.5rem;
-        }
-        
-        .drive-embed {
-            width: 100%;
-            height: 700px;
-            border: none;
-        }
-        
-        .project-summary {
-            background-color: var(--light);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 4px 6px var(--shadow);
-        }
-  /* Footer - Updated with gradient and CC styling */
-        .footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-top: auto;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
-        }
-
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .contact-link {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 6px;
-        }
-
-        .contact-link:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .contact-link svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        
-                /* Creative Commons Section */
-        .cc-section {
-            background: rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 10px;
-            margin: 30px 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .cc-section:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .cc-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .cc-license {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .cc-icons {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .cc-icon {
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .cc-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .cc-icon svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .cc-text {
-            flex: 1;
-        }
-
-        .cc-text h4 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .cc-text p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.95;
-            line-height: 1.5;
-        }
-
-        .cc-text a {
-            color: #ffd700;
-            text-decoration: none;
-            border-bottom: 1px dotted #ffd700;
-            transition: color 0.2s ease;
-        }
-
-        .cc-text a:hover {
-            color: #fff;
-            border-bottom-color: #fff;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        @media (max-width: 768px) {
-            .footer {
-                border-radius: 0;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .contact-link {
-                width: fit-content;
-            }
-
-            .cc-container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .cc-license {
-                flex-direction: column;
-                min-width: auto;
-            }
-    </style>
 </head>
 <body>
-    <header class="header header-small">
-        <div class="container profile-container-small">
-            <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
-            <div class="profile-info-small">
-                <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                <p>PhD Student in Educational Studies</p>
-            </div>
-        </div>
-    </header>
-    
-    <nav class="main-nav">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pedagogy.html">Pedagogy & Praxis</a></li>
-                <li><a href="experience.html">Experience & Education</a></li>
-                <li><a href="publications.html">Presentations & Publications</a></li>
-                <li><a href="activities.html">Activities & Certifications</a></li>
-                <li><a href="classes.html" class="active">Classes</a></li>
-            </ul>
-        </div>
-    </nav>
-    
-    <main>
-        <!-- Password Protection Section -->
-        <div class="container">
-            <div class="password-container" id="passwordContainer">
-                <h2>Password Protected Content</h2>
-                <p>This page contains protected content for TEAC 860 Capstone Project. Please enter the password to continue.</p>
-                <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
-                <button id="submitPassword" class="password-button">Submit</button>
-                <p id="incorrectPassword" class="incorrect-password">Incorrect password. Please try again.</p>
-            </div>
-        </div>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Password Protection Container -->
+    <div id="password-container" class="password-container">
+        <h2>Password Protected Content</h2>
+        <p>This page contains protected content for TEAC 860 Capstone Project. Please enter the password to continue.</p>
         
-        <!-- Main Content (Hidden until password entered) -->
-        <div class="content-container" id="contentContainer">
-            <div class="container">
-                <div class="page-header">
-                    <h2 class="page-title">TEAC 860 Capstone Project</h2>
-                </div>
-                
-                <section class="section">
-                    <h2 class="section-title">Project Overview</h2>
-                    <div class="project-summary">
-                        <p>When our AI capstone class kicked off, I immediately thought about the Management Information Systems course I teach at Seton Hill. Having taught it before with materials I wasn't thrilled about, I finally had the chance to really overhaul it instead of just getting handed last year's export at the last minute. I decided to rebuild it for both my traditional undergrads and my adult learners, knowing full well I'd need to redo parts next year because the textbook is so outdated.</p>
-                        
-                        <p>I structured everything around a meta-cognitive framework to help students think like managers - not just analyzing data, but considering how systems integrate, their practical uses, and potential pitfalls. One thing that worked surprisingly well was sharing how I used AI to develop parts of the class. This created an accountability system for me and showed students real examples of AI in action, which is tough to demonstrate in an asynchronous environment. The results, student feedback, and all my teaching materials are included in the walk-through video and Google Drive link below.</p>
-                    </div>
-                </section>
-                
-                <section class="section">
-                    <h2 class="section-title">Project Presentation</h2>
-                    <div class="media-container">
-                        <div class="video-container">
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/T9HTxEo8lYQ?si=ADPMnfH5pzLPGMXm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </section>
-                
-                <section class="section">
-                    <h2 class="section-title">Project Resources</h2>
-                    <div class="drive-container">
-                        <iframe class="drive-embed" src="https://drive.google.com/embeddedfolderview?id=1NT3l-5d_1QHQ8osOk9cf5uKD55nypmDs&amp;resourcekey=0-8FQ-5ZhICZ5PsYVOUWl9nA" allowfullscreen></iframe>
-                    </div>
-                </section>
+        <form id="password-form">
+            <div class="password-input-group">
+                <input 
+                    type="password" 
+                    id="password-input" 
+                    class="password-input" 
+                    placeholder="Enter password"
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="password-submit">Submit</button>
             </div>
+            <p id="password-error" class="password-error">Incorrect password. Please try again.</p>
+        </form>
+    </div>
+
+    <!-- Protected Content (hidden until password is correct) -->
+    <main id="protected-content" class="container protected-content">
+        <div class="page-header">
+            <h1 class="page-title">TEAC 860 Capstone Project</h1>
+        </div>
+
+        <div class="content-section">
+            <h2>Project Overview</h2>
+            <p>
+                When our AI capstone class kicked off, I immediately thought about the Management Information Systems course I teach at Seton Hill. Having taught it before with materials I wasn't thrilled about, I finally had the chance to really overhaul it instead of just getting handed last year's export at the last minute. I decided to rebuild it for both my traditional undergrads and my adult learners, knowing full well I'd need to redo parts next year because the textbook is so outdated.
+            </p>
+            <p>
+                I structured everything around a meta-cognitive framework to help students think like managers - not just analyzing data, but considering how systems integrate, their practical uses, and potential pitfalls. One thing that worked surprisingly well was sharing how I used AI to develop parts of the class. This created an accountability system for me and showed students real examples of AI in action, which is tough to demonstrate in an asynchronous environment. The results, student feedback, and all my teaching materials are included in the walk-through video and Google Drive link below.
+            </p>
+        </div>
+
+        <!-- Add more content sections as needed -->
+        <div class="content-section">
+            <h2>Project Materials</h2>
+            <p>Access to course materials, videos, and additional resources would go here...</p>
         </div>
     </main>
-    
-    <footer class="footer">
-        <div class="container">
-              <div class="cc-section">
-                <div class="cc-container">
-                    <div class="cc-license">
-                        <div class="cc-icons">
-                            <!-- CC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-9c0-3.03 2.47-5.5 5.5-5.5 1.41 0 2.7.53 3.68 1.4l-1.42 1.42C13.54 7.56 12.54 7 11.5 7 9.57 7 8 8.57 8 10.5S9.57 14 11.5 14c1.04 0 2.04-.56 2.76-1.32l1.42 1.42C14.7 14.97 13.41 15.5 12 15.5c-3.03 0-5.5-2.47-5.5-5.5z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- BY Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- NC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1.41-9.41L9.17 9.17C9.62 8.72 10.21 8.5 10.83 8.5h2.34c.62 0 1.21.22 1.66.67l1.41 1.41c-.45-.45-1.04-.67-1.66-.67h-2.34c-.62 0-1.21.22-1.66.67zm4.82 4.82l-1.41-1.41c.45.45 1.04.67 1.66.67h-2.34c-.62 0-1.21-.22-1.66-.67l-1.41 1.41c.45.45 1.04.67 1.66.67h2.34c.62 0 1.21-.22 1.66-.67zM2.81 2.81L1.39 4.22 7.17 10H8v.83l1.59 1.59C9.22 12.79 9 13.37 9 14h6l3.78 3.78 1.41-1.41L2.81 2.81z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- SA Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-1.84 0-3.5.8-4.65 2.08l1.43 1.39A3.98 3.98 0 0112 10c2.21 0 4 1.79 4 4s-1.79 4-4 4a3.98 3.98 0 01-3.22-1.63l-1.43 1.39C8.5 18.96 10.16 20 12 20c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#333"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="cc-text">
-                            <h4>Creative Commons License</h4>
-                            <p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
 
-    <!-- Password Protection Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const correctPassword = "hesnotjustanyguyhesTHEGUY!";
-            const passwordInput = document.getElementById('passwordInput');
-            const submitButton = document.getElementById('submitPassword');
-            const incorrectMessage = document.getElementById('incorrectPassword');
-            const passwordContainer = document.getElementById('passwordContainer');
-            const contentContainer = document.getElementById('contentContainer');
-            
-            // Check if password has been entered in this session
-            if (sessionStorage.getItem('teac860Authenticated') === 'true') {
-                passwordContainer.style.display = 'none';
-                contentContainer.style.display = 'block';
-            }
-            
-            // Password submission event
-            submitButton.addEventListener('click', checkPassword);
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
-            });
-            
-            function checkPassword() {
-                if (passwordInput.value === correctPassword) {
-                    passwordContainer.style.display = 'none';
-                    contentContainer.style.display = 'block';
-                    sessionStorage.setItem('teac860Authenticated', 'true');
-                } else {
-                    incorrectMessage.style.display = 'block';
-                    passwordInput.value = '';
-                    setTimeout(() => {
-                        incorrectMessage.style.display = 'none';
-                    }, 3000);
-                }
-            }
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="component-loader.js"></script>
+    <script src="password-protection.js"></script>
 </body>
 </html>
