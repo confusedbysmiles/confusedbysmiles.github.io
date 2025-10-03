@@ -4,99 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TEAC 859 Notes & Reflections - Sam Servellon</title>
+  
+  <!-- Unified CSS -->
+  <link rel="stylesheet" href="sam-servellon-styles.css">
+  
+  <!-- Page-specific styles -->
   <style>
-    * { 
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box; 
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background-color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .full-width-container { 
-      width: 100%; 
-    }
-    
-    /* Header Styles */
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem;
-    }
-    
-    .profile-container {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .profile-image {
-      width: 80px; 
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid white;
-      object-fit: cover;
-    }
-    
-    .profile-info h1 { 
-      font-size: 2rem; 
-      margin-bottom: 0.25rem; 
-    }
-    
-    .pronouns { 
-      font-size: 1rem; 
-      font-weight: normal; 
-      opacity: 0.9; 
-    }
-    
-    .profile-info p { 
-      font-size: 1.1rem; 
-      opacity: 0.95; 
-    }
-    
-    /* Navigation */
-    .main-nav {
-      background: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: sticky; 
-      top: 0; 
-      z-index: 100; 
-      padding: 0 2rem;
-    }
-    
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-      padding: 1rem 0;
-      flex-wrap: wrap;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .nav-links a {
-      color: #666; 
-      text-decoration: none;
-      font-weight: 500; 
-      transition: color 0.3s;
-      padding: 0.5rem 0;
-    }
-    
-    .nav-links a:hover, 
-    .nav-links a.active { 
-      color: #667eea; 
-    }
-    
     /* Page Header */
     .page-header {
       background: white;
@@ -105,17 +18,6 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       text-align: center;
-    }
-    
-    .page-title { 
-      font-size: 2rem; 
-      color: #333; 
-      margin-bottom: 0.5rem; 
-    }
-    
-    .page-subtitle { 
-      color: #666; 
-      font-size: 1.1rem; 
     }
     
     /* Main Layout */
@@ -332,56 +234,6 @@
       100% { transform: rotate(360deg); } 
     }
     
-/* Footer - Updated with gradient and CC styling */
-        .footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-top: auto;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
-        }
-
-        .footer h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .contact-link {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 6px;
-        }
-
-        .contact-link:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .contact-link svg {
-            width: 20px;
-            height: 20px;
-        }
-    
     /* Responsive Design */
     @media (max-width: 1024px) {
       .content-wrapper { 
@@ -416,152 +268,11 @@
     .file-list::-webkit-scrollbar-thumb:hover { 
       background: #5568d3; 
     }
-
-                    /* Creative Commons Section */
-        .cc-section {
-            background: rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 10px;
-            margin: 30px 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .cc-section:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .cc-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .cc-license {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .cc-icons {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .cc-icon {
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .cc-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .cc-icon svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .cc-text {
-            flex: 1;
-        }
-
-        .cc-text h4 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .cc-text p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.95;
-            line-height: 1.5;
-        }
-
-        .cc-text a {
-            color: #ffd700;
-            text-decoration: none;
-            border-bottom: 1px dotted #ffd700;
-            transition: color 0.2s ease;
-        }
-
-        .cc-text a:hover {
-            color: #fff;
-            border-bottom-color: #fff;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        @media (max-width: 768px) {
-            .footer {
-                border-radius: 0;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .contact-link {
-                width: fit-content;
-            }
-
-            .cc-container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .cc-license {
-                flex-direction: column;
-                min-width: auto;
-            }
   </style>
 </head>
 <body>
-  <header class="header full-width-container">
-    <div class="profile-container">
-      <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image"/>
-      <div class="profile-info">
-        <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-        <p>PhD Student in Educational Studies</p>
-      </div>
-    </div>
-  </header>
-  
-  <nav class="main-nav full-width-container">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="pedagogy.html">Pedagogy & Praxis</a></li>
-      <li><a href="experience.html">Experience & Education</a></li>
-      <li><a href="publications.html">Presentations & Publications</a></li>
-      <li><a href="activities.html">Activities & Certifications</a></li>
-      <li><a href="classes.html" class="active">Classes</a></li>
-    </ul>
-  </nav>
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
   
   <div class="page-header">
     <h1 class="page-title">TEAC 859: Designing Learning Experiences</h1>
@@ -615,48 +326,11 @@
     </div>
   </div>
   
-    <footer class="footer">
-        <div class="container">
-              <div class="cc-section">
-                <div class="cc-container">
-                    <div class="cc-license">
-                        <div class="cc-icons">
-                            <!-- CC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-9c0-3.03 2.47-5.5 5.5-5.5 1.41 0 2.7.53 3.68 1.4l-1.42 1.42C13.54 7.56 12.54 7 11.5 7 9.57 7 8 8.57 8 10.5S9.57 14 11.5 14c1.04 0 2.04-.56 2.76-1.32l1.42 1.42C14.7 14.97 13.41 15.5 12 15.5c-3.03 0-5.5-2.47-5.5-5.5z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- BY Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- NC Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1.41-9.41L9.17 9.17C9.62 8.72 10.21 8.5 10.83 8.5h2.34c.62 0 1.21.22 1.66.67l1.41 1.41c-.45-.45-1.04-.67-1.66-.67h-2.34c-.62 0-1.21.22-1.66.67zm4.82 4.82l-1.41-1.41c.45.45 1.04.67 1.66.67h-2.34c-.62 0-1.21-.22-1.66-.67l-1.41 1.41c.45.45 1.04.67 1.66.67h2.34c.62 0 1.21-.22 1.66-.67zM2.81 2.81L1.39 4.22 7.17 10H8v.83l1.59 1.59C9.22 12.79 9 13.37 9 14h6l3.78 3.78 1.41-1.41L2.81 2.81z" fill="#333"/>
-                                </svg>
-                            </div>
-                            <!-- SA Icon -->
-                            <div class="cc-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-1.84 0-3.5.8-4.65 2.08l1.43 1.39A3.98 3.98 0 0112 10c2.21 0 4 1.79 4 4s-1.79 4-4 4a3.98 3.98 0 01-3.22-1.63l-1.43 1.39C8.5 18.96 10.16 20 12 20c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#333"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="cc-text">
-                            <h4>Creative Commons License</h4>
-                            <p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="copyright">&copy; 2025 Sam Servellon. All Rights Reserved.</p>
-        </div>
-    </footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+  
+  <!-- Scripts -->
+  <script src="component-loader.js"></script>
   
   <script>
     // Weekly materials data
@@ -751,31 +425,38 @@
           }
         ]
       },
-      week6: { folderName: "Week 6", start: "2025-09-26", end: "2025-10-02", 
-              files: [
-                {
-                  name: "Week 6 Slides",
-                  icon: "📊",
-                  url: "https://docs.google.com/presentation/d/1ToT446m6VIolHAMBHVIN3kq6AoEsfAQJJCUIFVuIC9s/preview"
-                },
-                {
-                  name: "Week 6 Notes",
-                  icon: "✏️",
-                  url: "https://drive.google.com/file/d/1t3iPnDNuzscF5WdnWa-5ztIz40LRYQAP/preview",
-                },
-                {
-                  name: "Week 6 NotebookLM Podcast",
-                  icon: " 🎙️✨",
-                  url: "https://drive.google.com/file/d/1byOVCFcezV3TOB1VHfw1t7zZOstNaApv/preview",
-                },
-                {
-                  name: "The Story of Curriculum - by NotebookLM",
-                  icon: "🎥✨",
-                  url: "https://drive.google.com/file/d/1RR3I_WVtk_R8paeCzZEg9cu9Pz6RIQ4o/preview"
-                }
-                }
-              ] 
-             },
+      week6: { 
+        folderName: "Week 6", 
+        start: "2025-09-26", 
+        end: "2025-10-02", 
+        files: [
+          {
+            name: "Week 6 Slides",
+            icon: "📊",
+            url: "https://docs.google.com/presentation/d/1ToT446m6VIolHAMBHVIN3kq6AoEsfAQJJCUIFVuIC9s/preview"
+          },
+          {
+            name: "Week 6 Notes",
+            icon: "✏️",
+            url: "https://drive.google.com/file/d/1t3iPnDNuzscF5WdnWa-5ztIz40LRYQAP/preview"
+          },
+          {
+            name: "Week 6 NotebookLM Podcast",
+            icon: "🎙️✨",
+            url: "https://drive.google.com/file/d/1byOVCFcezV3TOB1VHfw1t7zZOstNaApv/preview"
+          },
+          {
+            name: "The Story of Curriculum - by NotebookLM",
+            icon: "🎥✨",
+            url: "https://drive.google.com/file/d/1RR3I_WVtk_R8paeCzZEg9cu9Pz6RIQ4o/preview"
+          },
+          {
+            name: "Decolonizing and Anti-oppressive Discourses in Indigenous Math Ed",
+            icon: "📋",
+            url: "https://drive.google.com/file/d/1TPhn7hl-bd89HoFkUElB0z3uZpH6rWgS/vpreview"
+          }
+        ] 
+      },
       week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
       week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
       week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
@@ -885,32 +566,23 @@
     // Auto-select current week and load first file on page load
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
-      // Strip time component for date-only comparison
       today.setHours(0, 0, 0, 0);
       
       let weekFound = false;
-      
-      // Debug: Log current date
-      console.log('Current date:', today.toDateString());
 
       // Try to find current week
       for (const [key, week] of Object.entries(weeklyMaterials)) {
         const start = new Date(week.start);
         const end = new Date(week.end);
         
-        // Strip time components for date-only comparison
         start.setHours(0, 0, 0, 0);
         end.setHours(23, 59, 59, 999);
-        
-        console.log(`Checking ${key}: ${start.toDateString()} to ${end.toDateString()}`);
 
         if (today >= start && today <= end) {
-          console.log(`Found current week: ${key} (${week.folderName})`);
           weekFound = true;
           weekSelect.value = key;
           displayFiles(week);
 
-          // Auto-load first file if available
           if (week.files.length > 0) {
             setTimeout(() => {
               const firstItem = document.querySelector('.file-item');
@@ -924,10 +596,8 @@
         }
       }
 
-      // If no current week found, find the most recent past week or next upcoming week
+      // If no current week found, find closest match
       if (!weekFound) {
-        console.log('No current week found, finding closest match...');
-        
         let closestWeek = null;
         let closestDistance = Infinity;
         
@@ -942,7 +612,6 @@
         }
         
         if (closestWeek) {
-          console.log(`Loading closest week: ${closestWeek.key}`);
           weekSelect.value = closestWeek.key;
           displayFiles(closestWeek.week);
           
