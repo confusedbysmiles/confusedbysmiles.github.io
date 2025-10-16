@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Project - Decolonizing Pedagogy | Sam Servellon</title>
+    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        /* Additional styles for the two-column layout */
+        .project-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .right-column {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .presentation-embed {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 2px solid var(--secondary);
+        }
+
+        .artifact-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .artifact-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .artifact-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px var(--shadow-dark);
+            border-left-color: var(--accent);
+        }
+
+        .artifact-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .artifact-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .artifact-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            align-self: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        .artifact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: var(--light);
+        }
+
+        @media (max-width: 968px) {
+            .project-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="profile-container-small">
+                <img src="sam-servellon.jepg" alt="Sam Servellon" class="profile-image-small">
+                <div class="profile-info-small">
+                    <h1>Sam Servellon <span class="pronouns">(they/them)</span></h1>
+                    <p>Doctoral Student | Learning Design & Technology</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cv.html">CV</a></li>
+                <li><a href="pedagogy.html">Pedagogy</a></li>
+                <li><a href="publications.html">Publications</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="teac859finalproject.html" class="active">Final Project</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">How do you unlearn what you thought you knew?</h1>
+                <p class="page-subtitle">An auto-ethnographic exploration of decolonizing pedagogy through technology</p>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="project-layout">
+                <!-- Left Column: Text and Artifact Cards -->
+                <div class="left-column">
+                    <!-- Project Overview -->
+                    <section class="content-section">
+                        <h2>Project Overview</h2>
+                        <p>This auto-ethnography documents my journey of deconstructing colonial thoughts and frameworks embedded in my teaching practice and daily life. Using technology—both digital and analog—as tools to examine, document, and transform my praxis, I am constructing a liberation and equity framework that centers marginalized voices and challenges oppressive systems.</p>
+                        <p>My hope is that this documented pathway can be useful for teachers developing liberatory instruction and for other educators and students beginning similar journeys toward conscientização.</p>
+                    </section>
+
+                    <!-- Key Themes -->
+                    <section class="content-section">
+                        <h2>Key Themes</h2>
+                        <ul>
+                            <li><strong>Deconstruction:</strong> Identifying and naming colonial frameworks in teaching (e.g., ADDIE, Backwards Design, banking education)</li>
+                            <li><strong>Technology as Tool:</strong> Using digital and analog tools (website, heatmaps, mind maps) to document the transformation process</li>
+                            <li><strong>Reconstruction:</strong> Building toward liberatory approaches (Critical Fabulations, Rasquachismo, culturally responsive pedagogy)</li>
+                            <li><strong>Pathway Creation:</strong> Making this journey replicable and participatory for other educators</li>
+                        </ul>
+                    </section>
+
+                    <!-- Related Artifacts -->
+                    <section>
+                        <h2 class="section-header">Related Artifacts & Resources</h2>
+                        <div class="artifact-cards">
+                            <div class="artifact-card">
+                                <h3 class="artifact-title">Pedagogical Profile Heatmap</h3>
+                                <p class="artifact-description">Visual representation of my movement from colonial frameworks toward liberatory design approaches across six critical dimensions.</p>
+                                <a href="#" class="artifact-link">View Heatmap</a>
+                            </div>
+
+                            <div class="artifact-card">
+                                <h3 class="artifact-title">Teaching Philosophy</h3>
+                                <p class="artifact-description">My evolving philosophy centering liberation, critical consciousness, and technology as democratizing force.</p>
+                                <a href="pedagogy.html" class="artifact-link">Read Philosophy</a>
+                            </div>
+
+                            <div class="artifact-card">
+                                <h3 class="artifact-title">Course Reflections</h3>
+                                <p class="artifact-description">Weekly synthesis documents tracing my engagement with learning theories through a Freirean lens.</p>
+                                <a href="courses.html" class="artifact-link">View Course Work</a>
+                            </div>
+
+                            <div class="artifact-card">
+                                <h3 class="artifact-title">Educational Lens Activity</h3>
+                                <p class="artifact-description">Interactive tool for identifying philosophical commitments and design framework alignments.</p>
+                                <a href="#" class="artifact-link">Explore Activity</a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Presentation Embed -->
+                <div class="right-column">
+                    <div class="presentation-embed">
+                        <h2 style="margin-top: 0; margin-bottom: 1rem; color: var(--primary);">Project Presentation</h2>
+                        <!-- Replace YOUR_PRESENTATION_ID below with your actual Google Slides presentation ID -->
+                        <!-- To get the embed code: Open your presentation > File > Share > Publish to web > Embed -->
+                        <iframe 
+                            src="https://docs.google.com/presentation/d/1Riko-GLu5xKIaL01nhP2d1phhlgNnPid/embed?start=false&loop=false&delayms=3000" 
+                            frameborder="0" 
+                            width="100%" 
+                            height="100%" 
+                            allowfullscreen="true" 
+                            mozallowfullscreen="true" 
+                            webkitallowfullscreen="true"
+                            style="aspect-ratio: 16 / 9; border-radius: 8px;">
+                        </iframe>
+                        <p style="margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
+                            5-slide deck outlining the auto-ethnographic project, theoretical framework, and pathways for others
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-Width Next Steps Section -->
+            <section class="content-section" style="margin-top: 3rem;">
+                <h2>Next Steps</h2>
+                <p>This project is in development. I am currently seeking:</p>
+                <ul>
+                    <li>Auto-ethnography methodology sources specific to decolonization journeys</li>
+                    <li>Frameworks for documenting movement from colonial to liberatory pedagogy</li>
+                    <li>Strategies for creating participatory spaces where other educators can document their journeys</li>
+                    <li>Feedback on how to make decolonization tangible rather than abstract for educators</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h3>Connect With Me</h3>
+            
+            <div class="contact-links">
+                <a href="mailto:your.email@example.com" class="contact-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Email
+                </a>
+                <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                    LinkedIn
+                </a>
+                <a href="https://github.com/yourprofile" class="contact-link" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </div>
+
+            <!-- Creative Commons License -->
+            <div class="cc-section">
+                <div class="cc-container">
+                    <div class="cc-license">
+                        <div class="cc-icons">
+                            <div class="cc-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="cc-text">
+                            <h4>Creative Commons License</h4>
+                            <p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0 License</a>. You are free to share and adapt this work for non-commercial purposes with attribution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2025 Sam Servellon. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
