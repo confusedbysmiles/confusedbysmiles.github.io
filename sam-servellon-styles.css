@@ -1,5 +1,8 @@
 /* sam-servellon-styles.css - Unified stylesheet for all pages */
 
+/* Import Jost font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* CSS Reset */
 *, *::before, *::after {
     margin: 0;
@@ -31,7 +34,7 @@
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --transition: all 0.3s ease;
-    --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-main: "Jost", sans-serif;
 }
 
 /* Base Styles */
