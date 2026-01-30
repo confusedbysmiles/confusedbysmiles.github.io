@@ -1,8 +1,0 @@
-{
-  "name": "math-problem-generator",
-  "version": "1.0.0",
-  "description": "Secure math problem generator with serverless backend",
-  "dependencies": {
-    "node-fetch": "^2.6.7"
-  }
-}
