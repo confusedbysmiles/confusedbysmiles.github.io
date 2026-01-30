@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Generator</title>
+    <link rel="stylesheet" href="https://servellon.net/sam-servellon-styles.css">
+    <link rel="stylesheet" href="math-generator-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+</head>
+<body>
+    <div class="math-generator-container">
+        <header class="generator-header">
+            <h1>Math Problem Generator</h1>
+            <p class="tagline">Your math, your way</p>
+        </header>
+
+        <main class="generator-main">
+            <div class="controls-section">
+                <div class="control-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    <div class="button-group" id="difficulty-group">
+                        <button class="difficulty-btn active" data-difficulty="basic">Basic</button>
+                        <button class="difficulty-btn" data-difficulty="practice">Practice</button>
+                        <button class="difficulty-btn" data-difficulty="challenge">Challenge</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="context">What do you care about?</label>
+                    <div class="context-grid">
+                        <button class="context-btn active" data-context="sports">
+                            <span class="emoji">⚽</span>
+                            <span>Sports</span>
+                        </button>
+                        <button class="context-btn" data-context="music">
+                            <span class="emoji">🎵</span>
+                            <span>Music</span>
+                        </button>
+                        <button class="context-btn" data-context="gaming">
+                            <span class="emoji">🎮</span>
+                            <span>Gaming</span>
+                        </button>
+                        <button class="context-btn" data-context="cooking">
+                            <span class="emoji">🍳</span>
+                            <span>Cooking</span>
+                        </button>
+                        <button class="context-btn" data-context="money">
+                            <span class="emoji">💰</span>
+                            <span>Money</span>
+                        </button>
+                        <button class="context-btn" data-context="social">
+                            <span class="emoji">📱</span>
+                            <span>Social Media</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="generate-btn" id="generate-btn">
+                    <span>Generate Problem</span>
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+
+            <div class="problem-section" id="problem-section">
+                <div class="problem-card" id="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-label">Your Problem</span>
+                        <span class="problem-meta" id="problem-meta"></span>
+                    </div>
+                    <div class="problem-content" id="problem-content">
+                        <p class="empty-state">Select your options and hit Generate to get started!</p>
+                    </div>
+                    <div class="problem-actions" id="problem-actions" style="display: none;">
+                        <button class="action-btn secondary" id="show-answer-btn">Show Answer</button>
+                        <button class="action-btn secondary" id="new-problem-btn">New Problem</button>
+                    </div>
+                    <div class="answer-section" id="answer-section" style="display: none;">
+                        <div class="answer-label">Answer:</div>
+                        <div class="answer-content" id="answer-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Generating your problem...</p>
+            </div>
+        </main>
+
+        <footer class="generator-footer">
+            <p>Made with ❤️ for students who deserve better math</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
