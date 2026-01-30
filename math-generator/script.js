@@ -1,8 +1,8 @@
 // ============================================
-// RATE-LIMITED VERSION - HANDLES 429 ERRORS
+// FRONTEND SCRIPT - RUNS IN BROWSER
 // ============================================
 
-// Replace this URL with your actual Cloudflare Worker URL after deployment
+// Replace with YOUR actual Cloudflare Worker URL
 const API_ENDPOINT = 'https://math-generator-api.math-generator.workers.dev';
 
 // ============================================
@@ -66,7 +66,7 @@ function initializeEventListeners() {
 }
 
 // ============================================
-// API FUNCTIONS (WITH RATE LIMIT HANDLING)
+// API FUNCTIONS (CALLS YOUR CLOUDFLARE WORKER)
 // ============================================
 async function generateProblem() {
     // Show loading state
@@ -87,27 +87,21 @@ async function generateProblem() {
             })
         });
 
-        // Handle rate limiting
-        if (response.status === 429) {
-            const errorData = await response.json();
-            const retryAfter = errorData.retryAfter || 60;
-            
-            elements.problemContent.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <p style="color: #f59e0b; font-size: 1.2rem; margin-bottom: 1rem;">⏱️ Slow down there!</p>
-                    <p style="color: #4a5568; margin-bottom: 0.5rem;">You've reached the rate limit to prevent abuse.</p>
-                    <p style="color: #718096; font-size: 0.9rem;">Please wait ${retryAfter} minutes before trying again.</p>
-                </div>
-            `;
-            elements.loadingOverlay.style.display = 'none';
-            return;
-        }
-
         if (!response.ok) {
-            throw new Error(`Request failed: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Request failed: ${response.status}`);
         }
 
         const data = await response.json();
+        
+        console.log('Got response from worker:', data);
+        
+        // Check if we got a valid response
+        if (!data.content || !data.content[0] || !data.content[0].text) {
+            console.error('Unexpected response format:', data);
+            throw new Error('Invalid response format from API');
+        }
+        
         const result = data.content[0].text;
         
         // Parse the response to separate problem and answer
@@ -174,5 +168,5 @@ function showAnswer() {
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     initializeEventListeners();
-    console.log('Math Problem Generator initialized! (Rate-limited version)');
+    console.log('Math Problem Generator initialized!');
 });
