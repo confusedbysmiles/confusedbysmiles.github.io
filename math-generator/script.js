@@ -3,7 +3,7 @@
 // ============================================
 
 // Replace this URL with your actual Cloudflare Worker URL after deployment
-const API_ENDPOINT = 'https://math-generator-api.YOUR-SUBDOMAIN.workers.dev';
+const API_ENDPOINT = 'https://math-generator-api.math-generator.workers.dev';
 
 // ============================================
 // STATE MANAGEMENT
