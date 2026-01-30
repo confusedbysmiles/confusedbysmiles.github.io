@@ -1,6 +1,9 @@
 // ============================================
-// SECURE VERSION - API KEY HIDDEN ON SERVER
+// CLOUDFLARE WORKER VERSION - API KEY HIDDEN
 // ============================================
+
+// Replace this URL with your actual Cloudflare Worker URL after deployment
+const API_ENDPOINT = 'https://math-generator-api.YOUR-SUBDOMAIN.workers.dev';
 
 // ============================================
 // STATE MANAGEMENT
@@ -63,7 +66,7 @@ function initializeEventListeners() {
 }
 
 // ============================================
-// API FUNCTIONS (NOW USING SECURE BACKEND)
+// API FUNCTIONS (CALLS CLOUDFLARE WORKER)
 // ============================================
 async function generateProblem() {
     // Show loading state
@@ -72,8 +75,8 @@ async function generateProblem() {
     elements.showAnswerBtn.textContent = 'Show Answer';
 
     try {
-        // Call YOUR serverless function (not Anthropic directly)
-        const response = await fetch('/.netlify/functions/generate-problem', {
+        // Call YOUR Cloudflare Worker (not Anthropic directly)
+        const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -155,5 +158,5 @@ function showAnswer() {
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     initializeEventListeners();
-    console.log('Math Problem Generator initialized! (Secure version)');
+    console.log('Math Problem Generator initialized! (Cloudflare Worker version)');
 });
