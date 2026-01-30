@@ -3,170 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sam Servellon - PhD Student in Educational Studies</title>
-    
-    <!-- Unified CSS -->
-    <link rel="stylesheet" href="sam-servellon-styles.css">
-    
-    <!-- Inline fix for CTA cards - DELETE THIS once CSS is updated -->
-    <style>
-        .cta-cards {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 2rem !important;
-            max-width: 1200px !important;
-            margin: 0 auto !important;
-        }
-        
-        @media (max-width: 900px) {
-            .cta-cards {
-                grid-template-columns: 1fr !important;
-            }
-        }
-    </style>
+    <title>Math Problem Generator</title>
+    <link rel="stylesheet" href="https://servellon.net/sam-servellon-styles.css">
+    <link rel="stylesheet" href="math-generator-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
 </head>
 <body>
-    <!-- Header with larger profile image for homepage -->
-    <header class="header">
-        <div class="container">
-            <div class="profile-container">
-                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
-                <div class="profile-info">
-                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
-                    <p>PhD Student in Educational Studies</p>
-                    <p>University of Nebraska-Lincoln</p>
+    <div class="math-generator-container">
+        <header class="generator-header">
+            <h1>Math Problem Generator</h1>
+            <p class="tagline">Your math, your way</p>
+        </header>
+
+        <main class="generator-main">
+            <div class="controls-section">
+                <div class="control-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    <div class="button-group" id="difficulty-group">
+                        <button class="difficulty-btn active" data-difficulty="basic">Basic</button>
+                        <button class="difficulty-btn" data-difficulty="practice">Practice</button>
+                        <button class="difficulty-btn" data-difficulty="challenge">Challenge</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="context">What do you care about?</label>
+                    <div class="context-grid">
+                        <button class="context-btn active" data-context="sports">
+                            <span class="emoji">⚽</span>
+                            <span>Sports</span>
+                        </button>
+                        <button class="context-btn" data-context="music">
+                            <span class="emoji">🎵</span>
+                            <span>Music</span>
+                        </button>
+                        <button class="context-btn" data-context="gaming">
+                            <span class="emoji">🎮</span>
+                            <span>Gaming</span>
+                        </button>
+                        <button class="context-btn" data-context="cooking">
+                            <span class="emoji">🍳</span>
+                            <span>Cooking</span>
+                        </button>
+                        <button class="context-btn" data-context="money">
+                            <span class="emoji">💰</span>
+                            <span>Money</span>
+                        </button>
+                        <button class="context-btn" data-context="social">
+                            <span class="emoji">📱</span>
+                            <span>Social Media</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="generate-btn" id="generate-btn">
+                    <span>Generate Problem</span>
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+
+            <div class="problem-section" id="problem-section">
+                <div class="problem-card" id="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-label">Your Problem</span>
+                        <span class="problem-meta" id="problem-meta"></span>
+                    </div>
+                    <div class="problem-content" id="problem-content">
+                        <p class="empty-state">Select your options and hit Generate to get started!</p>
+                    </div>
+                    <div class="problem-actions" id="problem-actions" style="display: none;">
+                        <button class="action-btn secondary" id="show-answer-btn">Show Answer</button>
+                        <button class="action-btn secondary" id="new-problem-btn">New Problem</button>
+                    </div>
+                    <div class="answer-section" id="answer-section" style="display: none;">
+                        <div class="answer-label">Answer:</div>
+                        <div class="answer-content" id="answer-content"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <!-- Navigation -->
-    <nav class="main-nav">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/pedagogy.html">Pedagogy & Praxis</a></li>
-                <li><a href="/experience.html">Experience & Education</a></li>
-                <li><a href="/publications.html">Publications</a></li>
-                <li><a href="/activities.html">Activities</a></li>
-                <li><a href="/classes.html">Classes</a></li>
-                <li><a href="mailto:sam@servellon.net">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container">
-        <!-- About Me Section -->
-        <section class="section">
-            <h2 class="section-title">About Me</h2>
-            <div class="page-intro">
-                <p>
-                    I am a PhD student in Educational Studies at the University of Nebraska-Lincoln, specializing in <span class="academic-focus">Innovative Learning Technologies</span> with a certificate in <span class="academic-focus">Mixed Methods Research</span>. My research explores the intersection of technology, education, and inclusive learning environments.
-                </p>
-                <p>
-                    My academic journey is driven by a passion for understanding how emerging technologies can transform educational experiences and create more accessible and equitable learning opportunities for diverse populations.
-                </p>
+            <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Generating your problem...</p>
             </div>
-        </section>
+        </main>
 
-        <!-- Gallup Strengths Section -->
-        <section class="section strengths">
-            <h2 class="section-title">Gallup Strengths</h2>
-            <div class="tags-container">
-                <span class="tag">Learner</span>
-                <span class="tag">Input</span>
-                <span class="tag">Intellection</span>
-                <span class="tag">Restorative</span>
-                <span class="tag">Individualization</span>
-            </div>
-        </section>
+        <footer class="generator-footer">
+            <p>Made with ❤️ for students who deserve better math</p>
+        </footer>
+    </div>
 
-        <!-- Key Strengths & Skills -->
-        <section class="section">
-            <h2 class="section-title">Key Strengths & Skills</h2>
-            <div class="skills-section">
-                <div class="skills-grid">
-                    <div class="skill-item">Educational Technology Integration</div>
-                    <div class="skill-item">Mixed Methods Research</div>
-                    <div class="skill-item">Data Analysis & Visualization</div>
-                    <div class="skill-item">Curriculum Development</div>
-                    <div class="skill-item">Inclusive Pedagogy</div>
-                    <div class="skill-item">AI in Education</div>
-                    <div class="skill-item">Database Systems</div>
-                    <div class="skill-item">Python & R Programming</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Research Focus Section -->
-        <section class="section">
-            <h2 class="section-title">Research Focus</h2>
-            <div class="content-section">
-                <p>
-                    My research examines how innovative technologies can be leveraged to create more accessible and effective learning environments. I employ mixed methods approaches to gain comprehensive insights into the complex dynamics of technology-enhanced learning spaces.
-                </p>
-                <h3>Research interests include:</h3>
-                <ul>
-                    <li>AI integration in educational contexts</li>
-                    <li>Creating student-centered learning environments</li>
-                    <li>Developing innovative tools for inclusive education</li>
-                    <li>Data-driven approaches to educational technology</li>
-                    <li>Social-emotional learning through technology</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Call to Action Section - THE FIXED VERSION -->
-        <div class="cta-section">
-            <h3>Learn More About My Work</h3>
-            <div class="cta-cards">
-                <a href="/experience.html" class="cta-card">
-                    <h4>Professional Experience & Education</h4>
-                    <p>View my academic journey and professional roles in education and technology.</p>
-                    <span class="course-link">View Experience</span>
-                </a>
-
-                <a href="/publications.html" class="cta-card">
-                    <h4>Presentations & Publications</h4>
-                    <p>Explore my research contributions and academic presentations.</p>
-                    <span class="course-link">View Publications</span>
-                </a>
-
-                <a href="/activities.html" class="cta-card">
-                    <h4>Activities & Certifications</h4>
-                    <p>Learn about my community involvement and professional certifications.</p>
-                    <span class="course-link">View Activities</span>
-                </a>
-
-                <a href="/classes.html" class="cta-card">
-                    <h4>Classes</h4>
-                    <p>View coursework and projects from my PhD program.</p>
-                    <span class="course-link">View Classes</span>
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer Placeholder -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Load footer only (header is custom for homepage) -->
-    <script>
-        // Custom loader for homepage - only load footer
-        async function loadFooter() {
-            try {
-                const response = await fetch('footer.html');
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const html = await response.text();
-                const element = document.getElementById('footer-placeholder');
-                if (element) element.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading footer:', error);
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', loadFooter);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
