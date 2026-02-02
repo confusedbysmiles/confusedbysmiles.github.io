@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMR Procedural Diagram - Student Agency Math Problem Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            padding: 40px;
+            background: white;
+            color: #000;
+        }
+
+        .diagram-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Title Section */
+        .title-section {
+            margin-bottom: 30px;
+        }
+
+        .figure-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .study-title {
+            font-size: 15px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        /* Main Layout */
+        .strands-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 0;
+        }
+
+        .strand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Boxes */
+        .box {
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: 15px;
+            background: white;
+            width: 100%;
+        }
+
+        .header-box {
+            background: #000;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            padding: 10px;
+            line-height: 1.3;
+        }
+
+        .content-box {
+            background: white;
+        }
+
+        .box-title {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .box-content {
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .box-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .box-content li {
+            margin-bottom: 4px;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        /* Vertical Arrows Between Boxes */
+        .vertical-arrow {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #000;
+            margin: 8px auto;
+        }
+
+        /* Convergence Section */
+        .convergence-container {
+            position: relative;
+            height: 80px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        .convergence-line {
+            position: absolute;
+            background: #000;
+        }
+
+        /* Left strand line going down and right */
+        .left-down {
+            left: 23%;
+            top: 0;
+            width: 3px;
+            height: 40px;
+        }
+
+        .left-horizontal {
+            left: 23%;
+            top: 40px;
+            width: 27%;
+            height: 3px;
+        }
+
+        /* Right strand line going down and left */
+        .right-down {
+            right: 23%;
+            top: 0;
+            width: 3px;
+            height: 40px;
+        }
+
+        .right-horizontal {
+            right: 23%;
+            top: 40px;
+            width: 27%;
+            height: 3px;
+        }
+
+        /* Center vertical line down to MM section */
+        .center-down {
+            left: 50%;
+            margin-left: -1.5px;
+            top: 40px;
+            width: 3px;
+            height: 40px;
+        }
+
+        /* Arrow at bottom of convergence */
+        .convergence-arrow {
+            position: absolute;
+            left: 50%;
+            top: 80px;
+            margin-left: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #000;
+        }
+
+        /* Mixed Methods Section */
+        .mixed-methods {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 30px;
+        }
+
+        /* Note Section */
+        .note-section {
+            margin-top: 25px;
+            font-size: 10px;
+            font-style: italic;
+            line-height: 1.5;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .diagram-container {
+                max-width: 100%;
+            }
+
+            .box {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .header-box {
+                background: #000 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .box, .convergence-line, .vertical-arrow, .convergence-arrow {
+                border-color: #000 !important;
+                background: #000 !important;
+            }
+        }
+
+        @media print {
+            body {
+                filter: grayscale(100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <!-- Title -->
+        <div class="title-section">
+            <div class="figure-label">Figure 1</div>
+            <div class="study-title">
+                Concurrent Convergent Mixed Methods Design for Technology-Mediated Student Agency in Mathematics: The Student Agency Math Problem Generator
+            </div>
+        </div>
+
+        <!-- Two Strands Side by Side -->
+        <div class="strands-container">
+            <!-- QUANTITATIVE STRAND -->
+            <div class="strand">
+                <div class="box header-box">
+                    Strand 1: Quantitative<br>(Correlational Design)
+                </div>
+                
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">RQs</div>
+                    <div class="box-content">
+                        What patterns emerge in student usage, problem selection, and completion behaviors when using the Student Agency Math Problem Generator?
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Sample</div>
+                    <div class="box-content">
+                        Convenience sample of 15-25 secondary math students (grades 6-12) underserved by traditional instruction, recruited from researcher's school district in Omaha metro area
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Data Collection</div>
+                    <div class="box-content">
+                        <div class="underline">Weeks 1-8 (Concurrent Collection)</div>
+                        <ul>
+                            <li>- App-embedded analytics (browser storage): topic selection, difficulty level, context choices, completion rates, time on task, return visits</li>
+                            <li>- Automated tracking throughout intervention period</li>
+                            <li>- Weekly data exports for ongoing analysis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Data Analysis</div>
+                    <div class="box-content">
+                        <ul>
+                            <li>- Descriptive statistics, frequency distributions</li>
+                            <li>- Correlation analysis (Pearson's r)</li>
+                            <li>- Pattern analysis across time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUALITATIVE STRAND -->
+            <div class="strand">
+                <div class="box header-box">
+                    Strand 2: Qualitative<br>(Phenomenological Approach)
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Central RQ</div>
+                    <div class="box-content">
+                        How do students underserved by traditional math instruction experience agency, relevance, and mathematical identity when using the Student Agency Math Problem Generator?
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Sample</div>
+                    <div class="box-content">
+                        Maximum variation purposive sample of 9-12 students drawn from quantitative participants. Selection based on diverse usage patterns (high/low engagement) and demographics
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Data Collection</div>
+                    <div class="box-content">
+                        <div class="underline">Weeks 3-7 (Concurrent Collection)</div>
+                        <ul>
+                            <li>- Semi-structured interviews via Zoom (30-45 min each)</li>
+                            <li>- Protocol topics: choice experiences, perceived relevance, sense of agency, barriers/affordances, mathematical identity shifts</li>
+                            <li>- Screen-capture observations during app use</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="vertical-arrow"></div>
+
+                <div class="box content-box">
+                    <div class="box-title">Data Analysis</div>
+                    <div class="box-content">
+                        <ul>
+                            <li>- Thematic analysis (Braun & Clarke)</li>
+                            <li>- Inductive coding, constant comparison</li>
+                            <li>- Member checking for validation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Convergence Lines -->
+        <div class="convergence-container">
+            <!-- Left strand flows right -->
+            <div class="convergence-line left-down"></div>
+            <div class="convergence-line left-horizontal"></div>
+            
+            <!-- Right strand flows left -->
+            <div class="convergence-line right-down"></div>
+            <div class="convergence-line right-horizontal"></div>
+            
+            <!-- Center vertical -->
+            <div class="convergence-line center-down"></div>
+            
+            <!-- Arrow pointing to MM section -->
+            <div class="convergence-arrow"></div>
+        </div>
+
+        <!-- Mixed Methods Section -->
+        <div class="mixed-methods">
+            <div class="box header-box">
+                Mixed Methods (Convergent Design)
+            </div>
+
+            <div class="vertical-arrow"></div>
+
+            <div class="box content-box">
+                <div class="box-title">RQ</div>
+                <div class="box-content">
+                    How does the Student Agency Math Problem Generator influence student engagement and perceptions of agency in mathematics learning among students underserved by traditional math instruction?
+                </div>
+            </div>
+
+            <div class="vertical-arrow"></div>
+
+            <div class="box content-box">
+                <div class="box-title">Integration</div>
+                <div class="box-content">
+                    Joint display comparing quantitative usage patterns (WHAT students do: selections, completion rates, engagement metrics) with qualitative themes about agency and relevance (WHY they make those choices). Analysis of convergence, divergence, and complementarity generates comprehensive understanding of how technology-mediated student agency operates in mathematics learning.
+                </div>
+            </div>
+        </div>
+
+        <!-- Note -->
+        <div class="note-section">
+            <strong>Note.</strong> Qualitative participants are drawn from the quantitative sample (nested design). Data collection occurs concurrently during Weeks 1-8 of the intervention. Integration emphasizes the complementarity of methods: quantitative data reveals what students do; qualitative data explains why they make those choices.
+        </div>
+    </div>
+</body>
+</html>
