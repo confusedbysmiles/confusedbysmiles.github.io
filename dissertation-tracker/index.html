@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dissertation Tracker - Autoethnography</title>
+    <link rel="stylesheet" href="https://servellon.net/sam-servellon-styles.css">
+    <link rel="stylesheet" href="tracker.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="tracker-header">
+        <div class="container">
+            <h1>Dissertation Tracker</h1>
+            <p class="header-subtitle">Reflection Through Making</p>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tracker-nav">
+        <div class="container">
+            <div class="tab-group">
+                <button class="tab-btn active" data-tab="memory">Memory Capture</button>
+                <button class="tab-btn" data-tab="buildlog">Build Log</button>
+                <button class="tab-btn" data-tab="timeline">Timeline</button>
+                <button class="tab-btn" data-tab="entries">All Entries</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- ==================== MEMORY CAPTURE TAB ==================== -->
+        <section id="tab-memory" class="tab-panel active">
+            <div class="panel-header">
+                <h2>Capture a Memory</h2>
+                <p>Log formative experiences with tech, math, and education.</p>
+            </div>
+
+            <form id="memory-form" class="entry-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="memory-timeframe">When?</label>
+                        <input type="text" id="memory-timeframe" placeholder='e.g. "1995", "Fall 2015", "Spring 2023"' required>
+                        <span class="form-hint">Flexible - use whatever feels right</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="memory-context">Context</label>
+                        <select id="memory-context" required>
+                            <option value="">Select...</option>
+                            <option value="student">As a Student</option>
+                            <option value="teacher">As a Teacher</option>
+                            <option value="personal">Personal</option>
+                            <option value="researcher">As a Researcher</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="memory-title">Title</label>
+                    <input type="text" id="memory-title" placeholder="A short headline for this memory" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="memory-description">What happened?</label>
+                    <textarea id="memory-description" rows="6" placeholder="Describe the experience. Be as raw and honest as you want - this is your data." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="memory-tags">Tags</label>
+                    <div class="tag-selector" id="memory-tag-selector">
+                        <button type="button" class="tag-btn" data-tag="equity">equity</button>
+                        <button type="button" class="tag-btn" data-tag="access">access</button>
+                        <button type="button" class="tag-btn" data-tag="technology">technology</button>
+                        <button type="button" class="tag-btn" data-tag="math">math</button>
+                        <button type="button" class="tag-btn" data-tag="agency">agency</button>
+                        <button type="button" class="tag-btn" data-tag="curriculum">curriculum</button>
+                        <button type="button" class="tag-btn" data-tag="identity">identity</button>
+                        <button type="button" class="tag-btn" data-tag="frustration">frustration</button>
+                        <button type="button" class="tag-btn" data-tag="breakthrough">breakthrough</button>
+                        <button type="button" class="tag-btn" data-tag="mentor">mentor</button>
+                    </div>
+                    <input type="text" id="memory-custom-tag" placeholder="Add a custom tag and press Enter">
+                </div>
+
+                <div class="form-group">
+                    <label for="memory-emotion">Emotional response <span class="optional">(optional)</span></label>
+                    <input type="text" id="memory-emotion" placeholder="How does remembering this make you feel?">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Memory</button>
+                    <button type="button" class="btn-secondary" id="memory-reflect-btn" style="display:none;">Get Reflection Prompt</button>
+                </div>
+            </form>
+
+            <!-- AI Reflection Panel (appears after saving) -->
+            <div id="memory-reflection-panel" class="reflection-panel" style="display:none;">
+                <h3>Reflection</h3>
+                <div id="memory-reflection-content" class="reflection-content"></div>
+                <div class="form-group">
+                    <label for="memory-reflection-response">Your response</label>
+                    <textarea id="memory-reflection-response" rows="4" placeholder="Write your reflection here..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" id="save-memory-reflection">Save Reflection</button>
+                    <button type="button" class="btn-secondary" id="skip-memory-reflection">Skip</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BUILD LOG TAB ==================== -->
+        <section id="tab-buildlog" class="tab-panel">
+            <div class="panel-header">
+                <h2>Build Log</h2>
+                <p>Quick-capture your Math Generator development process.</p>
+            </div>
+
+            <form id="buildlog-form" class="entry-form">
+                <div class="form-group">
+                    <label for="buildlog-what">What did you build/change?</label>
+                    <textarea id="buildlog-what" rows="3" placeholder="Describe the change or feature you worked on" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="buildlog-why">Why did you make this choice?</label>
+                    <textarea id="buildlog-why" rows="3" placeholder="What motivated this decision?" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="buildlog-challenges">Challenges encountered <span class="optional">(optional)</span></label>
+                    <textarea id="buildlog-challenges" rows="3" placeholder="What was hard? What surprised you?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="buildlog-questions">Questions that emerged <span class="optional">(optional)</span></label>
+                    <textarea id="buildlog-questions" rows="3" placeholder="What are you wondering about now?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="buildlog-link">Link to code/commit <span class="optional">(optional)</span></label>
+                    <input type="url" id="buildlog-link" placeholder="https://github.com/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="buildlog-tags">Tags</label>
+                    <div class="tag-selector" id="buildlog-tag-selector">
+                        <button type="button" class="tag-btn" data-tag="feature">feature</button>
+                        <button type="button" class="tag-btn" data-tag="bug-fix">bug fix</button>
+                        <button type="button" class="tag-btn" data-tag="design-choice">design choice</button>
+                        <button type="button" class="tag-btn" data-tag="pedagogy">pedagogy</button>
+                        <button type="button" class="tag-btn" data-tag="student-voice">student voice</button>
+                        <button type="button" class="tag-btn" data-tag="accessibility">accessibility</button>
+                        <button type="button" class="tag-btn" data-tag="ai-integration">AI integration</button>
+                        <button type="button" class="tag-btn" data-tag="pivot">pivot</button>
+                    </div>
+                    <input type="text" id="buildlog-custom-tag" placeholder="Add a custom tag and press Enter">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Log Entry</button>
+                    <button type="button" class="btn-secondary" id="buildlog-reflect-btn" style="display:none;">Get Reflection Prompt</button>
+                </div>
+            </form>
+
+            <!-- AI Reflection Panel (appears after saving) -->
+            <div id="buildlog-reflection-panel" class="reflection-panel" style="display:none;">
+                <h3>Reflection</h3>
+                <div id="buildlog-reflection-content" class="reflection-content"></div>
+                <div class="form-group">
+                    <label for="buildlog-reflection-response">Your response</label>
+                    <textarea id="buildlog-reflection-response" rows="4" placeholder="Write your reflection here..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" id="save-buildlog-reflection">Save Reflection</button>
+                    <button type="button" class="btn-secondary" id="skip-buildlog-reflection">Skip</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TIMELINE TAB ==================== -->
+        <section id="tab-timeline" class="tab-panel">
+            <div class="panel-header">
+                <h2>Timeline</h2>
+                <p>See your experiences and build decisions over time.</p>
+            </div>
+
+            <div class="timeline-filters">
+                <div class="filter-group">
+                    <label>Show:</label>
+                    <button class="filter-btn active" data-filter-type="all">All</button>
+                    <button class="filter-btn" data-filter-type="memory">Memories</button>
+                    <button class="filter-btn" data-filter-type="buildlog">Build Logs</button>
+                    <button class="filter-btn" data-filter-type="reflection">Reflections</button>
+                </div>
+                <div class="filter-group">
+                    <label for="timeline-tag-filter">Tag:</label>
+                    <select id="timeline-tag-filter">
+                        <option value="">All tags</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="timeline-search">Search:</label>
+                    <input type="text" id="timeline-search" placeholder="Search entries...">
+                </div>
+            </div>
+
+            <div id="timeline-container" class="timeline-container">
+                <div class="timeline-empty">
+                    <p>No entries yet. Start capturing memories or logging builds!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ALL ENTRIES TAB ==================== -->
+        <section id="tab-entries" class="tab-panel">
+            <div class="panel-header">
+                <h2>All Entries</h2>
+                <p>Browse, search, and manage your research data.</p>
+            </div>
+
+            <div class="entries-toolbar">
+                <div class="filter-group">
+                    <input type="text" id="entries-search" placeholder="Search entries...">
+                </div>
+                <div class="entries-actions">
+                    <button class="btn-secondary" id="export-json-btn">Export JSON</button>
+                    <label class="btn-secondary import-label" for="import-json-input">Import JSON</label>
+                    <input type="file" id="import-json-input" accept=".json" style="display:none;">
+                    <button class="btn-secondary" id="export-csv-btn">Export CSV</button>
+                </div>
+            </div>
+
+            <div class="entries-stats" id="entries-stats"></div>
+
+            <div id="entries-list" class="entries-list">
+                <div class="timeline-empty">
+                    <p>No entries yet.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Delete confirmation modal -->
+    <div id="delete-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <h3>Delete Entry?</h3>
+            <p>This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-primary btn-danger" id="confirm-delete">Delete</button>
+                <button class="btn-secondary" id="cancel-delete">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tracker.js"></script>
+</body>
+</html>
