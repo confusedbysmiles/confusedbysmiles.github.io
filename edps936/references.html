@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>References - EDPS 936 - Sam Servellon</title>
 
-    <link rel="stylesheet" href="../sam-servellon-styles.css">
+    <link rel="stylesheet" href="sam-servellon-styles.css">
 
     <style>
+        /* ── References list ── */
         .ref-list {
             list-style: none;
             padding: 0;
@@ -15,6 +16,7 @@
         }
 
         .ref-list li {
+            /* APA hanging-indent */
             padding-left: 2rem;
             text-indent: -2rem;
             margin-bottom: 1.25rem;
@@ -23,16 +25,27 @@
             color: var(--text);
         }
 
-        cite { font-style: italic; }
+        /* Italics are applied inline with <cite> */
+        cite {
+            font-style: italic;
+        }
 
+        /* ── Back-link breadcrumb ── */
         .breadcrumb {
             margin-bottom: var(--spacing-lg);
             font-size: 0.875rem;
             color: var(--text-light);
         }
-        .breadcrumb a { color: var(--primary); }
-        .breadcrumb a:hover { text-decoration: underline; }
 
+        .breadcrumb a {
+            color: var(--primary);
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── APA note ── */
         .apa-note {
             font-size: 0.8rem;
             color: var(--text-light);
@@ -48,7 +61,7 @@
     <main class="container">
 
         <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="index.html">&larr; EDPS 936 Portfolio</a>
+            <a href="edps936.html">&larr; EDPS 936 Portfolio</a>
         </nav>
 
         <div class="page-header">

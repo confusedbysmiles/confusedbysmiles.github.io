@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDPS 936 Research Portfolio - Sam Servellon</title>
 
-    <link rel="stylesheet" href="../sam-servellon-styles.css">
+    <!-- Site-wide stylesheet -->
+    <link rel="stylesheet" href="sam-servellon-styles.css">
 
+    <!-- Scoped styles for EDPS 936 components only -->
     <style>
         /* ── Research title header ── */
         .research-title {
@@ -62,6 +64,7 @@
             display: block;
             transition: var(--transition);
             cursor: pointer;
+            /* Clip so tooltip isn't cropped by overflow:hidden on parent */
             overflow: visible;
         }
 
@@ -77,10 +80,12 @@
             outline-offset: 2px;
         }
 
-        .toc-card--complete    { border-left-color: #22c55e; }
+        /* Status colour variants */
+        .toc-card--complete  { border-left-color: #22c55e; }
         .toc-card--in-progress { border-left-color: #f59e0b; }
         .toc-card--coming-soon { border-left-color: #9ca3af; cursor: default; }
 
+        /* Disable pointer-events animation for coming-soon */
         .toc-card--coming-soon:hover {
             transform: none;
             box-shadow: 0 2px 8px var(--shadow);
@@ -101,7 +106,7 @@
             flex-shrink: 0;
         }
 
-        .toc-card--complete    .status-dot { background: #22c55e; }
+        .toc-card--complete  .status-dot { background: #22c55e; }
         .toc-card--in-progress .status-dot { background: #f59e0b; }
         .toc-card--coming-soon .status-dot { background: #9ca3af; }
 
@@ -112,7 +117,7 @@
             letter-spacing: 0.06em;
         }
 
-        .toc-card--complete    .status-label { color: #16a34a; }
+        .toc-card--complete  .status-label { color: #16a34a; }
         .toc-card--in-progress .status-label { color: #b45309; }
         .toc-card--coming-soon .status-label { color: #6b7280; }
 
@@ -158,6 +163,7 @@
             text-align: left;
         }
 
+        /* Arrow */
         .toc-tooltip::after {
             content: '';
             position: absolute;
@@ -168,6 +174,7 @@
             border-top-color: var(--dark);
         }
 
+        /* Show on hover or keyboard focus */
         .toc-card:hover .toc-tooltip,
         .toc-card:focus .toc-tooltip,
         .toc-card:focus-visible .toc-tooltip {
@@ -199,7 +206,7 @@
             line-height: 1.8;
         }
 
-        /* ── Section eyebrow label ── */
+        /* ── Section label above heading ── */
         .section-eyebrow {
             display: block;
             font-size: 0.75rem;
@@ -211,11 +218,14 @@
         }
 
         @media (max-width: 768px) {
-            .toc-grid { grid-template-columns: 1fr; }
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Site header and nav loaded dynamically -->
     <div id="header-placeholder"></div>
 
     <main class="container">
@@ -311,13 +321,13 @@
                     <div class="toc-tooltip" id="tooltip-purpose" role="tooltip">
                         Defines the central purpose of the study and the specific research questions guiding
                         both the qualitative autoethnographic strand and the quantitative tracker data strand,
-                        along with the mixed methods integration question.
+                        along with the integration question.
                     </div>
                 </a>
 
                 <!-- 4 · Procedural Diagram -->
                 <a class="toc-card toc-card--in-progress"
-                   href="procedural-diagram.html"
+                   href="mmr_procedural_diagram.html"
                    role="listitem"
                    aria-describedby="tooltip-diagram">
                     <div class="toc-card__status">
@@ -377,23 +387,30 @@
 
     </main>
 
+    <!-- Site footer loaded dynamically -->
     <div id="footer-placeholder"></div>
 
     <script src="component-loader.js"></script>
     <script>
-        // Flip tooltips below the card if near the top of the viewport
+        // Tooltip edge-detection: flip tooltip below the card if it would overflow the top of the viewport
         document.querySelectorAll('.toc-card').forEach(function (card) {
             var tooltip = card.querySelector('.toc-tooltip');
             if (!tooltip) return;
+
             function adjustTooltip() {
-                if (card.getBoundingClientRect().top < 160) {
+                var cardRect = card.getBoundingClientRect();
+                // If not enough space above, show below instead
+                if (cardRect.top < 160) {
                     tooltip.style.bottom = 'auto';
                     tooltip.style.top = 'calc(100% + 12px)';
+                    // Flip the arrow
+                    tooltip.style.setProperty('--arrow-top', '100%');
                 } else {
                     tooltip.style.bottom = 'calc(100% + 12px)';
                     tooltip.style.top = 'auto';
                 }
             }
+
             card.addEventListener('mouseenter', adjustTooltip);
             card.addEventListener('focus', adjustTooltip);
         });
