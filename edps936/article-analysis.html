@@ -4,53 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article Analysis - EDPS 936 - Sam Servellon</title>
-    <link rel="stylesheet" href="../sam-servellon-styles.css">
+
+    <link rel="stylesheet" href="sam-servellon-styles.css">
+
     <style>
-        .breadcrumb { margin-bottom: var(--spacing-lg); font-size: 0.875rem; color: var(--text-light); }
-        .breadcrumb a { color: var(--primary); }
-        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb {
+            margin-bottom: var(--spacing-lg);
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        .breadcrumb a {
+            color: var(--primary);
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
         .status-badge {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            border-radius: 20px; padding: 0.25rem 0.75rem;
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.06em; margin-bottom: var(--spacing-md);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: var(--spacing-md);
         }
-        .status-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .status-badge--in-progress { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
-        .status-badge--in-progress .dot { background: #f59e0b; }
-        .status-badge--coming-soon { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-        .status-badge--coming-soon .dot { background: #9ca3af; }
+        .status-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #9ca3af;
+        }
         .placeholder-notice {
-            background: var(--light); border: 2px dashed var(--secondary);
-            border-radius: var(--border-radius); padding: var(--spacing-lg);
-            text-align: center; color: var(--text-light); margin-top: var(--spacing-lg);
+            background: var(--light);
+            border: 2px dashed var(--secondary);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            text-align: center;
+            color: var(--text-light);
+            margin-top: var(--spacing-lg);
         }
-        .placeholder-notice p { margin-bottom: 0.5rem; }
-        .placeholder-notice p:last-child { margin-bottom: 0; }
-        .existing-link { color: var(--primary); font-weight: 600; }
-        .existing-link:hover { text-decoration: underline; }
+        .placeholder-notice p {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <div id="header-placeholder"></div>
+
     <main class="container">
-        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">&larr; EDPS 936 Portfolio</a></nav>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="edps936.html">&larr; EDPS 936 Portfolio</a>
+        </nav>
+
         <div class="page-header">
-            <div class="status-badge status-badge--coming-soon" role="status" aria-label="Section status: Coming Soon">
-                <span class="dot" aria-hidden="true"></span>Coming Soon
+            <div class="status-badge" role="status" aria-label="Section status: Coming Soon">
+                <span class="dot" aria-hidden="true"></span>
+                Coming Soon
             </div>
             <h1 class="page-title">Article Analysis</h1>
             <p class="page-subtitle">EDPS 936: Mixed Methods Research &mdash; Sam Servellon (they/them)</p>
         </div>
+
         <section class="content-section" aria-labelledby="overview-heading">
             <h2 id="overview-heading">Section Overview</h2>
-            <p>This section will present critical syntheses of key methodological and theoretical sources informing the study&rsquo;s design and conceptual framework. Analyses will address works on autoethnography, grounded theory, concurrent convergent mixed methods design, and equity-focused mathematics pedagogy.</p>
+            <p>
+                This section will present critical syntheses of key methodological and theoretical sources
+                informing the study&rsquo;s design and conceptual framework. Analyses will address works
+                on autoethnography, grounded theory, concurrent convergent mixed methods design, and
+                equity-focused mathematics pedagogy.
+            </p>
         </section>
+
         <div class="placeholder-notice" role="region" aria-label="Content placeholder">
             <p>This section is planned for a later point in the semester and will be added when ready.</p>
         </div>
+
     </main>
+
     <div id="footer-placeholder"></div>
+
     <script src="component-loader.js"></script>
 </body>
 </html>
