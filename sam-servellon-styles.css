@@ -12,12 +12,13 @@
 
 /* Variables */
 :root {
-    --primary: #667eea;
-    --primary-light: #7b8ff0;
-    --primary-dark: #5a6fd8;
+    --primary: #7c4dbd;
+    --primary-light: #9b6ed4;
+    --primary-dark: #6a3fa8;
     --secondary: #e6e6e6;
-    --accent: #764ba2;
-    --accent-dark: #6b4190;
+    --accent: #10b981;
+    --accent-dark: #059669;
+    --blue: #667eea;
     --text: #333333;
     --text-light: #666666;
     --light: #ffffff;
@@ -98,7 +99,7 @@ main {
 
 /* Header Styles */
 .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
     color: var(--light);
     padding: var(--spacing-lg) 0;
     box-shadow: 0 2px 8px var(--shadow);
@@ -216,7 +217,7 @@ main {
     transform: translateX(-50%);
     width: 100px;
     height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
     border-radius: 2px;
 }
 
@@ -385,14 +386,14 @@ main {
 
 .skill-item {
     padding: 0.75rem var(--spacing-md);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(124, 77, 189, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
     border-radius: 6px;
     border-left: 3px solid var(--primary);
     transition: var(--transition);
 }
 
 .skill-item:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    background: linear-gradient(135deg, rgba(124, 77, 189, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
     transform: translateX(4px);
 }
 
@@ -459,7 +460,7 @@ main {
 
 .course-link:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(124, 77, 189, 0.3);
     color: var(--light);
 }
 
@@ -517,7 +518,7 @@ main {
 
 .password-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(124, 77, 189, 0.3);
 }
 
 .password-error {
@@ -541,7 +542,7 @@ main {
 
 /* Footer Styles */
 .footer {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
     color: var(--light);
     padding: var(--spacing-xl) 0;
     margin-top: 4rem;
