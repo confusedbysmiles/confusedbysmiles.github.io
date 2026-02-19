@@ -5,7 +5,7 @@
    TRACKER HEADER
    ============================================ */
 .tracker-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     color: var(--light);
     padding: var(--spacing-lg) 0;
     text-align: center;
@@ -61,7 +61,7 @@
 
 .tab-btn:hover {
     color: var(--primary);
-    background: rgba(102, 126, 234, 0.05);
+    background: rgba(124, 77, 189, 0.05);
 }
 
 .tab-btn.active {
@@ -160,7 +160,7 @@
 .form-group select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 0 0 3px rgba(124, 77, 189, 0.15);
 }
 
 .form-group textarea {
@@ -223,7 +223,7 @@
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(124, 77, 189, 0.3);
 }
 
 .btn-secondary {
@@ -240,7 +240,7 @@
 }
 
 .btn-secondary:hover {
-    background: rgba(102, 126, 234, 0.05);
+    background: rgba(124, 77, 189, 0.05);
 }
 
 .btn-danger {
@@ -270,7 +270,7 @@
 }
 
 .reflection-content {
-    background: linear-gradient(135deg, rgba(118, 75, 162, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(124, 77, 189, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
@@ -482,12 +482,12 @@
 }
 
 .badge-memory {
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(124, 77, 189, 0.1);
     color: var(--primary);
 }
 
 .badge-buildlog {
-    background: rgba(118, 75, 162, 0.1);
+    background: rgba(16, 185, 129, 0.1);
     color: var(--accent);
 }
 
@@ -608,7 +608,7 @@
 }
 
 .entry-action-btn.reflect:hover {
-    background: rgba(118, 75, 162, 0.1);
+    background: rgba(16, 185, 129, 0.1);
 }
 
 /* ============================================
