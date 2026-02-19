@@ -8,11 +8,11 @@
   <style>
     /* ── Site variables (exact match to sam-servellon-styles.css) ── */
     :root {
-      --primary:       #667eea;
-      --primary-light: #7b8ff0;
-      --primary-dark:  #5a6fd8;
-      --accent:        #764ba2;
-      --accent-dark:   #6b4190;
+      --primary:       #7c4dbd;
+      --primary-light: #9b6ed4;
+      --primary-dark:  #6a3fa8;
+      --accent:        #10b981;
+      --accent-dark:   #059669;
       --text:          #333333;
       --text-light:    #666666;
       --light:         #ffffff;
@@ -25,11 +25,11 @@
       --font-main:     "Jost", sans-serif;
 
       /* Diagram-specific strand tints */
-      --quan-tint:    rgba(102, 126, 234, 0.08);
-      --quan-tint-md: rgba(102, 126, 234, 0.18);
-      --qual-tint:    rgba(118, 75, 162, 0.08);
-      --qual-tint-md: rgba(118, 75, 162, 0.18);
-      --int-tint:     rgba(102, 126, 234, 0.04);
+      --quan-tint:    rgba(124, 77, 189, 0.08);
+      --quan-tint-md: rgba(124, 77, 189, 0.18);
+      --qual-tint:    rgba(16, 185, 129, 0.08);
+      --qual-tint-md: rgba(16, 185, 129, 0.18);
+      --int-tint:     rgba(124, 77, 189, 0.04);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,7 +60,7 @@
 
     /* ── Figure caption header ── */
     .figure-caption {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
       color: var(--light);
       padding: 1.25rem 2rem;
     }
@@ -97,7 +97,7 @@
       flex-shrink: 0;
       padding: .25rem .65rem;
       border-radius: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
       color: var(--light);
       margin-top: .1rem;
     }
@@ -288,7 +288,7 @@
       text-transform: uppercase;
       padding: .22rem .65rem;
       border-radius: 4px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
       color: var(--light);
       flex-shrink: 0;
     }
@@ -505,36 +505,36 @@
       <svg width="80" height="32" viewBox="0 0 80 32" style="overflow:visible">
         <defs>
           <linearGradient id="arrowL" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#667eea"/>
-            <stop offset="100%" stop-color="#764ba2"/>
+            <stop offset="0%" stop-color="#7c4dbd"/>
+            <stop offset="100%" stop-color="#10b981"/>
           </linearGradient>
         </defs>
         <line x1="0" y1="0" x2="80" y2="32" stroke="url(#arrowL)" stroke-width="2"/>
-        <polygon points="74,20 80,32 68,28" fill="#764ba2"/>
+        <polygon points="74,20 80,32 68,28" fill="#10b981"/>
       </svg>
     </div>
     <div class="merge-center">
       <svg width="16" height="32" viewBox="0 0 16 32" style="overflow:visible">
         <defs>
           <linearGradient id="arrowC" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#667eea"/>
-            <stop offset="100%" stop-color="#764ba2"/>
+            <stop offset="0%" stop-color="#7c4dbd"/>
+            <stop offset="100%" stop-color="#10b981"/>
           </linearGradient>
         </defs>
         <line x1="8" y1="0" x2="8" y2="20" stroke="url(#arrowC)" stroke-width="2"/>
-        <polygon points="1,18 15,18 8,32" fill="#764ba2"/>
+        <polygon points="1,18 15,18 8,32" fill="#10b981"/>
       </svg>
     </div>
     <div class="merge-side right">
       <svg width="80" height="32" viewBox="0 0 80 32" style="overflow:visible">
         <defs>
           <linearGradient id="arrowR" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#764ba2"/>
-            <stop offset="100%" stop-color="#667eea"/>
+            <stop offset="0%" stop-color="#10b981"/>
+            <stop offset="100%" stop-color="#7c4dbd"/>
           </linearGradient>
         </defs>
         <line x1="80" y1="0" x2="0" y2="32" stroke="url(#arrowR)" stroke-width="2"/>
-        <polygon points="6,20 0,32 12,28" fill="#667eea"/>
+        <polygon points="6,20 0,32 12,28" fill="#7c4dbd"/>
       </svg>
     </div>
   </div>

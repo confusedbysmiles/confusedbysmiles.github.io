@@ -99,7 +99,7 @@ main {
 
 /* Header Styles */
 .header {
-    background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
+    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
     color: var(--light);
     padding: var(--spacing-lg) 0;
     box-shadow: 0 2px 8px var(--shadow);
@@ -240,7 +240,7 @@ main {
 
 .content-section h2 {
     font-size: 1.8rem;
-    color: var(--primary);
+    color: var(--accent);
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-sm);
     border-bottom: 2px solid var(--secondary);
@@ -259,7 +259,7 @@ main {
     color: var(--text);
     margin: var(--spacing-xl) 0 var(--spacing-lg);
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--primary);
+    border-bottom: 2px solid var(--accent);
 }
 
 /* Experience Cards */
@@ -269,7 +269,7 @@ main {
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     box-shadow: 0 2px 8px var(--shadow);
-    border-left: 4px solid var(--primary);
+    border-left: 4px solid var(--accent);
     transition: var(--transition);
 }
 
@@ -291,7 +291,7 @@ main {
 
 .company {
     font-size: 1.15rem;
-    color: var(--primary);
+    color: var(--accent);
     margin-bottom: 0.25rem;
 }
 
@@ -334,7 +334,7 @@ main {
     border-radius: var(--border-radius);
     padding: var(--spacing-lg);
     box-shadow: 0 2px 8px var(--shadow);
-    border-top: 3px solid var(--primary);
+    border-top: 3px solid var(--accent);
     transition: var(--transition);
 }
 
@@ -351,7 +351,7 @@ main {
 }
 
 .school {
-    color: var(--primary);
+    color: var(--accent);
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
@@ -388,7 +388,7 @@ main {
     padding: 0.75rem var(--spacing-md);
     background: linear-gradient(135deg, rgba(124, 77, 189, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
     border-radius: 6px;
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--accent);
     transition: var(--transition);
 }
 
@@ -542,7 +542,7 @@ main {
 
 /* Footer Styles */
 .footer {
-    background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
+    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
     color: var(--light);
     padding: var(--spacing-xl) 0;
     margin-top: 4rem;
