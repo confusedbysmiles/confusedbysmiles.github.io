@@ -1,396 +1,588 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MMR Procedural Diagram - Student Agency Math Problem Generator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MMR Procedural Diagram – Through the Rearview Mirror</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Site variables (exact match to sam-servellon-styles.css) ── */
+    :root {
+      --primary:       #667eea;
+      --primary-light: #7b8ff0;
+      --primary-dark:  #5a6fd8;
+      --accent:        #764ba2;
+      --accent-dark:   #6b4190;
+      --text:          #333333;
+      --text-light:    #666666;
+      --light:         #ffffff;
+      --light-gray:    #f5f5f5;
+      --secondary:     #e6e6e6;
+      --shadow:        rgba(0,0,0,0.1);
+      --shadow-dark:   rgba(0,0,0,0.2);
+      --border-radius: 8px;
+      --transition:    all 0.3s ease;
+      --font-main:     "Jost", sans-serif;
 
-        body {
-            font-family: 'Calibri', 'Arial', sans-serif;
-            padding: 40px;
-            background: white;
-            color: #000;
-        }
+      /* Diagram-specific strand tints */
+      --quan-tint:    rgba(102, 126, 234, 0.08);
+      --quan-tint-md: rgba(102, 126, 234, 0.18);
+      --qual-tint:    rgba(118, 75, 162, 0.08);
+      --qual-tint-md: rgba(118, 75, 162, 0.18);
+      --int-tint:     rgba(102, 126, 234, 0.04);
+    }
 
-        .diagram-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Title Section */
-        .title-section {
-            margin-bottom: 30px;
-        }
+    body {
+      font-family: var(--font-main);
+      background: var(--light-gray);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+    }
 
-        .figure-label {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+    /* ── Page wrapper ── */
+    .diagram-page {
+      background: var(--light);
+      max-width: 1100px;
+      margin: 0 auto;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px var(--shadow-dark);
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
 
-        .study-title {
-            font-size: 15px;
-            font-style: italic;
-            line-height: 1.4;
-        }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        /* Main Layout */
-        .strands-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 0;
-        }
+    /* ── Figure caption header ── */
+    .figure-caption {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--light);
+      padding: 1.25rem 2rem;
+    }
+    .fig-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .85;
+      margin-bottom: .35rem;
+    }
+    .fig-title {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    .fig-title strong { font-weight: 700; }
 
-        .strand {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* ── MMR RQ bar ── */
+    .mmr-rq-bar {
+      border-bottom: 2px solid var(--secondary);
+      background: var(--int-tint);
+      padding: .8rem 2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .rq-pill {
+      font-size: .63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: .25rem .65rem;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--light);
+      margin-top: .1rem;
+    }
+    .rq-text {
+      font-size: .83rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-        /* Boxes */
-        .box {
-            border: 2px solid #000;
-            border-radius: 12px;
-            padding: 15px;
-            background: white;
-            width: 100%;
-        }
+    /* ── Two-strand grid ── */
+    .strands {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+    }
 
-        .header-box {
-            background: #000;
-            color: white;
-            text-align: center;
-            font-weight: bold;
-            font-size: 15px;
-            padding: 10px;
-            line-height: 1.3;
-        }
+    /* ── Strand panels ── */
+    .strand { padding: 1.4rem 1.6rem 1.8rem; }
+    .strand.quan { background: var(--quan-tint); border-right: 1px solid var(--secondary); }
+    .strand.qual { background: var(--qual-tint); }
 
-        .content-box {
-            background: white;
-        }
+    /* strand header */
+    .strand-header {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding-bottom: .8rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid;
+    }
+    .strand.quan .strand-header { border-color: var(--primary); }
+    .strand.qual .strand-header { border-color: var(--accent); }
 
-        .box-title {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
+    .strand-badge {
+      font-size: .63rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .22rem .6rem;
+      border-radius: 4px;
+      color: var(--light);
+      flex-shrink: 0;
+    }
+    .strand.quan .strand-badge { background: var(--primary); }
+    .strand.qual .strand-badge { background: var(--accent); }
 
-        .box-content {
-            font-size: 11px;
-            line-height: 1.5;
-        }
+    .strand-design {
+      font-size: .95rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .strand.quan .strand-design { color: var(--primary-dark); }
+    .strand.qual .strand-design { color: var(--accent-dark); }
 
-        .box-content ul {
-            list-style: none;
-            padding-left: 0;
-        }
+    /* RQ box */
+    .rq-box {
+      border-radius: 6px;
+      padding: .65rem .85rem;
+      margin-bottom: .95rem;
+      font-size: .81rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+    .strand.quan .rq-box {
+      background: var(--quan-tint-md);
+      border-left: 3px solid var(--primary);
+      color: var(--primary-dark);
+    }
+    .strand.qual .rq-box {
+      background: var(--qual-tint-md);
+      border-left: 3px solid var(--accent);
+      color: var(--accent-dark);
+    }
+    .rq-box-label {
+      display: block;
+      font-style: normal;
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .3rem;
+      opacity: .75;
+    }
+    .sub-rq { margin-top: .35rem; font-size: .77rem; padding-left: 1.1rem; }
+    .sub-rq li { margin-bottom: .25rem; }
 
-        .box-content li {
-            margin-bottom: 4px;
-        }
+    /* field rows */
+    .field {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: .15rem .5rem;
+      margin-bottom: .6rem;
+      align-items: start;
+    }
+    .field-label {
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-light);
+      padding-top: .08rem;
+      line-height: 1.35;
+    }
+    .field-value {
+      font-size: .8rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .field-value em { font-style: italic; color: var(--text-light); }
 
-        .underline {
-            text-decoration: underline;
-        }
+    /* down arrow inside strand */
+    .strand-arrow {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin: .4rem 0;
+      line-height: 1;
+    }
 
-        /* Vertical Arrows Between Boxes */
-        .vertical-arrow {
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #000;
-            margin: 8px auto;
-        }
+    /* ── Centre concurrent column ── */
+    .center-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--light);
+      position: relative;
+    }
+    .center-col::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--secondary) 0, var(--secondary) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+    .concurrent-label {
+      font-size: .56rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      color: var(--text-light);
+      background: var(--light);
+      padding: .5rem .1rem;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
 
-        /* Convergence Section */
-        .convergence-container {
-            position: relative;
-            height: 80px;
-            margin: 0 auto;
-            max-width: 1200px;
-        }
+    /* ── Merge/convergence row ── */
+    .merge-row {
+      background: var(--light);
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      padding: .5rem 0 0;
+    }
+    .merge-side {
+      display: flex;
+      align-items: flex-end;
+    }
+    .merge-side.left  { justify-content: flex-end; padding-right: .75rem; }
+    .merge-side.right { justify-content: flex-start; padding-left: .75rem; }
+    .merge-center     { display: flex; justify-content: center; align-items: flex-end; }
 
-        .convergence-line {
-            position: absolute;
-            background: #000;
-        }
+    /* ── Integration section ── */
+    .integration {
+      border-top: 3px solid var(--primary);
+      background: var(--int-tint);
+      padding: 1.2rem 2rem 1.5rem;
+    }
+    .int-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .int-badge {
+      font-size: .63rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .22rem .65rem;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--light);
+      flex-shrink: 0;
+    }
+    .int-title {
+      font-size: .93rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
 
-        /* Left strand line going down and right */
-        .left-down {
-            left: 23%;
-            top: 0;
-            width: 3px;
-            height: 40px;
-        }
+    .int-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: .9rem;
+    }
+    .int-card {
+      background: var(--light);
+      border-radius: var(--border-radius);
+      border-top: 3px solid var(--primary);
+      padding: .75rem .9rem;
+      box-shadow: 0 2px 6px var(--shadow);
+      transition: var(--transition);
+    }
+    .int-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 14px var(--shadow-dark);
+    }
+    .int-card:nth-child(2) { border-top-color: var(--accent); }
+    .int-card-label {
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--text-light);
+      margin-bottom: .4rem;
+    }
+    .int-card-value {
+      font-size: .79rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .int-card-value em { font-style: italic; color: var(--text-light); }
 
-        .left-horizontal {
-            left: 23%;
-            top: 40px;
-            width: 27%;
-            height: 3px;
-        }
+    /* sample relationship note */
+    .sample-note {
+      background: var(--light);
+      border: 1.5px solid var(--secondary);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 6px 6px 0;
+      padding: .55rem 1rem;
+      font-size: .78rem;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+    .sample-note strong { color: var(--text); font-weight: 600; }
 
-        /* Right strand line going down and left */
-        .right-down {
-            right: 23%;
-            top: 0;
-            width: 3px;
-            height: 40px;
-        }
+    /* ── Print ── */
+    @media print {
+      body { background: white; padding: 0; }
+      .diagram-page { box-shadow: none; max-width: 100%; animation: none; }
+      @page { size: landscape; margin: .5in; }
+    }
 
-        .right-horizontal {
-            right: 23%;
-            top: 40px;
-            width: 27%;
-            height: 3px;
-        }
-
-        /* Center vertical line down to MM section */
-        .center-down {
-            left: 50%;
-            margin-left: -1.5px;
-            top: 40px;
-            width: 3px;
-            height: 40px;
-        }
-
-        /* Arrow at bottom of convergence */
-        .convergence-arrow {
-            position: absolute;
-            left: 50%;
-            top: 80px;
-            margin-left: -15px;
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #000;
-        }
-
-        /* Mixed Methods Section */
-        .mixed-methods {
-            max-width: 800px;
-            margin: 0 auto;
-            padding-top: 30px;
-        }
-
-        /* Note Section */
-        .note-section {
-            margin-top: 25px;
-            font-size: 10px;
-            font-style: italic;
-            line-height: 1.5;
-            border-top: 1px solid #ccc;
-            padding-top: 15px;
-        }
-
-        /* Print Styles */
-        @media print {
-            body {
-                padding: 20px;
-            }
-            
-            .diagram-container {
-                max-width: 100%;
-            }
-
-            .box {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-
-            .header-box {
-                background: #000 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .box, .convergence-line, .vertical-arrow, .convergence-arrow {
-                border-color: #000 !important;
-                background: #000 !important;
-            }
-        }
-
-        @media print {
-            body {
-                filter: grayscale(100%);
-            }
-        }
-    </style>
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .strands, .merge-row { grid-template-columns: 1fr; }
+      .center-col { display: none; }
+      .merge-side { display: none; }
+      .int-grid { grid-template-columns: 1fr; }
+      body { padding: 1rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="diagram-container">
-        <!-- Title -->
-        <div class="title-section">
-            <div class="figure-label">Figure 1</div>
-            <div class="study-title">
-                Concurrent Convergent Mixed Methods Design for Technology-Mediated Student Agency in Mathematics: The Student Agency Math Problem Generator
-            </div>
-        </div>
 
-        <!-- Two Strands Side by Side -->
-        <div class="strands-container">
-            <!-- QUANTITATIVE STRAND -->
-            <div class="strand">
-                <div class="box header-box">
-                    Strand 1: Quantitative<br>(Correlational Design)
-                </div>
-                
-                <div class="vertical-arrow"></div>
+<div class="diagram-page">
 
-                <div class="box content-box">
-                    <div class="box-title">RQs</div>
-                    <div class="box-content">
-                        What patterns emerge in student usage, problem selection, and completion behaviors when using the Student Agency Math Problem Generator?
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Sample</div>
-                    <div class="box-content">
-                        Convenience sample of 15-25 secondary math students (grades 6-12) underserved by traditional instruction, recruited from researcher's school district in Omaha metro area
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Data Collection</div>
-                    <div class="box-content">
-                        <div class="underline">Weeks 1-8 (Concurrent Collection)</div>
-                        <ul>
-                            <li>- App-embedded analytics (browser storage): topic selection, difficulty level, context choices, completion rates, time on task, return visits</li>
-                            <li>- Automated tracking throughout intervention period</li>
-                            <li>- Weekly data exports for ongoing analysis</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Data Analysis</div>
-                    <div class="box-content">
-                        <ul>
-                            <li>- Descriptive statistics, frequency distributions</li>
-                            <li>- Correlation analysis (Pearson's r)</li>
-                            <li>- Pattern analysis across time</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- QUALITATIVE STRAND -->
-            <div class="strand">
-                <div class="box header-box">
-                    Strand 2: Qualitative<br>(Phenomenological Approach)
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Central RQ</div>
-                    <div class="box-content">
-                        How do students underserved by traditional math instruction experience agency, relevance, and mathematical identity when using the Student Agency Math Problem Generator?
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Sample</div>
-                    <div class="box-content">
-                        Maximum variation purposive sample of 9-12 students drawn from quantitative participants. Selection based on diverse usage patterns (high/low engagement) and demographics
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Data Collection</div>
-                    <div class="box-content">
-                        <div class="underline">Weeks 3-7 (Concurrent Collection)</div>
-                        <ul>
-                            <li>- Semi-structured interviews via Zoom (30-45 min each)</li>
-                            <li>- Protocol topics: choice experiences, perceived relevance, sense of agency, barriers/affordances, mathematical identity shifts</li>
-                            <li>- Screen-capture observations during app use</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="vertical-arrow"></div>
-
-                <div class="box content-box">
-                    <div class="box-title">Data Analysis</div>
-                    <div class="box-content">
-                        <ul>
-                            <li>- Thematic analysis (Braun & Clarke)</li>
-                            <li>- Inductive coding, constant comparison</li>
-                            <li>- Member checking for validation</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Convergence Lines -->
-        <div class="convergence-container">
-            <!-- Left strand flows right -->
-            <div class="convergence-line left-down"></div>
-            <div class="convergence-line left-horizontal"></div>
-            
-            <!-- Right strand flows left -->
-            <div class="convergence-line right-down"></div>
-            <div class="convergence-line right-horizontal"></div>
-            
-            <!-- Center vertical -->
-            <div class="convergence-line center-down"></div>
-            
-            <!-- Arrow pointing to MM section -->
-            <div class="convergence-arrow"></div>
-        </div>
-
-        <!-- Mixed Methods Section -->
-        <div class="mixed-methods">
-            <div class="box header-box">
-                Mixed Methods (Convergent Design)
-            </div>
-
-            <div class="vertical-arrow"></div>
-
-            <div class="box content-box">
-                <div class="box-title">RQ</div>
-                <div class="box-content">
-                    How does the Student Agency Math Problem Generator influence student engagement and perceptions of agency in mathematics learning among students underserved by traditional math instruction?
-                </div>
-            </div>
-
-            <div class="vertical-arrow"></div>
-
-            <div class="box content-box">
-                <div class="box-title">Integration</div>
-                <div class="box-content">
-                    Joint display comparing quantitative usage patterns (WHAT students do: selections, completion rates, engagement metrics) with qualitative themes about agency and relevance (WHY they make those choices). Analysis of convergence, divergence, and complementarity generates comprehensive understanding of how technology-mediated student agency operates in mathematics learning.
-                </div>
-            </div>
-        </div>
-
-        <!-- Note -->
-        <div class="note-section">
-            <strong>Note.</strong> Qualitative participants are drawn from the quantitative sample (nested design). Data collection occurs concurrently during Weeks 1-8 of the intervention. Integration emphasizes the complementarity of methods: quantitative data reveals what students do; qualitative data explains why they make those choices.
-        </div>
+  <!-- ══ Figure Caption ══ -->
+  <div class="figure-caption">
+    <div class="fig-label">Figure 1 &nbsp;·&nbsp; Procedural Diagram &nbsp;·&nbsp; Concurrent Convergent Mixed Methods Design</div>
+    <div class="fig-title">
+      <strong>Through the Rearview Mirror:</strong> A Concurrent Convergent Mixed Methods Auto-Ethnography
+      of Technology Experiences and Mathematics Teaching Practices
     </div>
+  </div>
+
+  <!-- ══ MMR Research Question ══ -->
+  <div class="mmr-rq-bar">
+    <span class="rq-pill">MMR&nbsp;RQ</span>
+    <span class="rq-text">To what extent do documented patterns in my technology experiences complement and expand upon narrative accounts of critical moments in my development as an educator focused on equity and access in mathematics?</span>
+  </div>
+
+  <!-- ══ Concurrent Strands ══ -->
+  <div class="strands">
+
+    <!-- QUAN -->
+    <div class="strand quan">
+      <div class="strand-header">
+        <span class="strand-badge">QUAN</span>
+        <span class="strand-design">Correlational Design</span>
+      </div>
+
+      <div class="rq-box">
+        <span class="rq-box-label">Quantitative Research Question</span>
+        How do documented patterns in my technology experiences across my academic and professional development relate to observable shifts in my mathematics teaching practices?
+      </div>
+
+      <div class="field">
+        <span class="field-label">Sample Size</span>
+        <span class="field-value"><strong>n = 1</strong></span>
+      </div>
+      <div class="field">
+        <span class="field-label">Sample Design</span>
+        <span class="field-value">Purposive autoethnographic self-study</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Site</span>
+        <span class="field-value">Researcher's home workspace; University of Nebraska-Lincoln</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Participant</span>
+        <span class="field-value">Sam Servellon — mathematics educator &amp; PhD student</span>
+      </div>
+
+      <div class="strand-arrow">↓</div>
+
+      <div class="field">
+        <span class="field-label">Data Variables</span>
+        <span class="field-value">Technology interaction types, frequency &amp; contexts; student engagement &amp; performance metrics; temporal patterns in reflective practice; categorical relationships between biographical experience and instructional decisions</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Data Tools</span>
+        <span class="field-value">Web-based Dissertation Tracker; written artifacts; undergraduate &amp; graduate course projects; childhood materials (when available)</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Data Process</span>
+        <span class="field-value">Continuous self-documentation via online tracker; asynchronous artifact retrieval and systematic coding</span>
+      </div>
+
+      <div class="strand-arrow">↓</div>
+
+      <div class="field">
+        <span class="field-label">Data Analysis</span>
+        <span class="field-value">Constant comparative analysis <em>(Charmaz, 2014; Glaser &amp; Strauss, 1967)</em>; grounded theory procedures; frequency analysis; temporal pattern coding; categorical relationship mapping between biography and practice</span>
+      </div>
+    </div>
+
+    <!-- Center concurrent divider -->
+    <div class="center-col">
+      <span class="concurrent-label">Concurrent Collection &amp; Analysis</span>
+    </div>
+
+    <!-- QUAL -->
+    <div class="strand qual">
+      <div class="strand-header">
+        <span class="strand-badge">QUAL</span>
+        <span class="strand-design">Autoethnographic Design</span>
+      </div>
+
+      <div class="rq-box">
+        <span class="rq-box-label">Central Qualitative Research Question</span>
+        What critical incidents in my technology experiences have fundamentally influenced my pedagogical philosophy and classroom practices?
+        <ul class="sub-rq">
+          <li>How do I make meaning of the pivotal moments in my technology journey that shaped my transition from mathematics learner to mathematics educator?</li>
+          <li>In what ways have critical incidents in my relationship with technology informed my commitment to serving students underserved by traditional mathematics instruction?</li>
+        </ul>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Sample Size</span>
+        <span class="field-value"><strong>n = 1</strong> (same participant as QUAN strand)</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Sample Design</span>
+        <span class="field-value">Autoethnographic self-study; researcher as sole participant</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Site</span>
+        <span class="field-value">Researcher's home and any location chosen for reflective practice</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Participant</span>
+        <span class="field-value">Sam Servellon — mathematics educator &amp; PhD student</span>
+      </div>
+
+      <div class="strand-arrow">↓</div>
+
+      <div class="field">
+        <span class="field-label">Protocol Topics</span>
+        <span class="field-value">Formative memories with technology, mathematics &amp; education; pedagogical decision-making processes; explicit past-to-present connections; critical incidents shaping equity-oriented practice</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Data Tools</span>
+        <span class="field-value">Self-interviews; web-based Dissertation Tracker; written artifacts; undergraduate &amp; graduate course projects; childhood materials (when available)</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Data Process</span>
+        <span class="field-value">Continuous; home-based self-reflection and documentation — "reflection through making" positions systematic documentation as the research itself</span>
+      </div>
+
+      <div class="strand-arrow">↓</div>
+
+      <div class="field">
+        <span class="field-label">Data Analysis</span>
+        <span class="field-value">Descriptive thematic analysis with pattern coding <em>(Saldaña, 2021)</em>; thick description; reflexive narrative analysis; identification of recurring themes around critical incidents and pedagogical meaning-making</span>
+      </div>
+    </div>
+
+  </div><!-- /strands -->
+
+  <!-- ══ Convergence arrows ══ -->
+  <div class="merge-row">
+    <div class="merge-side left">
+      <svg width="80" height="32" viewBox="0 0 80 32" style="overflow:visible">
+        <defs>
+          <linearGradient id="arrowL" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#667eea"/>
+            <stop offset="100%" stop-color="#764ba2"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="0" x2="80" y2="32" stroke="url(#arrowL)" stroke-width="2"/>
+        <polygon points="74,20 80,32 68,28" fill="#764ba2"/>
+      </svg>
+    </div>
+    <div class="merge-center">
+      <svg width="16" height="32" viewBox="0 0 16 32" style="overflow:visible">
+        <defs>
+          <linearGradient id="arrowC" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#667eea"/>
+            <stop offset="100%" stop-color="#764ba2"/>
+          </linearGradient>
+        </defs>
+        <line x1="8" y1="0" x2="8" y2="20" stroke="url(#arrowC)" stroke-width="2"/>
+        <polygon points="1,18 15,18 8,32" fill="#764ba2"/>
+      </svg>
+    </div>
+    <div class="merge-side right">
+      <svg width="80" height="32" viewBox="0 0 80 32" style="overflow:visible">
+        <defs>
+          <linearGradient id="arrowR" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#764ba2"/>
+            <stop offset="100%" stop-color="#667eea"/>
+          </linearGradient>
+        </defs>
+        <line x1="80" y1="0" x2="0" y2="32" stroke="url(#arrowR)" stroke-width="2"/>
+        <polygon points="6,20 0,32 12,28" fill="#667eea"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ══ Integration ══ -->
+  <div class="integration">
+    <div class="int-header">
+      <span class="int-badge">Integration</span>
+      <span class="int-title">Convergent Merging of QUAN + QUAL Findings — Complementarity Rationale</span>
+    </div>
+
+    <div class="int-grid">
+      <div class="int-card">
+        <div class="int-card-label">Integration Strategy</div>
+        <div class="int-card-value">
+          Side-by-side joint displays of quantitative patterns &amp; qualitative themes
+          <em>(Creswell &amp; Plano Clark, 2018; Guetterman et al., 2015)</em>;
+          narrative weaving to illuminate complementary insights across both forms of data
+        </div>
+      </div>
+      <div class="int-card">
+        <div class="int-card-label">What Integration Reveals</div>
+        <div class="int-card-value">
+          The extent to which <em>empirical patterns</em> in technology biography
+          map onto, expand, or complicate <em>narrative accounts</em> of critical moments —
+          yielding a holistic understanding of how technology has shaped teaching identity and equity-oriented practice
+        </div>
+      </div>
+      <div class="int-card">
+        <div class="int-card-label">Output / Contribution</div>
+        <div class="int-card-value">
+          Integrated findings linking educator biography to equity-oriented mathematics pedagogy;
+          addressing gaps in mathematics education research on teacher positionality
+          and instructional decision-making for historically underserved student populations
+        </div>
+      </div>
+    </div>
+
+    <div class="sample-note">
+      <strong>Relationship between QUAN &amp; QUAL samples:</strong>
+      Both strands share a single participant (<em>n</em> = 1). QUAN and QUAL data are generated
+      simultaneously through the same primary instrument — the web-based Dissertation Tracker —
+      making the act of documentation itself the concurrent site of production for both strands.
+    </div>
+
+  </div><!-- /integration -->
+
+</div><!-- /diagram-page -->
+
 </body>
 </html>
