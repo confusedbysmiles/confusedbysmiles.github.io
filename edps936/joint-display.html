@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMR Joint Display — EDPS 936 | Sam Servellon</title>
+    <link rel="stylesheet" href="../sam-servellon-styles.css">
+    <style>
+        /* ══════════════════════════════════════════
+           JOINT DISPLAY — PAGE-SPECIFIC STYLES
+           ══════════════════════════════════════════ */
+
+        /* Override main padding so the full-bleed elements can sit flush */
+        main.jd-main {
+            padding: 0;
+            min-height: auto;
+        }
+
+        /* ── Custom page header ── */
+        .jd-header {
+            background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+            color: #fff;
+            padding: 2.5rem 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .jd-header__inner {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .jd-header__badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            color: #fff;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .jd-header__title {
+            font-size: clamp(1.05rem, 2.4vw, 1.45rem);
+            font-weight: 600;
+            font-style: italic;
+            line-height: 1.45;
+            color: #fff;
+            margin: 0 auto 0.85rem;
+        }
+
+        .jd-header__author {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+
+        .jd-header__course {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.88);
+            margin-bottom: 0;
+        }
+
+        /* ── Projected-findings note ── */
+        .jd-note {
+            max-width: 1380px;
+            margin: 1.25rem auto 1.5rem;
+            padding: 0 1.5rem;
+            font-style: italic;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.65;
+        }
+
+        /* ── Table wrapper ── */
+        .jd-table-wrapper {
+            max-width: 1380px;
+            margin: 0 auto 2.5rem;
+            padding: 0 1.5rem;
+            overflow-x: auto;
+        }
+
+        /* ── Table ── */
+        .jd-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: "Jost", sans-serif;
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Column proportions */
+        .jd-table col.col-theme       { width: 10%; }
+        .jd-table col.col-qual        { width: 28%; }
+        .jd-table col.col-quan        { width: 27%; }
+        .jd-table col.col-integration { width: 35%; }
+
+        /* ── Header row ── */
+        .jd-table thead th {
+            background: linear-gradient(135deg, #7c4dbd 0%, #5a67d8 100%);
+            color: #fff;
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.88rem;
+            line-height: 1.3;
+            vertical-align: bottom;
+        }
+
+        .jd-table thead th .col-sub {
+            display: block;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 0.76rem;
+            opacity: 0.85;
+            margin-top: 0.2rem;
+        }
+
+        /* Integration column header gets a slightly deeper shade + left accent */
+        .jd-table thead th.col-integration {
+            background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+            border-left: 3px solid rgba(255, 255, 255, 0.35);
+        }
+
+        /* ── Body cells ── */
+        .jd-table tbody td {
+            padding: 0.95rem 1rem;
+            vertical-align: top;
+            border-bottom: 1px solid #e6e6e6;
+            line-height: 1.68;
+            color: #333;
+        }
+
+        .jd-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alternating row tint */
+        .jd-table tbody tr:nth-child(even) td {
+            background: #fafafa;
+        }
+
+        /* Theme cell */
+        .jd-table tbody td.col-theme {
+            font-weight: 700;
+            color: #7c4dbd;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        /* Qualitative cell — italic excerpts */
+        .jd-table tbody td.col-qual em {
+            font-style: italic;
+        }
+
+        /* Integration column — accent border + subtle tint (overrides alternating bg) */
+        .jd-table tbody td.col-integration {
+            border-left: 3px solid #667eea;
+            background: rgba(102, 126, 234, 0.045) !important;
+        }
+
+        .jd-table tbody tr:nth-child(even) td.col-integration {
+            background: rgba(102, 126, 234, 0.08) !important;
+        }
+
+        /* ── Integration badge (pill) ── */
+        .integration-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
+            color: #fff;
+            padding: 0.18rem 0.72rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.55rem;
+            line-height: 1.5;
+        }
+
+        /* ── Row 6 — methodological capstone (special treatment) ── */
+        .jd-table tbody tr.row-capstone td {
+            background: rgba(16, 185, 129, 0.04) !important;
+            border-top: 2px solid #10b981;
+        }
+
+        .jd-table tbody tr.row-capstone td.col-integration {
+            background: rgba(102, 126, 234, 0.07) !important;
+            border-top: 2px solid #10b981;
+        }
+
+        /* ── Simple course credit footer ── */
+        .jd-course-footer {
+            background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 1rem 1.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+            margin-top: 0;
+        }
+
+        .jd-course-footer a {
+            color: #ffd700;
+            text-decoration: none;
+            border-bottom: 1px dotted #ffd700;
+            transition: color 0.2s;
+        }
+
+        .jd-course-footer a:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        /* ══════════════════════════════════════════
+           PRINT STYLES
+           ══════════════════════════════════════════ */
+        @media print {
+            /* Gradient → solid light gray */
+            .jd-header {
+                background: #e0e0e0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .jd-header__title,
+            .jd-header__author,
+            .jd-header__course {
+                color: #000 !important;
+            }
+
+            /* Badge loses pill styling, keeps bold text in brackets */
+            .jd-header__badge {
+                background: transparent !important;
+                border: 1px solid #000 !important;
+                color: #000 !important;
+            }
+
+            /* Table header → solid dark */
+            .jd-table thead th,
+            .jd-table thead th.col-integration {
+                background: #444 !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-left: none !important;
+            }
+
+            /* Integration column: structural border replaces color */
+            .jd-table tbody td.col-integration {
+                border-left: 3px solid #000 !important;
+                background: #f2f2f2 !important;
+            }
+
+            /* Badges → bold bracketed text, no color */
+            .integration-badge {
+                background: none !important;
+                color: #000 !important;
+                font-weight: 700;
+                font-size: 0.78rem;
+                padding: 0;
+                border-radius: 0;
+                letter-spacing: 0;
+            }
+
+            .integration-badge::before { content: "["; }
+            .integration-badge::after  { content: "]"; }
+
+            /* Row 6 capstone: border replaces color tint */
+            .jd-table tbody tr.row-capstone td {
+                background: #f5f5f5 !important;
+                border-top: 2px solid #555 !important;
+            }
+
+            .jd-table tbody tr.row-capstone td.col-integration {
+                background: #ebebeb !important;
+                border-top: 2px solid #555 !important;
+            }
+
+            /* Avoid splitting rows across pages */
+            .jd-table tbody tr {
+                page-break-inside: avoid;
+            }
+
+            /* Alternating rows: keep subtle differentiation */
+            .jd-table tbody tr:nth-child(even) td {
+                background: #f8f8f8 !important;
+            }
+
+            /* Course footer */
+            .jd-course-footer {
+                background: #444 !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .jd-course-footer a {
+                color: #fff !important;
+                border-bottom: none !important;
+            }
+
+            /* Hide site nav and site footer */
+            .main-nav {
+                display: none !important;
+            }
+
+            #footer-placeholder {
+                display: none !important;
+            }
+
+            .jd-note {
+                color: #333 !important;
+            }
+        }
+
+        /* ══════════════════════════════════════════
+           RESPONSIVE
+           ══════════════════════════════════════════ */
+        @media (max-width: 960px) {
+            .jd-table-wrapper {
+                padding: 0 0.75rem;
+            }
+
+            .jd-table {
+                font-size: 13px;
+            }
+
+            .jd-table thead th,
+            .jd-table tbody td {
+                padding: 0.8rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .jd-header {
+                padding: 1.75rem 1rem 1.5rem;
+            }
+
+            .jd-table {
+                font-size: 12px;
+            }
+
+            .jd-table thead th,
+            .jd-table tbody td {
+                padding: 0.65rem 0.6rem;
+            }
+
+            .jd-note {
+                padding: 0 0.75rem;
+            }
+
+            .jd-table-wrapper {
+                padding: 0 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Site header and nav loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="jd-main">
+
+        <!-- ══ Custom joint display page header ══ -->
+        <div class="jd-header">
+            <div class="jd-header__inner">
+                <div class="jd-header__badge">MMR Joint Display</div>
+                <h1 class="jd-header__title">
+                    Through the Rearview Mirror: A Concurrent Convergent Mixed Methods Autoethnography of Technology Experiences and Mathematics Teaching Practices
+                </h1>
+                <p class="jd-header__author">Sam Servellon</p>
+                <p class="jd-header__course">EDPS 936: Mixed Methods Research &nbsp;&middot;&nbsp; Dr. Michelle Howell &nbsp;&middot;&nbsp; University of Nebraska-Lincoln</p>
+            </div>
+        </div>
+
+        <!-- ══ Projected-findings note ══ -->
+        <p class="jd-note">
+            <em>Note: All findings presented here are projected. This display represents the anticipated structure and content of integration at the analysis phase of a proposed study that has not yet been conducted.</em>
+        </p>
+
+        <!-- ══ Joint display table ══ -->
+        <div class="jd-table-wrapper">
+            <table class="jd-table" aria-label="MMR Joint Display: Projected Findings Integration Table">
+                <colgroup>
+                    <col class="col-theme">
+                    <col class="col-qual">
+                    <col class="col-quan">
+                    <col class="col-integration">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th scope="col" class="col-theme">Theme</th>
+                        <th scope="col" class="col-qual">
+                            Qualitative
+                            <span class="col-sub">Projected Self-Interview Excerpt</span>
+                        </th>
+                        <th scope="col" class="col-quan">
+                            Quantitative
+                            <span class="col-sub">Projected Artifact Pattern Analysis</span>
+                        </th>
+                        <th scope="col" class="col-integration">
+                            Integration
+                            <span class="col-sub">Projected</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- ── Row 1: Access ── -->
+                    <tr>
+                        <td class="col-theme">Access</td>
+                        <td class="col-qual">
+                            <em>&ldquo;I remember figuring out that not everyone in my class had a graphing calculator at home. I had just assumed they did because I did. That was probably the first time I understood that &lsquo;being ready for math class&rsquo; wasn&rsquo;t just about effort.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Approximately 55&ndash;60% of early academic period artifacts are projected to reflect passive or consumptive technology use. Access interruptions are anticipated in roughly 30% of early academic period records.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent</span><br>
+                            Both strands position uneven access, rather than effort or aptitude, as the formative variable in early mathematics participation. The artifact record documents the structural reality; the narrative explains why it stuck.
+                        </td>
+                    </tr>
+
+                    <!-- ── Row 2: Autonomy ── -->
+                    <tr>
+                        <td class="col-theme">Autonomy</td>
+                        <td class="col-qual">
+                            <em>&ldquo;By high school, my mom gave me a list of things to have done by Friday at 3pm and largely left how and when up to me. When I heard what my peers&rsquo; school days actually looked like, I didn&rsquo;t feel weird anymore &mdash; I felt lucky. I already knew what it felt like to be trusted with your own learning. That&rsquo;s probably why I can&rsquo;t stop trying to give that to my students.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Homeschool-era artifacts are projected to reflect a substantially higher proportion of self-directed, project-based work relative to externally-structured task completion &mdash; an estimated 65&ndash;70% of documented academic artifacts from this period are anticipated to show evidence of learner-initiated inquiry, flexible pacing, or self-selected approach. This pattern is expected to contrast markedly with the artifact record from formally-structured academic contexts that follow.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent with Expansion</span><br>
+                            Both strands confirm that the homeschool experience established autonomy as a baseline expectation for learning rather than a privilege. The quantitative pattern documents self-direction as the structural norm of the researcher&rsquo;s formative education; the qualitative strand expands this by revealing that the contrast with peers&rsquo; constrained experiences was itself a critical incident &mdash; the moment autonomy became visible as something that could be given or withheld, and therefore something worth fighting for in a classroom.
+                        </td>
+                    </tr>
+
+                    <!-- ── Row 3: Identity in Transition ── -->
+                    <tr>
+                        <td class="col-theme">Identity in Transition</td>
+                        <td class="col-qual">
+                            <em>&ldquo;Coming from math and science, I thought I knew how to use technology rigorously. Then I got into a classroom and realized I had no idea how to use it meaningfully &mdash; for someone else, in real time, with thirty kids who hadn&rsquo;t signed up for my kind of rigor.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Artifacts from the hard sciences phase are projected to reflect approximately 65% precision-oriented analytical technology use. Following the transition into mathematics education, pedagogically-oriented interactions are anticipated to constitute roughly 50% of documented use, suggesting integration of prior technical identity rather than replacement.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent with Expansion</span><br>
+                            Both strands document a shift in how technology was used across the professional transition. The qualitative strand expands the quantitative interpretation by revealing that the shift was ideological before it was behavioral &mdash; the artifact record shows that a change occurred; the narrative explains what had to be renegotiated for it to happen.
+                        </td>
+                    </tr>
+
+                    <!-- ── Row 4: Unlearning ── -->
+                    <tr>
+                        <td class="col-theme">Unlearning</td>
+                        <td class="col-qual">
+                            <em>&ldquo;You can&rsquo;t teach a kid who already failed algebra the same way somebody taught them the first time and expect a different result. I had to figure out what I actually believed about who math is for. It turned out I had some things to unlearn.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Approximately 40&ndash;45% of lesson artifacts produced following documented encounters with students retaking Algebra 1 are projected to show explicit equity framing in goals, materials, or assessment design, compared to roughly 20&ndash;25% in artifacts produced during periods without such encounters.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent with Partial Divergence</span><br>
+                            Both strands indicate that working with underserved learners catalyzed shifts in instructional design. The qualitative strand, however, surfaces a process the artifact record cannot capture: the unlearning that preceded the redesign. Frequency of equity-oriented artifacts is an insufficient proxy for the epistemic work that made them possible.
+                        </td>
+                    </tr>
+
+                    <!-- ── Row 5: Equity as Practice ── -->
+                    <tr>
+                        <td class="col-theme">Equity as Practice</td>
+                        <td class="col-qual">
+                            <em>&ldquo;There&rsquo;s a difference between handing a kid a worksheet and saying &lsquo;go catch up&rsquo; and building something with them that makes the math feel like it belongs to them. I had to stop designing for compliance and start designing for belonging.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Periods with documented technology-integrated lesson designs are projected to show approximately 25&ndash;30% higher frequency of engagement markers in lesson artifacts &mdash; student-generated work, documented questions, collaborative outputs &mdash; compared to non-technology-integrated lessons within the same course context.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent</span><br>
+                            Both strands indicate that technology integration, when equity-oriented rather than remediation-oriented, is associated with increased student engagement. The qualitative strand clarifies what the quantitative pattern alone cannot: the orientation of the integration matters as much as its presence.
+                        </td>
+                    </tr>
+
+                    <!-- ── Row 6: Reflection Through Making — methodological capstone ── -->
+                    <tr class="row-capstone">
+                        <td class="col-theme">Reflection Through Making</td>
+                        <td class="col-qual">
+                            <em>&ldquo;I wrote the most in the tracker when I was in the middle of building something &mdash; not when I set aside time to reflect. The tracker didn&rsquo;t just record what I was doing; building it was what made me understand what I was doing.&rdquo;</em>
+                        </td>
+                        <td class="col-quan">
+                            Approximately 70&ndash;75% of high-frequency documentation windows in the auto-ethnography tracker are projected to co-occur with periods of artifact creation or active tool engagement, compared to documentation rates during periods of passive use or reading.
+                        </td>
+                        <td class="col-integration">
+                            <span class="integration-badge">Convergent and Mutually Constitutive</span><br>
+                            Both strands confirm that making functions as a catalyst for reflection rather than the reverse. This convergence is the methodological core of the study: the quantitative pattern grounds the qualitative claim as methodology rather than preference, and the qualitative narrative makes the quantitative pattern interpretable as meaningful rather than incidental. Together they are the argument.
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div><!-- /.jd-table-wrapper -->
+
+        <!-- ══ Simple course credit line ══ -->
+        <div class="jd-course-footer">
+            EDPS 936: Mixed Methods Research &nbsp;|&nbsp; Dr. Michelle Howell &nbsp;|&nbsp; University of Nebraska-Lincoln &nbsp;|&nbsp; <a href="https://servellon.net">servellon.net</a>
+        </div>
+
+    </main>
+
+    <!-- Site footer loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <script src="component-loader.js"></script>
+
+</body>
+</html>
