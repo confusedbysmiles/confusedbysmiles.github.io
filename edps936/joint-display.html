@@ -254,27 +254,45 @@
         }
 
         /* ══════════════════════════════════════════
-           PRINT STYLES
+           PRINT STYLES — table only, single page
            ══════════════════════════════════════════ */
+        @page {
+            size: landscape;
+            margin: 0.5in;
+        }
+
         @media print {
-            /* Gradient → solid light gray */
-            .jd-header {
-                background: #e0e0e0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            /* Hide everything except the table wrapper */
+            #header-placeholder,
+            #footer-placeholder,
+            .jd-header,
+            .jd-note,
+            .jd-toolbar,
+            .jd-course-footer {
+                display: none !important;
             }
 
-            .jd-header__title,
-            .jd-header__author,
-            .jd-header__course {
-                color: #000 !important;
+            body {
+                background: #fff !important;
             }
 
-            /* Badge loses pill styling, keeps bold text in brackets */
-            .jd-header__badge {
-                background: transparent !important;
-                border: 1px solid #000 !important;
-                color: #000 !important;
+            main.jd-main {
+                display: block !important;
+            }
+
+            /* Shrink table to fit single landscape page */
+            .jd-table-wrapper {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                overflow: visible !important;
+            }
+
+            .jd-table {
+                font-size: 8.5pt !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: 100% !important;
             }
 
             /* Table header → solid dark */
@@ -284,75 +302,61 @@
                 color: #fff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                padding: 5pt 5pt !important;
                 border-left: none !important;
+                font-size: 8.5pt !important;
             }
 
-            /* Integration column: structural border replaces color */
+            .jd-table thead th .col-sub {
+                font-size: 7pt !important;
+            }
+
+            /* Body cells */
+            .jd-table tbody td {
+                padding: 4.5pt 5pt !important;
+                font-size: 8.5pt !important;
+                line-height: 1.4 !important;
+            }
+
+            /* Integration column: left border as structural marker */
             .jd-table tbody td.col-integration {
-                border-left: 3px solid #000 !important;
+                border-left: 2.5pt solid #000 !important;
                 background: #f2f2f2 !important;
             }
 
-            /* Badges → bold bracketed text, no color */
+            /* Badges → bold bracketed text */
             .integration-badge {
                 background: none !important;
                 color: #000 !important;
                 font-weight: 700;
-                font-size: 0.78rem;
-                padding: 0;
-                border-radius: 0;
-                letter-spacing: 0;
+                font-size: 7.5pt !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                letter-spacing: 0 !important;
+                display: inline !important;
+                margin-bottom: 2pt !important;
             }
 
             .integration-badge::before { content: "["; }
             .integration-badge::after  { content: "]"; }
 
-            /* Row 6 capstone: border replaces color tint */
-            .jd-table tbody tr.row-capstone td {
-                background: #f5f5f5 !important;
-                border-top: 2px solid #555 !important;
-            }
-
-            .jd-table tbody tr.row-capstone td.col-integration {
-                background: #ebebeb !important;
-                border-top: 2px solid #555 !important;
-            }
-
-            /* Avoid splitting rows across pages */
-            .jd-table tbody tr {
-                page-break-inside: avoid;
-            }
-
-            /* Alternating rows: keep subtle differentiation */
+            /* Alternating rows */
             .jd-table tbody tr:nth-child(even) td {
                 background: #f8f8f8 !important;
             }
 
-            /* Course footer */
-            .jd-course-footer {
-                background: #444 !important;
-                color: #fff !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            .jd-table tbody tr:nth-child(even) td.col-integration {
+                background: #ebebeb !important;
             }
 
-            .jd-course-footer a {
-                color: #fff !important;
-                border-bottom: none !important;
+            /* Row 6 capstone */
+            .jd-table tbody tr.row-capstone td {
+                background: #f5f5f5 !important;
+                border-top: 1.5pt solid #555 !important;
             }
 
-            /* Hide site nav, site footer, and print button */
-            .main-nav,
-            .jd-toolbar {
-                display: none !important;
-            }
-
-            #footer-placeholder {
-                display: none !important;
-            }
-
-            .jd-note {
-                color: #333 !important;
+            .jd-table tbody tr.row-capstone td.col-integration {
+                background: #e8e8e8 !important;
             }
         }
 
