@@ -218,6 +218,41 @@
             border-bottom-color: #fff;
         }
 
+        /* ── Print toolbar ── */
+        .jd-toolbar {
+            max-width: 1380px;
+            margin: 0 auto 0.75rem;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .jd-print-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: linear-gradient(135deg, #7c4dbd 0%, #667eea 100%);
+            color: #fff;
+            border: none;
+            padding: 0.55rem 1.1rem;
+            border-radius: 6px;
+            font-family: "Jost", sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.35);
+        }
+
+        .jd-print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.45);
+        }
+
+        .jd-print-btn svg {
+            flex-shrink: 0;
+        }
+
         /* ══════════════════════════════════════════
            PRINT STYLES
            ══════════════════════════════════════════ */
@@ -306,8 +341,9 @@
                 border-bottom: none !important;
             }
 
-            /* Hide site nav and site footer */
-            .main-nav {
+            /* Hide site nav, site footer, and print button */
+            .main-nav,
+            .jd-toolbar {
                 display: none !important;
             }
 
@@ -385,6 +421,18 @@
         <p class="jd-note">
             <em>Note: All findings presented here are projected. This display represents the anticipated structure and content of integration at the analysis phase of a proposed study that has not yet been conducted.</em>
         </p>
+
+        <!-- ══ Print toolbar ══ -->
+        <div class="jd-toolbar">
+            <button class="jd-print-btn" onclick="window.print()" aria-label="Print table to PDF">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print to PDF
+            </button>
+        </div>
 
         <!-- ══ Joint display table ══ -->
         <div class="jd-table-wrapper">
