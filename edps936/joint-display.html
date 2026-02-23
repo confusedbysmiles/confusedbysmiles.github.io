@@ -96,6 +96,15 @@
             overflow: hidden;
         }
 
+        .jd-table-caption {
+            caption-side: top;
+            text-align: left;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #555;
+            padding: 0 0 0.6rem 0;
+        }
+
         /* Column proportions */
         .jd-table col.col-theme       { width: 10%; }
         .jd-table col.col-qual        { width: 28%; }
@@ -280,6 +289,13 @@
                 display: block !important;
             }
 
+            /* Caption */
+            .jd-table-caption {
+                font-size: 7.5pt !important;
+                color: #000 !important;
+                padding-bottom: 4pt !important;
+            }
+
             /* Shrink table to fit single landscape page */
             .jd-table-wrapper {
                 padding: 0 !important;
@@ -441,6 +457,7 @@
         <!-- ══ Joint display table ══ -->
         <div class="jd-table-wrapper">
             <table class="jd-table" aria-label="MMR Joint Display: Projected Findings Integration Table">
+                <caption class="jd-table-caption">Table 1. Joint display of projected quantitative artifact patterns and qualitative critical incident findings from a concurrent convergent mixed methods autoethnography</caption>
                 <colgroup>
                     <col class="col-theme">
                     <col class="col-qual">
