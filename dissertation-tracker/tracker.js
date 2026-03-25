@@ -44,6 +44,7 @@ function addEntry(entry) {
     entry.createdAt = new Date().toISOString();
     entries.push(entry);
     saveEntries(entries);
+    Neo4j.saveEntry(entry).catch(err => console.warn('[Neo4j] write failed:', err));
     return entry;
 }
 
@@ -816,6 +817,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initEntriesSearch();
     initDeleteModal();
     initExportImport();
+
+    Neo4j.health()
+        .then(r => console.log('[Neo4j] status:', r.neo4j))
+        .catch(err => console.warn('[Neo4j] unreachable:', err));
 
     console.log('Dissertation Tracker initialized.');
 });
