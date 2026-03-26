@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dissertation Graph — Sam Servellon</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap');
+
+  :root {
+    --bg:        #0D1117;
+    --surface:   #161B27;
+    --border:    #1E2A3A;
+    --accent:    #00D4AA;
+    --purple:    #A78BFA;
+    --amber:     #FCD34D;
+    --rose:      #F87171;
+    --blue:      #60A5FA;
+    --green:     #34D399;
+    --white:     #F0F4F8;
+    --muted:     #4B5563;
+    --textgrey:  #9CA3AF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    height: 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .accent-bar {
+    width: 3px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .header-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .header-sub {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.4s ease;
+  }
+  .status-pill.connected {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .status-pill.error {
+    border-color: var(--rose);
+    color: var(--rose);
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .status-pill.connected .status-dot {
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .stat-group {
+    display: flex;
+    gap: 1.2rem;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.58rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.62rem;
+    color: var(--textgrey);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Main layout ── */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Graph canvas ── */
+  #graph {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-line {
+    stroke: #1A2035;
+    stroke-width: 1;
+  }
+
+  /* ── Links ── */
+  .link {
+    stroke-opacity: 0.35;
+    stroke-width: 1.5;
+    fill: none;
+    transition: stroke-opacity 0.2s;
+  }
+  .link.highlighted { stroke-opacity: 0.9; stroke-width: 2.5; }
+  .link.dimmed { stroke-opacity: 0.05; }
+
+  .link-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    fill: #3A4A5A;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+  .link-label.highlighted { fill: var(--textgrey); }
+
+  /* ── Nodes ── */
+  .node { cursor: pointer; }
+
+  .node circle {
+    stroke-width: 2;
+    transition: r 0.2s ease, stroke-width 0.2s ease;
+  }
+  .node.highlighted circle {
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  .node.dimmed circle { opacity: 0.15; }
+  .node.dimmed text { opacity: 0.1; }
+
+  .node text {
+    font-family: 'DM Mono', monospace;
+    pointer-events: none;
+    dominant-baseline: middle;
+  }
+  .node-label-main {
+    font-size: 9px;
+    font-weight: 500;
+    fill: var(--white);
+  }
+  .node-label-sub {
+    font-size: 7.5px;
+    fill: var(--textgrey);
+  }
+
+  /* ── Side panel ── */
+  .panel {
+    width: 300px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .panel-header {
+    padding: 1rem 1.2rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .panel-title {
+    font-family: 'Fraunces', serif;
+    font-size: 0.85rem;
+    color: var(--textgrey);
+    font-weight: 300;
+    font-style: italic;
+  }
+  .panel-hint {
+    font-size: 0.62rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    letter-spacing: 0.03em;
+  }
+
+  .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.2rem;
+  }
+  .panel-content::-webkit-scrollbar { width: 3px; }
+  .panel-content::-webkit-scrollbar-track { background: transparent; }
+  .panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Empty state */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0.5rem;
+    opacity: 0.4;
+    text-align: center;
+  }
+  .empty-icon { font-size: 2rem; }
+  .empty-text { font-size: 0.7rem; color: var(--muted); line-height: 1.6; }
+
+  /* Node detail */
+  .node-detail { display: none; }
+  .node-detail.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .detail-type-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    border: 1px solid currentColor;
+  }
+
+  .detail-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-meta {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  .detail-field {
+    margin-bottom: 0.9rem;
+  }
+  .detail-field-label {
+    font-size: 0.58rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.3rem;
+  }
+  .detail-field-value {
+    font-size: 0.72rem;
+    color: var(--textgrey);
+    line-height: 1.6;
+  }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+  .tag {
+    padding: 0.15rem 0.5rem;
+    background: #1A2035;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    color: var(--accent);
+    border: 1px solid #1E3A30;
+  }
+
+  .connections-list { margin-top: 0.4rem; }
+  .connection-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.65rem;
+    color: var(--textgrey);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .connection-item:hover { color: var(--white); }
+  .connection-item:last-child { border-bottom: none; }
+  .conn-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .conn-rel {
+    font-size: 0.55rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── Loading overlay ── */
+  #loading {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 100;
+    transition: opacity 0.5s ease;
+  }
+  #loading.hidden { opacity: 0; pointer-events: none; }
+
+  .loading-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .loading-sub {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .loading-bar-track {
+    width: 200px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: loadbar 1.4s ease-in-out infinite;
+  }
+  @keyframes loadbar {
+    0% { width: 0%; margin-left: 0%; }
+    50% { width: 60%; margin-left: 20%; }
+    100% { width: 0%; margin-left: 100%; }
+  }
+
+  /* ── Empty graph state ── */
+  .graph-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    pointer-events: none;
+  }
+  .graph-empty-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .graph-empty-sub {
+    font-size: 0.65rem;
+    color: var(--muted);
+    opacity: 0.6;
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.7;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    position: absolute;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .ctrl-btn {
+    width: 32px; height: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--textgrey);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-family: 'DM Mono', monospace;
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Tooltip ── */
+  .tooltip {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.65rem;
+    color: var(--textgrey);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 50;
+    max-width: 180px;
+    line-height: 1.5;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip-name {
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="accent-bar"></div>
+    <div>
+      <div class="header-title">Through the Rearview Mirror</div>
+      <div class="header-sub">Live Dissertation Graph · Neo4j Aura</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#00D4AA"></div>TrackerEntry</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F87171"></div>Era</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#34D399"></div>Theme</div>
+    </div>
+    <div class="stat-group" id="stats">
+      <div class="stat"><div class="stat-num" id="stat-nodes">—</div><div class="stat-label">Nodes</div></div>
+      <div class="stat"><div class="stat-num" id="stat-edges">—</div><div class="stat-label">Edges</div></div>
+      <div class="stat"><div class="stat-num" id="stat-entries">—</div><div class="stat-label">Entries</div></div>
+    </div>
+    <div class="status-pill" id="status-pill">
+      <div class="status-dot"></div>
+      <span id="status-text">Connecting…</span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div id="graph">
+    <div id="loading">
+      <div class="loading-title">Querying the graph…</div>
+      <div class="loading-sub">Fetching from Neo4j Aura</div>
+      <div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="btn-zoom-in"  title="Zoom in">+</button>
+      <button class="ctrl-btn" id="btn-zoom-out" title="Zoom out">−</button>
+      <button class="ctrl-btn" id="btn-reset"    title="Reset view">⊙</button>
+    </div>
+    <div class="tooltip" id="tooltip">
+      <div class="tooltip-name" id="tt-name"></div>
+      <div id="tt-type"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">Node Inspector</div>
+      <div class="panel-hint">Click any node to explore</div>
+    </div>
+    <div class="panel-content">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">◈</div>
+        <div class="empty-text">Select a node to inspect its properties and connections</div>
+      </div>
+      <div class="node-detail" id="node-detail"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const WORKER = "https://dissertation-neo4j.math-generator.workers.dev";
+
+const NODE_COLORS = {
+  TrackerEntry: { fill: "#00D4AA", bg: "#042020", stroke: "#00D4AA" },
+  Era:          { fill: "#F87171", bg: "#200808", stroke: "#F87171" },
+  Theme:        { fill: "#34D399", bg: "#041A10", stroke: "#34D399" },
+};
+
+const LINK_COLORS = {
+  SITUATED_IN: "#F87171",
+  SURFACES:    "#34D399",
+};
+
+const TYPE_LABELS = {
+  memory:   "Memory",
+  buildlog: "Build Log",
+  reflection: "Reflection",
+};
+
+let simulation, svg, g, zoom;
+let allNodes = [], allLinks = [];
+let selectedId = null;
+
+// ── Fetch & build graph data ─────────────────────────────────────────────────
+async function loadGraph() {
+  try {
+    const resp = await fetch(`${WORKER}/entries`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const { entries } = await resp.json();
+
+    setStatus("connected");
+
+    if (!entries || entries.length === 0) {
+      hideLoading();
+      showGraphEmpty();
+      return;
+    }
+
+    const nodes = [];
+    const links = [];
+    const nodeMap = new Map();
+
+    const addNode = (id, label, type, data = {}) => {
+      if (!nodeMap.has(id)) {
+        const n = { id, label, type, data };
+        nodes.push(n);
+        nodeMap.set(id, n);
+      }
+      return nodeMap.get(id);
+    };
+
+    entries.forEach(e => {
+      const entryId = e.id || e.createdAt;
+      const title = e.title || "Untitled";
+      addNode(entryId, title, "TrackerEntry", e);
+
+      if (e.era) {
+        const eraId = "era_" + e.era;
+        addNode(eraId, e.era, "Era", { name: e.era });
+        links.push({ source: entryId, target: eraId, rel: "SITUATED_IN" });
+      }
+
+      (e.themes || e.tags || []).forEach(tag => {
+        if (!tag) return;
+        const themeId = "theme_" + tag;
+        addNode(themeId, tag, "Theme", { name: tag });
+        links.push({ source: entryId, target: themeId, rel: "SURFACES" });
+      });
+    });
+
+    allNodes = nodes;
+    allLinks = links;
+
+    // Stats
+    document.getElementById("stat-nodes").textContent = nodes.length;
+    document.getElementById("stat-edges").textContent = links.length;
+    document.getElementById("stat-entries").textContent = entries.length;
+
+    hideLoading();
+    renderGraph(nodes, links);
+
+  } catch (err) {
+    console.error(err);
+    setStatus("error", err.message);
+    hideLoading();
+    showGraphEmpty("Could not reach Neo4j Worker", "Check the console for details. Is the Worker deployed?");
+  }
+}
+
+// ── D3 graph ─────────────────────────────────────────────────────────────────
+function renderGraph(nodes, links) {
+  const container = document.getElementById("graph");
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+
+  svg = d3.select("#graph").append("svg")
+    .attr("width", W).attr("height", H);
+
+  // Subtle grid
+  const defs = svg.append("defs");
+  const pattern = defs.append("pattern")
+    .attr("id", "grid").attr("width", 40).attr("height", 40)
+    .attr("patternUnits", "userSpaceOnUse");
+  pattern.append("path")
+    .attr("d", "M 40 0 L 0 0 0 40")
+    .attr("fill", "none").attr("stroke", "#1A2035").attr("stroke-width", 0.5);
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", "url(#grid)");
+
+  // Arrow markers
+  Object.entries(LINK_COLORS).forEach(([rel, color]) => {
+    defs.append("marker")
+      .attr("id", "arrow-" + rel)
+      .attr("viewBox", "0 -4 8 8")
+      .attr("refX", 18).attr("refY", 0)
+      .attr("markerWidth", 6).attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+        .attr("d", "M0,-4L8,0L0,4")
+        .attr("fill", color).attr("opacity", 0.6);
+  });
+
+  zoom = d3.zoom()
+    .scaleExtent([0.2, 4])
+    .on("zoom", e => g.attr("transform", e.transform));
+  svg.call(zoom);
+
+  g = svg.append("g");
+
+  const link = g.append("g").selectAll("line")
+    .data(links).join("line")
+    .attr("class", "link")
+    .attr("stroke", d => LINK_COLORS[d.rel] || "#3A4A5A")
+    .attr("marker-end", d => `url(#arrow-${d.rel})`);
+
+  const linkLabel = g.append("g").selectAll("text")
+    .data(links).join("text")
+    .attr("class", "link-label")
+    .text(d => d.rel.replace(/_/g, " ").toLowerCase());
+
+  // Node radius by type
+  const nodeRadius = t => ({ TrackerEntry: 14, Era: 18, Theme: 11 }[t] || 12);
+
+  const node = g.append("g").selectAll("g")
+    .data(nodes).join("g")
+    .attr("class", "node")
+    .call(d3.drag()
+      .on("start", dragStart)
+      .on("drag",  dragged)
+      .on("end",   dragEnd))
+    .on("click", (event, d) => {
+      event.stopPropagation();
+      selectNode(d, node, link, linkLabel);
+    })
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mousemove",  (event, d) => moveTooltip(event))
+    .on("mouseleave", () => hideTooltip());
+
+  node.append("circle")
+    .attr("r", d => nodeRadius(d.type))
+    .attr("fill", d => NODE_COLORS[d.type]?.bg || "#1A1A2E")
+    .attr("stroke", d => NODE_COLORS[d.type]?.stroke || "#4A4A6A");
+
+  // Icon text inside node
+  const icons = { TrackerEntry: "◈", Era: "⊛", Theme: "◇" };
+  node.append("text")
+    .attr("class", "node-label-main")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .attr("font-size", d => nodeRadius(d.type) * 0.9)
+    .attr("fill", d => NODE_COLORS[d.type]?.fill || "#9CA3AF")
+    .text(d => icons[d.type] || "○");
+
+  // Label below
+  node.append("text")
+    .attr("class", "node-label-sub")
+    .attr("text-anchor", "middle")
+    .attr("dy", d => nodeRadius(d.type) + 12)
+    .text(d => truncate(d.label, 18));
+
+  // Simulation
+  simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.rel === "SITUATED_IN" ? 100 : 70).strength(0.6))
+    .force("charge", d3.forceManyBody().strength(-200))
+    .force("center", d3.forceCenter(W / 2, H / 2))
+    .force("collision", d3.forceCollide().radius(d => nodeRadius(d.type) + 20))
+    .on("tick", () => {
+      link
+        .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+      linkLabel
+        .attr("x", d => (d.source.x + d.target.x) / 2)
+        .attr("y", d => (d.source.y + d.target.y) / 2);
+      node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+  // Click background to deselect
+  svg.on("click", () => {
+    selectedId = null;
+    node.classed("highlighted", false).classed("dimmed", false);
+    link.classed("highlighted", false).classed("dimmed", false);
+    linkLabel.classed("highlighted", false);
+    showEmptyPanel();
+  });
+
+  // Controls
+  document.getElementById("btn-zoom-in").onclick  = () => svg.transition().call(zoom.scaleBy, 1.4);
+  document.getElementById("btn-zoom-out").onclick = () => svg.transition().call(zoom.scaleBy, 0.7);
+  document.getElementById("btn-reset").onclick    = () => svg.transition().call(zoom.transform, d3.zoomIdentity.translate(W/2, H/2).scale(1).translate(-W/2, -H/2));
+}
+
+function selectNode(d, nodeSel, linkSel, labelSel) {
+  selectedId = d.id;
+
+  // Find connected node IDs
+  const connectedIds = new Set([d.id]);
+  const connectedLinks = [];
+  allLinks.forEach(l => {
+    const srcId = l.source.id || l.source;
+    const tgtId = l.target.id || l.target;
+    if (srcId === d.id || tgtId === d.id) {
+      connectedIds.add(srcId);
+      connectedIds.add(tgtId);
+      connectedLinks.push(l);
+    }
+  });
+
+  nodeSel
+    .classed("highlighted", n => n.id === d.id)
+    .classed("dimmed", n => !connectedIds.has(n.id));
+  linkSel
+    .classed("highlighted", l => connectedLinks.includes(l))
+    .classed("dimmed", l => !connectedLinks.includes(l));
+  labelSel.classed("highlighted", l => connectedLinks.includes(l));
+
+  showNodeDetail(d, connectedLinks);
+}
+
+function showNodeDetail(d, connectedLinks) {
+  document.getElementById("empty-state").style.display = "none";
+  const detail = document.getElementById("node-detail");
+  detail.classList.add("visible");
+
+  const color = NODE_COLORS[d.type]?.fill || "#9CA3AF";
+  const typeLabel = d.type;
+
+  let html = `<div class="detail-type-badge" style="color:${color};border-color:${color}">${typeLabel}</div>`;
+  html += `<div class="detail-title">${esc(d.label)}</div>`;
+
+  if (d.type === "TrackerEntry") {
+    const e = d.data;
+    const created = e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" }) : "";
+    html += `<div class="detail-meta">`;
+    if (e.type) html += `Type: ${TYPE_LABELS[e.type] || e.type}<br>`;
+    if (created) html += `Saved: ${created}<br>`;
+    if (e.context) html += `Context: ${e.context}`;
+    html += `</div>`;
+
+    if (e.content || e.description || e.what) {
+      const body = e.content || e.description || e.what || "";
+      html += `<div class="detail-field">
+        <div class="detail-field-label">Content</div>
+        <div class="detail-field-value">${esc(body.slice(0, 240))}${body.length > 240 ? "…" : ""}</div>
+      </div>`;
+    }
+    if (e.tags && e.tags.length) {
+      html += `<div class="detail-field">
+        <div class="detail-field-label">Tags</div>
+        <div class="tag-list">${e.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+      </div>`;
+    }
+  }
+
+  if (d.type === "Era") {
+    html += `<div class="detail-meta">Temporal context node.<br>Groups entries from this period.</div>`;
+    const count = connectedLinks.filter(l => (l.source.id || l.source) !== d.id || (l.target.id || l.target) === d.id).length;
+    html += `<div class="detail-field"><div class="detail-field-label">Connected Entries</div><div class="detail-field-value">${connectedLinks.length}</div></div>`;
+  }
+
+  if (d.type === "Theme") {
+    html += `<div class="detail-meta">Theme node.<br>Auto-created from entry tags.</div>`;
+    html += `<div class="detail-field"><div class="detail-field-label">Connected Entries</div><div class="detail-field-value">${connectedLinks.length}</div></div>`;
+  }
+
+  // Connections list
+  if (connectedLinks.length) {
+    html += `<div class="detail-field">
+      <div class="detail-field-label">Relationships (${connectedLinks.length})</div>
+      <div class="connections-list">`;
+    connectedLinks.forEach(l => {
+      const otherId = (l.source.id || l.source) === d.id ? (l.target.id || l.target) : (l.source.id || l.source);
+      const other = allNodes.find(n => n.id === otherId);
+      if (!other) return;
+      const ocolor = NODE_COLORS[other.type]?.fill || "#9CA3AF";
+      html += `<div class="connection-item">
+        <div class="conn-dot" style="background:${ocolor}"></div>
+        <div>
+          <div>${esc(truncate(other.label, 22))}</div>
+          <div class="conn-rel">${l.rel.replace(/_/g, " ").toLowerCase()}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  detail.innerHTML = html;
+}
+
+// ── Drag ─────────────────────────────────────────────────────────────────────
+function dragStart(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+function dragEnd(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+// ── Tooltip ──────────────────────────────────────────────────────────────────
+function showTooltip(event, d) {
+  const tt = document.getElementById("tooltip");
+  document.getElementById("tt-name").textContent = truncate(d.label, 28);
+  document.getElementById("tt-type").textContent = d.type;
+  tt.classList.add("visible");
+  moveTooltip(event);
+}
+function moveTooltip(event) {
+  const tt = document.getElementById("tooltip");
+  const r = document.getElementById("graph").getBoundingClientRect();
+  tt.style.left = (event.clientX - r.left + 12) + "px";
+  tt.style.top  = (event.clientY - r.top  - 10) + "px";
+}
+function hideTooltip() {
+  document.getElementById("tooltip").classList.remove("visible");
+}
+
+// ── UI helpers ───────────────────────────────────────────────────────────────
+function setStatus(state, msg) {
+  const pill = document.getElementById("status-pill");
+  const text = document.getElementById("status-text");
+  pill.className = "status-pill " + state;
+  text.textContent = state === "connected" ? "Connected" : (msg || "Error");
+}
+
+function hideLoading() {
+  document.getElementById("loading").classList.add("hidden");
+  setTimeout(() => document.getElementById("loading").remove(), 600);
+}
+
+function showGraphEmpty(title = "No entries yet", sub = "Save a memory or build log in the tracker, then reload this page.") {
+  const el = document.createElement("div");
+  el.className = "graph-empty";
+  el.innerHTML = `<div class="graph-empty-title">${title}</div><div class="graph-empty-sub">${sub}</div>`;
+  document.getElementById("graph").appendChild(el);
+}
+
+function showEmptyPanel() {
+  document.getElementById("empty-state").style.display = "";
+  const detail = document.getElementById("node-detail");
+  detail.classList.remove("visible");
+  detail.innerHTML = "";
+}
+
+function truncate(str, n) {
+  if (!str) return "";
+  return str.length > n ? str.slice(0, n) + "…" : str;
+}
+
+function esc(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+loadGraph();
+</script>
+</body>
+</html>
