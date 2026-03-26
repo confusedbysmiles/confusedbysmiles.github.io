@@ -126,7 +126,7 @@ export default {
           id,
           type:              entry.type              || "memory",
           title:             entry.title             || "",
-          content:           entry.content           || "",
+          content:           entry.content || entry.description || entry.what || "",
           context:           entry.context           || "",
           tags:              entry.tags              || [],
           emotionalResponse: entry.emotionalResponse || "",
