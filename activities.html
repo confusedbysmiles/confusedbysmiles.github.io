@@ -4,10 +4,479 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activities & Certifications - Sam Servellon</title>
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pronouns {
+            font-size: 1rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+            flex: 1;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 2rem;
+            color: #333;
+            margin: 3rem 0 2rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        /* Unified Grid for both sections */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Tile Card - unified style for all cards */
+        .tile-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tile-card.activity {
+            border-left-color: #764ba2;
+        }
+
+        .tile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        /* Card Header with Icon */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .certification-card .card-icon {
+            color: #667eea;
+        }
+
+        .activity-card .card-icon {
+            color: #764ba2;
+        }
+
+        .card-header-text {
+            flex: 1;
+        }
+
+        /* Card Title */
+        .card-title {
+            font-size: 1.25rem;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+            color: #667eea;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .activity-card .card-subtitle {
+            color: #764ba2;
+        }
+
+        /* Card Date */
+        .card-date {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Card Description */
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        /* Footer - Updated with gradient and CC styling */
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-top: auto;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .contact-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+        }
+
+        .contact-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .contact-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .tiles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tile-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .tile-card:nth-child(1) { animation-delay: 0.1s; }
+        .tile-card:nth-child(2) { animation-delay: 0.15s; }
+        .tile-card:nth-child(3) { animation-delay: 0.2s; }
+        .tile-card:nth-child(4) { animation-delay: 0.25s; }
+        .tile-card:nth-child(5) { animation-delay: 0.3s; }
+        .tile-card:nth-child(6) { animation-delay: 0.35s; }
+        .tile-card:nth-child(7) { animation-delay: 0.4s; }
+
+                /* Creative Commons Section */
+        .cc-section {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cc-section:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .cc-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .cc-license {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .cc-icons {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .cc-icon {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cc-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cc-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .cc-text {
+            flex: 1;
+        }
+
+        .cc-text h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .cc-text p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        .cc-text a {
+            color: #ffd700;
+            text-decoration: none;
+            border-bottom: 1px dotted #ffd700;
+            transition: color 0.2s ease;
+        }
+
+        .cc-text a:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                border-radius: 0;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .contact-link {
+                width: fit-content;
+            }
+
+            .cc-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cc-license {
+                flex-direction: column;
+                min-width: auto;
+            }
+    </style>
+    <link rel="icon" href="/MyCoolS.png" type="image/png">
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <header class="header">
+        <div class="container">
+            <div class="profile-container">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image">
+                <div class="profile-info">
+                    <h1>Sam Servellon <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
+            </div>
+        </div>
+        <img src="/MyCoolS.png" alt="" class="site-logo-mark">
+</header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/pedagogy.html">Pedagogy & Praxis</a></li>
+                <li><a href="/experience.html">Experience & Education</a></li>
+                <li><a href="/publications.html">Publications</a></li>
+                <li><a href="/activities.html" class="active">Activities</a></li>
+                <li><a href="/classes.html">Classes</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main class="container">
         <div class="page-header">
