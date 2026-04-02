@@ -8,8 +8,6 @@
 // CONFIGURATION
 // ============================================
 
-const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
-
 // localStorage key
 const STORAGE_KEY = 'dissertation-tracker-entries';
 

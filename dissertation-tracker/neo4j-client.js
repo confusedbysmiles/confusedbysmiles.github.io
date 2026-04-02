@@ -63,7 +63,7 @@ const Neo4j = (() => {
      * @returns {Promise<Object>}
      */
     function query(cypher, params = {}) {
-        return _post('/query', { cypher, params });
+        return _post('/query', { statement: cypher, parameters: params });
     }
 
     /**
