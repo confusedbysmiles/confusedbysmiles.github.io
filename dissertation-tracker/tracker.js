@@ -8,10 +8,6 @@
 // CONFIGURATION
 // ============================================
 
-// Replace with your Cloudflare Worker URL for AI reflection prompts.
-// Leave empty to disable AI features (forms still work without it).
-const REFLECTION_API_ENDPOINT = '';
-
 // localStorage key
 const STORAGE_KEY = 'dissertation-tracker-entries';
 
@@ -495,46 +491,6 @@ async function saveConversation() {
     }
 }
 
-// Local fallback reflection prompts (no API needed)
-function generateLocalReflection(entry) {
-    const memoryPrompts = [
-        'How does this experience connect to the tools you\'re building for students today?',
-        'What would your younger self think about the Math Generator you\'re creating?',
-        'Is there a design decision in your Math Generator that directly responds to this memory?',
-        'If you could redesign the educational experience from this memory, what would you change?',
-        'How does this memory inform what "student agency" means to you?',
-        'What emotions come up when you think about students having similar experiences today?',
-        'Does this memory reveal something about your teaching philosophy that you hadn\'t articulated before?'
-    ];
-
-    const buildPrompts = [
-        'Does this build decision connect to any of your documented memories? Which ones and why?',
-        'How does this choice center student agency? What alternatives did you reject?',
-        'If a student struggling with Algebra 1 saw this feature, what would they think?',
-        'What assumption about learning is embedded in this design choice?',
-        'How does this decision reflect your experience as both a student and teacher?',
-        'What would you tell a colleague about why this choice matters for equity?',
-        'Is there a tension between technical constraints and pedagogical ideals here?'
-    ];
-
-    const prompts = entry.type === 'memory' ? memoryPrompts : buildPrompts;
-
-    // Pick a prompt, biased by tags if possible
-    if (entry.tags && entry.tags.includes('equity')) {
-        return 'You tagged this with "equity." How does this connect to the structural barriers your students face in math?';
-    }
-    if (entry.tags && entry.tags.includes('frustration')) {
-        return 'You noted frustration here. How is that frustration shaping what you build differently?';
-    }
-    if (entry.tags && entry.tags.includes('breakthrough')) {
-        return 'This was a breakthrough moment. What conditions made it possible, and how are you recreating those conditions in your tool?';
-    }
-    if (entry.tags && entry.tags.includes('agency')) {
-        return 'You flagged "agency" here. What specific moment made you feel like you had (or lacked) control over your own learning?';
-    }
-
-    return prompts[Math.floor(Math.random() * prompts.length)];
-}
 
 // ============================================
 // TIMELINE RENDERING
@@ -808,7 +764,7 @@ function attachEntryListeners(container) {
                 const tabName = entry.type === 'buildlog' ? 'buildlog' : 'memory';
                 document.querySelector(`[data-tab="${tabName}"]`).click();
                 // Small delay to let tab switch
-                setTimeout(() => requestReflection(tabName, entry), 100);
+                setTimeout(() => openChat(tabName, entry), 100);
             }
         });
     });
