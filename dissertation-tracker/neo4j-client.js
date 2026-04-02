@@ -45,7 +45,7 @@ const Neo4j = (() => {
      * @returns {Promise<Object>}
      */
     function saveEntry(entry) {
-        return _post('/entry', { entry });
+        return _post('/entry', entry);
     }
 
     /**
