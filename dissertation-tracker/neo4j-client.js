@@ -1,4 +1,4 @@
-// ============================================
+/ ============================================
 // NEO4J CLIENT - Dissertation Tracker
 // ============================================
 // Exposes window.Neo4j with:
@@ -13,7 +13,7 @@
 // all Neo4j writes are fire-and-forget.
 // ============================================
 
-const WORKER_URL = "https://dissertation-neo4j.dissertation-tracker.workers.dev";
+const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
 
 const Neo4j = (() => {
 

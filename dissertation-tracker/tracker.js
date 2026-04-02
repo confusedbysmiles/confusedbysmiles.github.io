@@ -8,6 +8,8 @@
 // CONFIGURATION
 // ============================================
 
+const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";';
+
 // localStorage key
 const STORAGE_KEY = 'dissertation-tracker-entries';
 
@@ -150,35 +152,13 @@ function clearSelectedTags(selectorId) {
 
 function initMemoryForm() {
     const form = document.getElementById('memory-form');
-
-    // Prevent Enter key in text inputs from submitting the form prematurely
-    form.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
-            e.preventDefault();
-        }
-    });
-
     form.addEventListener('submit', e => {
         e.preventDefault();
-
-        const title = document.getElementById('memory-title').value.trim();
-        if (!title) {
-            document.getElementById('memory-title').focus();
-            showToast('Please add a title for your memory.', 'error');
-            return;
-        }
-
-        const description = document.getElementById('memory-description').value.trim();
-        if (!description) {
-            document.getElementById('memory-description').focus();
-            showToast('Please describe the memory.', 'error');
-            return;
-        }
 
         const entry = {
             type: 'memory',
             timeframe: document.getElementById('memory-timeframe').value.trim(),
-            title,
+            title: document.getElementById('memory-title').value.trim(),
             context: document.getElementById('memory-context').value,
             description: document.getElementById('memory-description').value.trim(),
             tags: getSelectedTags('memory-tag-selector'),
