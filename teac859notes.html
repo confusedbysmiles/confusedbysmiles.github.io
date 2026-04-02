@@ -6,6 +6,269 @@
   <title>TEAC 859 Notes & Reflections - Sam Servellon</title>
   
   <link rel="stylesheet" href="sam-servellon-styles.css">
+  
+  <!-- Page-specific styles -->
+  <style>
+    /* Page Header */
+    .page-header {
+      background: white;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    /* Main Layout */
+    .content-wrapper {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 2rem 2rem;
+      flex: 1;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 20%; 
+      min-width: 250px;
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex; 
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 85vh;
+    }
+    
+    .week-selector { 
+      margin-bottom: 1.5rem; 
+    }
+    
+    .week-selector label {
+      display: block; 
+      font-weight: 600;
+      color: #333; 
+      margin-bottom: 0.5rem;
+    }
+    
+    .week-dropdown {
+      width: 100%; 
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem; 
+      background: white;
+      cursor: pointer; 
+      transition: all 0.3s;
+    }
+    
+    .week-dropdown:hover { 
+      border-color: #667eea; 
+    }
+    
+    .week-dropdown:focus {
+      outline: none; 
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .file-list-container { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+    }
+    
+    .file-list-header {
+      font-weight: 600; 
+      color: #333;
+      margin-bottom: 1rem; 
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .file-list-subheader {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+      font-style: italic;
+    }
+    
+    .file-list { 
+      flex: 1; 
+      overflow-y: auto; 
+    }
+    
+    .file-item {
+      padding: 0.75rem; 
+      margin-bottom: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 6px;
+      cursor: pointer; 
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem;
+    }
+    
+    .file-item:hover {
+      background: #e8ecff; 
+      border-left-color: #667eea;
+      transform: translateX(4px);
+    }
+    
+    .file-item.active {
+      background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+      border-left-color: #667eea;
+    }
+    
+    .file-icon { 
+      font-size: 1.25rem; 
+    }
+    
+    .file-name { 
+      flex: 1; 
+      color: #333; 
+      font-size: 0.95rem; 
+      word-break: break-word; 
+    }
+    
+    /* Content Viewer */
+    .content-viewer {
+      flex: 1; 
+      background: white;
+      border-radius: 8px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column;
+      min-height: 85vh;
+    }
+    
+    .viewer-header {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .viewer-title { 
+      font-size: 1.25rem; 
+      color: #333; 
+      font-weight: 600; 
+    }
+    
+    .viewer-content { 
+      flex: 1; 
+      position: relative; 
+      overflow: hidden; 
+      min-height: 80vh; 
+    }
+    
+    .embed-container { 
+      width: 100%; 
+      height: 100%; 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+    }
+    
+    .embed-container iframe { 
+      width: 100%; 
+      height: 100%; 
+      border: none; 
+    }
+    
+    /* Empty State */
+    .empty-state {
+      display: flex; 
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center;
+      height: 100%; 
+      color: #999; 
+      padding: 2rem; 
+      text-align: center;
+    }
+    
+    .empty-icon { 
+      font-size: 4rem; 
+      margin-bottom: 1rem; 
+      opacity: 0.3; 
+    }
+    
+    .empty-text { 
+      font-size: 1.1rem; 
+      margin-bottom: 0.5rem; 
+    }
+    
+    .empty-subtext { 
+      font-size: 0.95rem; 
+      color: #aaa; 
+    }
+    
+    /* Loading State */
+    .loading { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100%; 
+      font-size: 1.1rem; 
+      color: #667eea; 
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3; 
+      border-top: 3px solid #667eea;
+      border-radius: 50%; 
+      width: 40px; 
+      height: 40px;
+      animation: spin 1s linear infinite; 
+      margin-right: 1rem;
+    }
+    
+    @keyframes spin { 
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(360deg); } 
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .content-wrapper { 
+        flex-direction: column; 
+        height: auto; 
+      }
+      .sidebar { 
+        width: 100%; 
+        height: auto; 
+        max-height: 400px; 
+      }
+      .content-viewer { 
+        min-height: 600px; 
+      }
+    }
+    
+    /* Scrollbar Styling */
+    .file-list::-webkit-scrollbar { 
+      width: 8px; 
+    }
+    
+    .file-list::-webkit-scrollbar-track { 
+      background: #f1f1f1; 
+      border-radius: 4px; 
+    }
+    
+    .file-list::-webkit-scrollbar-thumb { 
+      background: #667eea; 
+      border-radius: 4px; 
+    }
+    
+    .file-list::-webkit-scrollbar-thumb:hover { 
+      background: #5568d3; 
+    }
+  </style>
+    <link rel="icon" href="/MyCoolS.png" type="image/png">
 </head>
 <body>
   <!-- Header Placeholder -->

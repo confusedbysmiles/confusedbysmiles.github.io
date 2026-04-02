@@ -5,9 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Final Project - Decolonizing Pedagogy | Sam Servellon</title>
     <link rel="stylesheet" href="sam-servellon-styles.css">
+    <style>
+        /* Additional styles for the two-column layout */
+        .project-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .right-column {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .presentation-embed {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 2px solid var(--secondary);
+        }
+
+        .artifact-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .artifact-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .artifact-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px var(--shadow-dark);
+            border-left-color: var(--accent);
+        }
+
+        .artifact-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .artifact-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .artifact-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            align-self: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        .artifact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: var(--light);
+        }
+
+        @media (max-width: 968px) {
+            .project-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+    <link rel="icon" href="/MyCoolS.png" type="image/png">
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="profile-container-small">
+                <img src="sam-servellon.jpeg" alt="Sam Servellon" class="profile-image-small">
+                <div class="profile-info-small">
+                    <h1>Sam Servellon <span class="pronouns">(they/them)</span></h1>
+                    <p>Doctoral Student | Learning Design & Technology</p>
+                </div>
+            </div>
+        </div>
+        <img src="/MyCoolS.png" alt="" class="site-logo-mark">
+</header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cv.html">CV</a></li>
+                <li><a href="pedagogy.html">Pedagogy</a></li>
+                <li><a href="publications.html">Publications</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="teac859finalproject.html" class="active">Final Project</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     <main>
