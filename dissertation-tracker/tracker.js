@@ -268,7 +268,6 @@ const chatState = {
     isListening:    false,
 };
 
-
 // ── Show the chat panel after saving an entry ─────────────────────────────────
 function showReflectionOption(formType, savedEntry) {
     const reflectBtn = document.getElementById(formType + '-reflect-btn');
