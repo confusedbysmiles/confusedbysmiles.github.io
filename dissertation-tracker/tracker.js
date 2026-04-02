@@ -150,6 +150,14 @@ function clearSelectedTags(selectorId) {
 
 function initMemoryForm() {
     const form = document.getElementById('memory-form');
+
+    // Prevent Enter key in text inputs from submitting the form prematurely
+    form.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
+            e.preventDefault();
+        }
+    });
+
     form.addEventListener('submit', e => {
         e.preventDefault();
 
@@ -157,6 +165,13 @@ function initMemoryForm() {
         if (!title) {
             document.getElementById('memory-title').focus();
             showToast('Please add a title for your memory.', 'error');
+            return;
+        }
+
+        const description = document.getElementById('memory-description').value.trim();
+        if (!description) {
+            document.getElementById('memory-description').focus();
+            showToast('Please describe the memory.', 'error');
             return;
         }
 
@@ -188,13 +203,28 @@ function initMemoryForm() {
 
 function initBuildLogForm() {
     const form = document.getElementById('buildlog-form');
+
+    // Prevent Enter key in text inputs from submitting the form prematurely
+    form.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
+            e.preventDefault();
+        }
+    });
+
     form.addEventListener('submit', e => {
         e.preventDefault();
 
+        const what = document.getElementById('buildlog-what').value.trim();
+        if (!what) {
+            document.getElementById('buildlog-what').focus();
+            showToast('Please describe what you built or changed.', 'error');
+            return;
+        }
+
         const entry = {
             type: 'buildlog',
-            title: document.getElementById('buildlog-what').value.trim().slice(0, 80),
-            what: document.getElementById('buildlog-what').value.trim(),
+            title: what.slice(0, 80),
+            what,
             why: document.getElementById('buildlog-why').value.trim(),
             challenges: document.getElementById('buildlog-challenges').value.trim(),
             questions: document.getElementById('buildlog-questions').value.trim(),
