@@ -157,7 +157,7 @@ export default {
           type:              entry.type              || "memory",
           title:             entry.title             || "",
           content:           entry.content || entry.description || entry.what || "",
-          context:           entry.context           || "",
+          context:           entry.context || "",
           tags:              entry.tags              || [],
           emotionalResponse: entry.emotionalResponse || entry.emotion || "",
           date:              entry.date              || now,
