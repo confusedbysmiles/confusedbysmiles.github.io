@@ -959,3 +959,60 @@
   flex-shrink: 0;
 }
 .chat-speech-btn:hover { border-color: #00D4AA; }
+
+/* Save-details inline form */
+.chat-save-details {
+  padding: 0.75rem;
+  border-top: 1px solid #2A3A4A;
+  background: #0D1117;
+}
+.chat-save-field {
+  margin-bottom: 0.6rem;
+}
+.chat-save-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.3rem;
+}
+.chat-save-details .tag-selector {
+  margin-bottom: 0;
+}
+.chat-save-details .tag-btn {
+  background: #161B27;
+  border-color: #2A3A4A;
+  color: #9CA3AF;
+}
+.chat-save-details .tag-btn:hover {
+  border-color: #00D4AA;
+  color: #00D4AA;
+}
+.chat-save-details .tag-btn.selected {
+  background: #003D30;
+  color: #00D4AA;
+  border-color: #00D4AA44;
+}
+.chat-save-details .chat-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.chat-save-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+.chat-confirm-btn {
+  padding: 0.3rem 0.8rem;
+  background: #00D4AA;
+  border: none;
+  border-radius: 4px;
+  color: #0D1117;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chat-confirm-btn:hover { background: #00B894; }
+.chat-confirm-btn:disabled { opacity: 0.6; cursor: not-allowed; }
