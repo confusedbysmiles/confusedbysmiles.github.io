@@ -153,10 +153,17 @@ function initMemoryForm() {
     form.addEventListener('submit', e => {
         e.preventDefault();
 
+        const title = document.getElementById('memory-title').value.trim();
+        if (!title) {
+            document.getElementById('memory-title').focus();
+            showToast('Please add a title for your memory.', 'error');
+            return;
+        }
+
         const entry = {
             type: 'memory',
             timeframe: document.getElementById('memory-timeframe').value.trim(),
-            title: document.getElementById('memory-title').value.trim(),
+            title,
             context: document.getElementById('memory-context').value,
             description: document.getElementById('memory-description').value.trim(),
             tags: getSelectedTags('memory-tag-selector'),
@@ -419,7 +426,7 @@ function toggleSpeech() {
     if (!SpeechRecognition) return;
 
     chatState.recognition = new SpeechRecognition();
-    chatState.recognition.continuous     = false;
+    chatState.recognition.continuous     = true;
     chatState.recognition.interimResults = true;
     chatState.recognition.lang           = 'en-US';
 
@@ -470,6 +477,19 @@ async function saveConversation() {
         ? firstUserMsg.content.slice(0, 120)
         : 'Research conversation';
 
+    // Always save locally so the conversation appears in the Entries tab
+    const transcript = chatState.messages
+        .map(m => (m.role === 'user' ? 'You: ' : 'Claude: ') + m.content)
+        .join('\n\n');
+    addEntry({
+        type: 'reflection',
+        title: summary,
+        description: transcript,
+        sortDate: new Date().toISOString(),
+        tags: chatState.entry?.tags || [],
+        relatedEntryId: chatState.entry?.id,
+    });
+
     try {
         const resp = await fetch(`${WORKER_URL}/conversation`, {
             method:  'POST',
@@ -482,12 +502,13 @@ async function saveConversation() {
         });
 
         if (!resp.ok) throw new Error(`Worker error ${resp.status}`);
-        showToast('Conversation saved to graph! 🎓', 'success');
+        showToast('Conversation saved!', 'success');
         if (saveBtn) { saveBtn.textContent = 'Saved ✓'; }
     } catch (err) {
         console.error('[Save conversation] error:', err);
-        showToast('Failed to save conversation.', 'error');
-        if (saveBtn) { saveBtn.textContent = 'Save to Graph'; saveBtn.disabled = false; }
+        // Local save already succeeded; graph sync failed
+        showToast('Saved locally (graph sync failed).', 'error');
+        if (saveBtn) { saveBtn.textContent = 'Saved ✓'; saveBtn.disabled = true; }
     }
 }
 
