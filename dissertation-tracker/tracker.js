@@ -273,7 +273,6 @@ const chatState = {
     isListening:    false,
 };
 
-const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
 
 // ── Show the chat panel after saving an entry ─────────────────────────────────
 function showReflectionOption(formType, savedEntry) {
