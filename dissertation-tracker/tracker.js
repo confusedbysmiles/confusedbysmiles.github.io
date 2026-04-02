@@ -307,7 +307,14 @@ async function openChat(formType, entry) {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
     const speechBtn = document.getElementById('chat-speech-btn'); if (speechBtn) speechBtn.addEventListener('click', toggleSpeech);
-    document.getElementById('chat-save-btn').addEventListener('click', saveConversation);
+    document.getElementById('chat-save-btn').addEventListener('click', showSaveDetails);
+    document.getElementById('chat-confirm-save-btn').addEventListener('click', saveConversation);
+    document.getElementById('chat-cancel-save-btn').addEventListener('click', () => {
+        document.getElementById('chat-save-details').style.display = 'none';
+    });
+    document.getElementById('chat-reflection-custom-tag').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); addCustomTag(e.target, 'chat-reflection-tag-selector'); }
+    });
     document.getElementById('chat-close-btn').addEventListener('click', () => {
         panel.style.display = 'none';
         chatState.messages = [];
@@ -334,6 +341,21 @@ function buildChatPanelHTML(formType) {
           <span></span><span></span><span></span>
         </div>
       </div>
+      <div class="chat-save-details" id="chat-save-details" style="display:none;">
+        <div class="chat-save-field">
+          <label class="chat-save-label">Reflection title</label>
+          <input type="text" id="chat-reflection-title" class="chat-input chat-reflection-title" placeholder="Name this reflection…">
+        </div>
+        <div class="chat-save-field">
+          <label class="chat-save-label">Tags</label>
+          <div class="tag-selector" id="chat-reflection-tag-selector"></div>
+          <input type="text" id="chat-reflection-custom-tag" class="chat-input" placeholder="Add tag + Enter" style="margin-top:0.4rem;">
+        </div>
+        <div class="chat-save-actions">
+          <button class="chat-confirm-btn" id="chat-confirm-save-btn">Save Reflection</button>
+          <button class="chat-action-btn" id="chat-cancel-save-btn">Cancel</button>
+        </div>
+      </div>
       <div class="chat-input-row">
         ${speechSupported ? `<button class="chat-speech-btn" id="chat-speech-btn" title="Speak">🎤</button>` : ''}
         <textarea
@@ -345,6 +367,35 @@ function buildChatPanelHTML(formType) {
         <button class="chat-send-btn" id="chat-send-btn">→</button>
       </div>
     </div>`;
+}
+
+// ── Show the save-details form before committing the reflection ───────────────
+function showSaveDetails() {
+    if (chatState.messages.length === 0) {
+        showToast('No conversation to save yet.', 'error');
+        return;
+    }
+
+    const titleInput = document.getElementById('chat-reflection-title');
+    if (titleInput && !titleInput.value) {
+        const firstUserMsg = chatState.messages.find(m => m.role === 'user');
+        titleInput.value = firstUserMsg ? firstUserMsg.content.slice(0, 80) : 'Research Conversation';
+    }
+
+    const tagSelector = document.getElementById('chat-reflection-tag-selector');
+    if (tagSelector && tagSelector.children.length === 0) {
+        (chatState.entry?.tags || []).forEach(tag => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tag-btn selected';
+            btn.dataset.tag = tag;
+            btn.textContent = tag;
+            btn.addEventListener('click', () => btn.classList.toggle('selected'));
+            tagSelector.appendChild(btn);
+        });
+    }
+
+    document.getElementById('chat-save-details').style.display = 'block';
 }
 
 // ── Send a user message and get Claude's reply ────────────────────────────────
@@ -475,14 +526,16 @@ async function saveConversation() {
         return;
     }
 
-    const saveBtn = document.getElementById('chat-save-btn');
+    const saveBtn = document.getElementById('chat-confirm-save-btn');
     if (saveBtn) { saveBtn.textContent = 'Saving…'; saveBtn.disabled = true; }
 
-    // Build a short summary from the first user message
+    // Read title and tags from the save-details form
+    const titleInput = document.getElementById('chat-reflection-title');
     const firstUserMsg = chatState.messages.find(m => m.role === 'user');
-    const summary = firstUserMsg
-        ? firstUserMsg.content.slice(0, 120)
-        : 'Research conversation';
+    const autoTitle = firstUserMsg ? firstUserMsg.content.slice(0, 120) : 'Research conversation';
+    const title   = (titleInput && titleInput.value.trim()) || autoTitle;
+    const tags    = getSelectedTags('chat-reflection-tag-selector');
+    const summary = title;
 
     // Always save locally so the conversation appears in the Entries tab
     const transcript = chatState.messages
@@ -490,10 +543,10 @@ async function saveConversation() {
         .join('\n\n');
     addEntry({
         type: 'reflection',
-        title: summary,
+        title,
         description: transcript,
         sortDate: new Date().toISOString(),
-        tags: chatState.entry?.tags || [],
+        tags: tags.length > 0 ? tags : (chatState.entry?.tags || []),
         relatedEntryId: chatState.entry?.id,
     });
 
@@ -510,10 +563,10 @@ async function saveConversation() {
 
         if (!resp.ok) throw new Error(`Worker error ${resp.status}`);
         showToast('Conversation saved!', 'success');
-        if (saveBtn) { saveBtn.textContent = 'Saved ✓'; }
+        showToast('Conversation saved!', 'success');
+        if (saveBtn) { saveBtn.textContent = 'Saved ✓'; saveBtn.disabled = true; }
     } catch (err) {
         console.error('[Save conversation] error:', err);
-        // Local save already succeeded; graph sync failed
         showToast('Saved locally (graph sync failed).', 'error');
         if (saveBtn) { saveBtn.textContent = 'Saved ✓'; saveBtn.disabled = true; }
     }
