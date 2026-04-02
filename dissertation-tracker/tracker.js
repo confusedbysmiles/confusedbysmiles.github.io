@@ -296,7 +296,7 @@ async function openChat(formType, entry) {
     document.getElementById('chat-input').addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
-    document.getElementById('chat-speech-btn').addEventListener('click', toggleSpeech);
+    const speechBtn = document.getElementById('chat-speech-btn'); if (speechBtn) speechBtn.addEventListener('click', toggleSpeech);
     document.getElementById('chat-save-btn').addEventListener('click', saveConversation);
     document.getElementById('chat-close-btn').addEventListener('click', () => {
         panel.style.display = 'none';
