@@ -43,6 +43,7 @@ function isRateLimited(ip) {
   return entry.count > limit;
 }
 
+// Neo4j query/v2 helper — one statement at a time
 async function runCypher(env, statement, parameters = {}) {
   const host = env.NEO4J_URI.replace(/^neo4j\+s:\/\//, "https://");
   const url  = `${host}/db/${env.NEO4J_DATABASE}/query/v2`;
@@ -76,9 +77,7 @@ function buildSystemPrompt(entry, recentEntries = []) {
     });
   }
 
-  return `You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. His dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on students retaking Algebra 1 — a course that functions as both gateway and gatekeeper.
-
-Sam is also building a Student Agency Math Problem Generator as both a class prototype and real dissertation infrastructure. He documents formative memories and build decisions in this tracker — the tracker data itself IS his quantitative research strand.
+  return `You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher. This tracker is designed with the intent to collect data in the form of refletions, dialogue, and memories that will serve as data, method, and analysis through the integration a neo4j backend.
 
 The entry Sam just saved:
 ${entryDesc}
@@ -87,13 +86,13 @@ ${recentCtx}
 
 Your role in this conversation:
 - Be a genuine research thought partner, not a cheerleader
-- Ask probing questions that surface connections between his biography and his pedagogy
-- Help him see patterns across entries when relevant
+- Ask probing questions that surface connections between their biography and their pedagogy
+- Help them see patterns across entries when relevant
 - Push back if something seems underexamined
 - Be warm but intellectually rigorous
 - Keep responses concise (2-4 sentences max) — this is a conversation, not an essay
-- Reference specific details from his entry, don't be generic
-- When he seems done, suggest saving the conversation as dissertation data
+- Reference specific details from their entry, don't be generic
+- When they seem done, suggest saving the conversation as dissertation data
 
 Start by asking ONE specific, probing question about this entry.`;
 }
@@ -130,7 +129,7 @@ export default {
       }
     }
 
-    // POST /entry
+    // POST /entry — save a TrackerEntry + wire Era + Theme nodes
     if (request.method === "POST" && url.pathname === "/entry") {
       let entry;
       try { entry = await request.json(); }
@@ -140,6 +139,7 @@ export default {
       const now = new Date().toISOString();
 
       try {
+        // 1. Create the TrackerEntry node
         await runCypher(env, `
           CREATE (e:TrackerEntry {
             id:                $id,
@@ -157,13 +157,14 @@ export default {
           type:              entry.type              || "memory",
           title:             entry.title             || "",
           content:           entry.content || entry.description || entry.what || "",
-          context:           entry.context || "",
+           context:           entry.context || "",
           tags:              entry.tags              || [],
-          emotionalResponse: entry.emotionalResponse || entry.emotion || "",
+          emotionalResponse: entry.emotionalResponse || "",
           date:              entry.date              || now,
           createdAt:         now,
         });
 
+       // 2. Wire Era relationship
         if (entry.context) {
           await runCypher(env, `
             MATCH (e:TrackerEntry {id: $id})
@@ -172,6 +173,7 @@ export default {
           `, { id, era: entry.context });
         }
 
+        // 3. Wire Theme relationships for each tag
         for (const tag of (entry.tags || [])) {
           await runCypher(env, `
             MATCH (e:TrackerEntry {id: $id})
@@ -186,7 +188,7 @@ export default {
       }
     }
 
-    // GET /entries
+    // GET /entries — fetch all TrackerEntry nodes
     if (request.method === "GET" && url.pathname === "/entries") {
       try {
         const result = await runCypher(env, `
@@ -199,8 +201,8 @@ export default {
 
         const fields = result.fields;
         const entries = result.values.map(row => {
-          const node  = row[fields.indexOf("e")];
-          const props = node.properties || node;
+          const node   = row[fields.indexOf("e")];
+          const props  = node.properties || node;
           return {
             ...props,
             era:    row[fields.indexOf("era")],
@@ -213,8 +215,8 @@ export default {
         return json({ error: err.message }, 500);
       }
     }
-
-    // POST /query
+  
+    // POST /query — run raw Cypher (one statement)
     if (request.method === "POST" && url.pathname === "/query") {
       let body;
       try { body = await request.json(); }
@@ -315,7 +317,6 @@ export default {
         return json({ error: err.message }, 500);
       }
     }
-
-    return json({ error: "Not found" }, 404);
-  },
-};
+      return json({ error: "Not found" }, 404);
+    },
+  };
