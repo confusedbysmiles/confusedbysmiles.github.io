@@ -11,6 +11,7 @@
 // Replace with your Cloudflare Worker URL for AI reflection prompts.
 // Leave empty to disable AI features (forms still work without it).
 const REFLECTION_API_ENDPOINT = '';
+const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
 
 // localStorage key
 const STORAGE_KEY = 'dissertation-tracker-entries';
@@ -251,79 +252,249 @@ function parseSortDate(timeframe) {
 // AI REFLECTION
 // ============================================
 
-function showReflectionOption(formType, savedEntry) {
-    if (!REFLECTION_API_ENDPOINT) return;
+// ============================================
+// TRACKER.JS PATCH — AI Chat Integration
+// ============================================
+// Replace the entire "AI REFLECTION" section in tracker.js
+// (from "function showReflectionOption" to the end of
+//  "function generateLocalReflection") with this block.
+//
+// Also add this line at the top of tracker.js with the other constants:
+//   const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
+// And remove or leave empty the existing REFLECTION_API_ENDPOINT constant.
+// ============================================
 
+// ── Chat state ────────────────────────────────────────────────────────────────
+const chatState = {
+    entry:          null,   // the entry this conversation is about
+    messages:       [],     // [{ role, content }, ...]
+    isTyping:       false,
+    recognition:    null,   // Web Speech API instance
+    isListening:    false,
+};
+
+const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
+
+// ── Show the chat panel after saving an entry ─────────────────────────────────
+function showReflectionOption(formType, savedEntry) {
     const reflectBtn = document.getElementById(formType + '-reflect-btn');
-    reflectBtn.style.display = 'inline-block';
-    reflectBtn.onclick = () => requestReflection(formType, savedEntry);
+    if (reflectBtn) {
+        reflectBtn.style.display = 'inline-block';
+        reflectBtn.onclick = () => openChat(formType, savedEntry);
+    }
 }
 
-async function requestReflection(formType, entry) {
-    const panel = document.getElementById(formType + '-reflection-panel');
-    const content = document.getElementById(formType + '-reflection-content');
-    const reflectBtn = document.getElementById(formType + '-reflect-btn');
+// ── Open the chat panel and kick off the first Claude message ─────────────────
+async function openChat(formType, entry) {
+    chatState.entry    = entry;
+    chatState.messages = [];
 
+    const panel = document.getElementById(formType + '-reflection-panel');
     panel.style.display = 'block';
-    content.innerHTML = '<p class="loading-dots">Generating reflection prompt</p>';
-    reflectBtn.style.display = 'none';
+    panel.innerHTML = buildChatPanelHTML(formType);
+
+    // Wire up send, speech, save, close
+    document.getElementById('chat-send-btn').addEventListener('click', sendChatMessage);
+    document.getElementById('chat-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+    });
+    document.getElementById('chat-speech-btn').addEventListener('click', toggleSpeech);
+    document.getElementById('chat-save-btn').addEventListener('click', saveConversation);
+    document.getElementById('chat-close-btn').addEventListener('click', () => {
+        panel.style.display = 'none';
+        chatState.messages = [];
+    });
+
+    // Get Claude's opening question
+    await fetchChatReply(formType);
+}
+
+// ── HTML for the chat panel ───────────────────────────────────────────────────
+function buildChatPanelHTML(formType) {
+    const speechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    return `
+    <div class="chat-panel">
+      <div class="chat-header">
+        <span class="chat-title">Research Conversation</span>
+        <div class="chat-header-actions">
+          <button class="chat-action-btn" id="chat-save-btn" title="Save to Neo4j">Save to Graph</button>
+          <button class="chat-action-btn chat-close" id="chat-close-btn" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-typing" id="chat-typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        ${speechSupported ? `<button class="chat-speech-btn" id="chat-speech-btn" title="Speak">🎤</button>` : ''}
+        <textarea
+          id="chat-input"
+          class="chat-input"
+          placeholder="Respond to Claude… (Enter to send)"
+          rows="2"
+        ></textarea>
+        <button class="chat-send-btn" id="chat-send-btn">→</button>
+      </div>
+    </div>`;
+}
+
+// ── Send a user message and get Claude's reply ────────────────────────────────
+async function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text  = input.value.trim();
+    if (!text || chatState.isTyping) return;
+
+    input.value = '';
+    appendChatMessage('user', text);
+    chatState.messages.push({ role: 'user', content: text });
+
+    // Determine which form panel we're in
+    const formType = chatState.entry?.type === 'buildlog' ? 'buildlog' : 'memory';
+    await fetchChatReply(formType);
+}
+
+// ── Call /chat on the Worker and render the reply ─────────────────────────────
+async function fetchChatReply(formType) {
+    chatState.isTyping = true;
+    showTypingIndicator(true);
+
+    const recentEntries = loadEntries()
+        .filter(e => e.id !== chatState.entry?.id)
+        .slice(0, 5)
+        .map(e => ({ type: e.type, title: e.title || e.what, tags: e.tags, timeframe: e.timeframe }));
 
     try {
-        // Get recent entries for context
-        const recentEntries = loadEntries()
-            .filter(e => e.id !== entry.id)
-            .slice(-5)
-            .map(e => ({
-                type: e.type,
-                title: e.title,
-                tags: e.tags,
-                timeframe: e.timeframe
-            }));
-
-        const response = await fetch(REFLECTION_API_ENDPOINT, {
-            method: 'POST',
+        const resp = await fetch(`${WORKER_URL}/chat`, {
+            method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'reflect',
-                entry: entry,
-                recentEntries: recentEntries
-            })
+            body:    JSON.stringify({
+                entry:         chatState.entry,
+                messages:      chatState.messages,
+                recentEntries,
+            }),
         });
 
-        if (!response.ok) throw new Error('API request failed');
-        const data = await response.json();
-        content.innerHTML = '<p>' + escapeHtml(data.reflection) + '</p>';
+        if (!resp.ok) throw new Error(`Worker error ${resp.status}`);
+        const data = await resp.json();
+
+        if (data.reply) {
+            chatState.messages.push({ role: 'assistant', content: data.reply });
+            appendChatMessage('assistant', data.reply);
+        }
     } catch (err) {
-        console.error('Reflection error:', err);
-        // Fallback to local reflection prompts
-        const prompt = generateLocalReflection(entry);
-        content.innerHTML = '<p>' + escapeHtml(prompt) + '</p>';
+        console.error('[Chat] error:', err);
+        appendChatMessage('assistant', 'Something went wrong reaching the server. Check your connection and try again.');
+    } finally {
+        chatState.isTyping = false;
+        showTypingIndicator(false);
+    }
+}
+
+// ── Render a message bubble ───────────────────────────────────────────────────
+function appendChatMessage(role, content) {
+    const container = document.getElementById('chat-messages');
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.className = `chat-message chat-message-${role}`;
+    div.textContent = content;
+
+    // Insert before typing indicator
+    const typing = document.getElementById('chat-typing');
+    container.insertBefore(div, typing);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTypingIndicator(show) {
+    const el = document.getElementById('chat-typing');
+    if (el) el.style.display = show ? 'flex' : 'none';
+}
+
+// ── Speech-to-text ────────────────────────────────────────────────────────────
+function toggleSpeech() {
+    const btn = document.getElementById('chat-speech-btn');
+    if (!btn) return;
+
+    if (chatState.isListening) {
+        chatState.recognition?.stop();
+        return;
     }
 
-    // Wire up save/skip buttons
-    document.getElementById('save-' + formType + '-reflection').onclick = () => {
-        const response = document.getElementById(formType + '-reflection-response').value.trim();
-        if (response) {
-            addEntry({
-                type: 'reflection',
-                title: 'Reflection on: ' + entry.title,
-                description: response,
-                prompt: content.textContent,
-                parentId: entry.id,
-                parentType: entry.type,
-                tags: entry.tags || [],
-                sortDate: new Date().toISOString()
-            });
-            showToast('Reflection saved!', 'success');
-        }
-        panel.style.display = 'none';
-        document.getElementById(formType + '-reflection-response').value = '';
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    chatState.recognition = new SpeechRecognition();
+    chatState.recognition.continuous     = false;
+    chatState.recognition.interimResults = true;
+    chatState.recognition.lang           = 'en-US';
+
+    chatState.recognition.onstart = () => {
+        chatState.isListening = true;
+        btn.textContent = '🔴';
+        btn.title = 'Listening… click to stop';
     };
 
-    document.getElementById('skip-' + formType + '-reflection').onclick = () => {
-        panel.style.display = 'none';
-        document.getElementById(formType + '-reflection-response').value = '';
+    chatState.recognition.onresult = (event) => {
+        const input   = document.getElementById('chat-input');
+        const interim = Array.from(event.results)
+            .map(r => r[0].transcript)
+            .join('');
+        if (input) input.value = interim;
     };
+
+    chatState.recognition.onend = () => {
+        chatState.isListening = false;
+        if (btn) { btn.textContent = '🎤'; btn.title = 'Speak'; }
+        // Auto-send if there's content
+        const input = document.getElementById('chat-input');
+        if (input && input.value.trim()) sendChatMessage();
+    };
+
+    chatState.recognition.onerror = (e) => {
+        console.warn('[Speech] error:', e.error);
+        chatState.isListening = false;
+        if (btn) { btn.textContent = '🎤'; btn.title = 'Speak'; }
+    };
+
+    chatState.recognition.start();
+}
+
+// ── Save conversation to Neo4j ────────────────────────────────────────────────
+async function saveConversation() {
+    if (chatState.messages.length === 0) {
+        showToast('No conversation to save yet.', 'error');
+        return;
+    }
+
+    const saveBtn = document.getElementById('chat-save-btn');
+    if (saveBtn) { saveBtn.textContent = 'Saving…'; saveBtn.disabled = true; }
+
+    // Build a short summary from the first user message
+    const firstUserMsg = chatState.messages.find(m => m.role === 'user');
+    const summary = firstUserMsg
+        ? firstUserMsg.content.slice(0, 120)
+        : 'Research conversation';
+
+    try {
+        const resp = await fetch(`${WORKER_URL}/conversation`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+                entryId:  chatState.entry?.id,
+                messages: chatState.messages,
+                summary,
+            }),
+        });
+
+        if (!resp.ok) throw new Error(`Worker error ${resp.status}`);
+        showToast('Conversation saved to graph! 🎓', 'success');
+        if (saveBtn) { saveBtn.textContent = 'Saved ✓'; }
+    } catch (err) {
+        console.error('[Save conversation] error:', err);
+        showToast('Failed to save conversation.', 'error');
+        if (saveBtn) { saveBtn.textContent = 'Save to Graph'; saveBtn.disabled = false; }
+    }
 }
 
 // Local fallback reflection prompts (no API needed)
