@@ -11,7 +11,6 @@
 // Replace with your Cloudflare Worker URL for AI reflection prompts.
 // Leave empty to disable AI features (forms still work without it).
 const REFLECTION_API_ENDPOINT = '';
-const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
 
 // localStorage key
 const STORAGE_KEY = 'dissertation-tracker-entries';
