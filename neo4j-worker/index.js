@@ -45,7 +45,11 @@ function isRateLimited(ip) {
 
 // Neo4j query/v2 helper — one statement at a time
 async function runCypher(env, statement, parameters = {}) {
-  const host = env.NEO4J_URI.replace(/^neo4j\+s:\/\//, "https://");
+  const host = env.NEO4J_URI
+    .replace(/^neo4j\+s:\/\//, "https://")
+    .replace(/^neo4j:\/\//, "http://")
+    .replace(/^bolt\+s:\/\//, "https://")
+    .replace(/^bolt:\/\//, "http://");
   const url  = `${host}/db/${env.NEO4J_DATABASE}/query/v2`;
   const auth = btoa(`${env.NEO4J_USERNAME}:${env.NEO4J_PASSWORD}`);
 
@@ -157,7 +161,7 @@ export default {
           type:              entry.type              || "memory",
           title:             entry.title             || "",
           content:           entry.content || entry.description || entry.what || "",
-           context:           entry.context || "",
+          context:           entry.context || "",
           tags:              entry.tags              || [],
           emotionalResponse: entry.emotionalResponse || "",
           date:              entry.date              || now,
@@ -202,7 +206,7 @@ export default {
         const fields = result.fields;
         const entries = result.values.map(row => {
           const node   = row[fields.indexOf("e")];
-          const props  = node.properties || node;
+          const props  = node._properties || node.properties || node;
           return {
             ...props,
             era:    row[fields.indexOf("era")],
@@ -252,7 +256,7 @@ export default {
             "anthropic-version": "2023-06-01",
           },
           body: JSON.stringify({
-            model:      "claude-sonnet-4-5-20250929",
+            model:      "claude-sonnet-4-6",
             max_tokens: 512,
             system:     systemPrompt,
             messages:   messages.length > 0 ? messages : [
