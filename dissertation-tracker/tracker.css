@@ -1166,11 +1166,20 @@
 }
 
 /* ============================================
-   ALL ENTRIES TOOLBAR - source indicator
+   GRAPH TAB - full-height iframe
    ============================================ */
-.entries-toolbar .entries-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
+.graph-tab-panel {
+    padding: 0 !important;
+    /* Cancel the container's side padding so the iframe goes edge-to-edge */
+    margin-left: calc(-1 * var(--spacing-lg, 1.5rem));
+    margin-right: calc(-1 * var(--spacing-lg, 1.5rem));
+}
+
+.graph-iframe {
+    display: block;
+    width: 100%;
+    /* Fill the viewport below the tracker header (~88px) + nav bar (~50px) */
+    height: calc(100vh - 138px);
+    border: none;
+    background: #0D1117;
 }
