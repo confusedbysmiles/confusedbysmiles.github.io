@@ -74,7 +74,8 @@ function initTabs() {
             document.getElementById('tab-' + tabName).classList.add('active');
             // Refresh content for data-driven tabs
             if (tabName === 'timeline') renderTimeline();
-            if (tabName === 'entries') renderEntries();
+            if (tabName === 'buildlog') renderCommitLog();
+            if (tabName === 'entries') loadLiveEntries();
         });
     });
 }
@@ -176,48 +177,101 @@ function initMemoryForm() {
 }
 
 // ============================================
-// BUILD LOG FORM
+// BUILD LOG - COMMIT VIEWER
 // ============================================
 
-function initBuildLogForm() {
-    const form = document.getElementById('buildlog-form');
+// Cache so we don't re-fetch GitHub on every tab revisit unless user asks
+let _commitsCache = [];
 
-    // Prevent Enter key in text inputs from submitting the form prematurely
-    form.addEventListener('keydown', e => {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
-            e.preventDefault();
-        }
-    });
+function initBuildLog() {
+    const btn = document.getElementById('refresh-commits-btn');
+    if (btn) btn.addEventListener('click', () => renderCommitLog());
+}
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
+async function renderCommitLog() {
+    const list = document.getElementById('commits-list');
+    const statusEl = document.getElementById('commits-status');
+    if (!list) return;
 
-        const what = document.getElementById('buildlog-what').value.trim();
-        if (!what) {
-            document.getElementById('buildlog-what').focus();
-            showToast('Please describe what you built or changed.', 'error');
+    list.innerHTML = '<div class="commits-loading"><p>Loading commit history&hellip;</p></div>';
+    if (statusEl) { statusEl.textContent = ''; statusEl.className = 'source-badge'; }
+
+    try {
+        _commitsCache = await fetchGitCommits();
+        if (_commitsCache.length === 0) {
+            list.innerHTML = '<div class="timeline-empty"><p>No commits found.</p></div>';
             return;
         }
+        list.innerHTML = _commitsCache.map(renderCommitCard).join('');
+        attachCommitListeners(list);
+        if (statusEl) {
+            statusEl.textContent = _commitsCache.length + ' commits';
+            statusEl.className = 'source-badge source-live';
+        }
+    } catch (err) {
+        console.error('[Commits] fetch failed:', err);
+        list.innerHTML = '<div class="timeline-empty"><p>Couldn\'t load commits. Check your connection and try again.</p></div>';
+        if (statusEl) { statusEl.textContent = 'Unavailable'; statusEl.className = 'source-badge source-local'; }
+    }
+}
 
-        const entry = {
-            type: 'buildlog',
-            title: what.slice(0, 80),
-            what,
-            why: document.getElementById('buildlog-why').value.trim(),
-            challenges: document.getElementById('buildlog-challenges').value.trim(),
-            questions: document.getElementById('buildlog-questions').value.trim(),
-            link: document.getElementById('buildlog-link').value.trim(),
-            tags: getSelectedTags('buildlog-tag-selector'),
-            sortDate: new Date().toISOString()
-        };
+async function fetchGitCommits() {
+    const url = 'https://api.github.com/repos/confusedbysmiles/confusedbysmiles.github.io/commits?path=dissertation-tracker&per_page=50';
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!res.ok) throw new Error('GitHub API error ' + res.status);
+    return res.json();
+}
 
-        const saved = addEntry(entry);
-        showToast('Build log saved!', 'success');
-        form.reset();
-        clearSelectedTags('buildlog-tag-selector');
+function renderCommitCard(commit) {
+    const sha7 = escapeHtml(commit.sha.slice(0, 7));
+    const lines = commit.commit.message.split('\n');
+    const firstLine = escapeHtml(lines[0]);
+    const bodyText = lines.slice(1).join('\n').trim();
+    const date = new Date(commit.commit.author.date);
+    const dateStr = formatDate(date);
+    const author = escapeHtml(commit.commit.author.name);
+    const url = escapeHtml(commit.html_url);
+    const sha = escapeHtml(commit.sha);
 
-        // Show reflection option
-        showReflectionOption('buildlog', saved);
+    return `
+        <div class="commit-card">
+            <div class="commit-header">
+                <div class="commit-main">
+                    <span class="commit-hash">${sha7}</span>
+                    <span class="commit-title">${firstLine}</span>
+                </div>
+                <div class="commit-actions">
+                    <a class="commit-gh-link" href="${url}" target="_blank" rel="noopener" title="View on GitHub">↗</a>
+                    <button class="commit-reflect-btn btn-sm" data-sha="${sha}">Reflect</button>
+                </div>
+            </div>
+            <div class="commit-meta">${dateStr} · ${author}</div>
+            ${bodyText ? '<div class="commit-body">' + escapeHtml(bodyText) + '</div>' : ''}
+        </div>
+    `;
+}
+
+function attachCommitListeners(container) {
+    container.querySelectorAll('.commit-reflect-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const sha = btn.dataset.sha;
+            const commit = _commitsCache.find(c => c.sha === sha);
+            if (!commit) return;
+            const commitEntry = {
+                type: 'buildlog',
+                title: commit.commit.message.split('\n')[0].slice(0, 80),
+                what: commit.commit.message,
+                why: 'Git commit ' + commit.sha.slice(0, 7) + ' on ' + new Date(commit.commit.author.date).toLocaleDateString(),
+                challenges: '',
+                questions: '',
+                tags: ['commit'],
+                sortDate: commit.commit.author.date,
+                link: commit.html_url
+            };
+            const panel = document.getElementById('buildlog-reflection-panel');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            openChat('buildlog', commitEntry);
+        });
     });
 }
 
@@ -619,10 +673,51 @@ function renderTimeline() {
 // ALL ENTRIES RENDERING
 // ============================================
 
+// Cache for live-fetched entries (null = use localStorage)
+let _entriesData = null;
+
+async function loadLiveEntries() {
+    const sourceEl = document.getElementById('entries-source');
+    const refreshBtn = document.getElementById('refresh-entries-btn');
+
+    // Show local data immediately while fetching
+    _entriesData = null;
+    renderEntries();
+    if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
+    if (refreshBtn) { refreshBtn.textContent = 'Syncing\u2026'; refreshBtn.disabled = true; }
+
+    try {
+        const result = await Neo4j.getEntries();
+        const neo4jEntries = Array.isArray(result) ? result : (result.entries || []);
+
+        if (neo4jEntries.length > 0) {
+            const localEntries = loadEntries();
+            const neo4jIds = new Set(neo4jEntries.map(e => e.id));
+            const localOnly = localEntries.filter(e => !neo4jIds.has(e.id));
+            _entriesData = [...neo4jEntries, ...localOnly];
+            if (sourceEl) {
+                sourceEl.textContent = 'Live \u00b7 ' + _entriesData.length + ' entries';
+                sourceEl.className = 'source-badge source-live';
+            }
+        } else {
+            _entriesData = null;
+            if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
+        }
+    } catch (err) {
+        console.warn('[Entries] Neo4j fetch failed:', err);
+        _entriesData = null;
+        if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
+    } finally {
+        if (refreshBtn) { refreshBtn.textContent = 'Sync Live'; refreshBtn.disabled = false; }
+    }
+
+    renderEntries();
+}
+
 function renderEntries() {
     const list = document.getElementById('entries-list');
     const statsEl = document.getElementById('entries-stats');
-    const allEntries = loadEntries();
+    const allEntries = _entriesData || loadEntries();
     const searchTerm = document.getElementById('entries-search').value.toLowerCase();
 
     let entries = allEntries;
@@ -863,7 +958,7 @@ function initDeleteModal() {
             // Refresh whichever view is active
             const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
             if (activeTab === 'timeline') renderTimeline();
-            if (activeTab === 'entries') renderEntries();
+            if (activeTab === 'entries') { _entriesData = null; renderEntries(); }
         }
     });
 
@@ -878,6 +973,9 @@ function initDeleteModal() {
 // ============================================
 
 function initExportImport() {
+    // Sync Live button
+    document.getElementById('refresh-entries-btn').addEventListener('click', () => loadLiveEntries());
+
     // Export JSON
     document.getElementById('export-json-btn').addEventListener('click', () => {
         const entries = loadEntries();
@@ -1018,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initTagSelectors();
     initMemoryForm();
-    initBuildLogForm();
+    initBuildLog();
     initTimelineFilters();
     initEntriesSearch();
     initDeleteModal();
