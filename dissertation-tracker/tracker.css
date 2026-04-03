@@ -1016,3 +1016,161 @@
 }
 .chat-confirm-btn:hover { background: #00B894; }
 .chat-confirm-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ============================================
+   SOURCE BADGE (Build Log + All Entries)
+   ============================================ */
+.source-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    vertical-align: middle;
+}
+.source-live {
+    background: rgba(0, 184, 148, 0.15);
+    color: #00b894;
+}
+.source-local {
+    background: rgba(0,0,0,0.06);
+    color: var(--text-light);
+}
+
+/* ============================================
+   BUILD LOG - COMMIT VIEWER
+   ============================================ */
+.buildlog-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.btn-sm {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.82rem;
+}
+
+.commits-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.commits-loading {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+    color: var(--text-light);
+}
+
+.commit-card {
+    background: var(--light);
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    box-shadow: 0 1px 3px var(--shadow);
+    transition: var(--transition);
+}
+
+.commit-card:hover {
+    box-shadow: 0 2px 8px var(--shadow);
+    border-color: rgba(124, 77, 189, 0.3);
+}
+
+.commit-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: 0.3rem;
+}
+
+.commit-main {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.commit-hash {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--primary);
+    background: rgba(124, 77, 189, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.commit-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.commit-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.commit-gh-link {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 3px 5px;
+    border-radius: 4px;
+    line-height: 1;
+}
+.commit-gh-link:hover { color: var(--primary); background: rgba(124, 77, 189, 0.08); }
+
+.commit-reflect-btn {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.8rem;
+    background: none;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    color: var(--primary);
+    cursor: pointer;
+    font-family: var(--font-main);
+    transition: var(--transition);
+}
+.commit-reflect-btn:hover {
+    background: var(--primary);
+    color: var(--light);
+}
+
+.commit-meta {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-bottom: 0.2rem;
+}
+
+.commit-body {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 0.4rem;
+    white-space: pre-wrap;
+    border-left: 2px solid rgba(124, 77, 189, 0.2);
+    padding-left: 0.6rem;
+    line-height: 1.4;
+}
+
+/* ============================================
+   ALL ENTRIES TOOLBAR - source indicator
+   ============================================ */
+.entries-toolbar .entries-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}

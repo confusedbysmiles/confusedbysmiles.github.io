@@ -114,69 +114,20 @@
         <section id="tab-buildlog" class="tab-panel">
             <div class="panel-header">
                 <h2>Build Log</h2>
-                <p>Quick-capture your Math Generator development process.</p>
+                <p>Git commit history for the dissertation tracker &amp; viewer.</p>
             </div>
 
-            <form id="buildlog-form" class="entry-form">
-                <div class="form-group">
-                    <label for="buildlog-what">What did you build/change?</label>
-                    <textarea id="buildlog-what" rows="3" placeholder="Describe the change or feature you worked on" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="buildlog-why">Why did you make this choice?</label>
-                    <textarea id="buildlog-why" rows="3" placeholder="What motivated this decision?" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="buildlog-challenges">Challenges encountered <span class="optional">(optional)</span></label>
-                    <textarea id="buildlog-challenges" rows="3" placeholder="What was hard? What surprised you?"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="buildlog-questions">Questions that emerged <span class="optional">(optional)</span></label>
-                    <textarea id="buildlog-questions" rows="3" placeholder="What are you wondering about now?"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="buildlog-link">Link to code/commit <span class="optional">(optional)</span></label>
-                    <input type="url" id="buildlog-link" placeholder="https://github.com/...">
-                </div>
-
-                <div class="form-group">
-                    <label for="buildlog-tags">Tags</label>
-                    <div class="tag-selector" id="buildlog-tag-selector">
-                        <button type="button" class="tag-btn" data-tag="feature">feature</button>
-                        <button type="button" class="tag-btn" data-tag="bug-fix">bug fix</button>
-                        <button type="button" class="tag-btn" data-tag="design-choice">design choice</button>
-                        <button type="button" class="tag-btn" data-tag="pedagogy">pedagogy</button>
-                        <button type="button" class="tag-btn" data-tag="student-voice">student voice</button>
-                        <button type="button" class="tag-btn" data-tag="accessibility">accessibility</button>
-                        <button type="button" class="tag-btn" data-tag="ai-integration">AI integration</button>
-                        <button type="button" class="tag-btn" data-tag="pivot">pivot</button>
-                    </div>
-                    <input type="text" id="buildlog-custom-tag" placeholder="Add a custom tag and press Enter">
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">Log Entry</button>
-                    <button type="button" class="btn-secondary" id="buildlog-reflect-btn" style="display:none;">Get Reflection Prompt</button>
-                </div>
-            </form>
-
-            <!-- AI Reflection Panel (appears after saving) -->
-            <div id="buildlog-reflection-panel" class="reflection-panel" style="display:none;">
-                <h3>Reflection</h3>
-                <div id="buildlog-reflection-content" class="reflection-content"></div>
-                <div class="form-group">
-                    <label for="buildlog-reflection-response">Your response</label>
-                    <textarea id="buildlog-reflection-response" rows="4" placeholder="Write your reflection here..."></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-primary" id="save-buildlog-reflection">Save Reflection</button>
-                    <button type="button" class="btn-secondary" id="skip-buildlog-reflection">Skip</button>
-                </div>
+            <div class="buildlog-toolbar">
+                <button class="btn-secondary btn-sm" id="refresh-commits-btn">Refresh</button>
+                <span id="commits-status" class="source-badge"></span>
             </div>
+
+            <div id="commits-list" class="commits-list">
+                <div class="commits-loading"><p>Loading commit history&hellip;</p></div>
+            </div>
+
+            <!-- Chat reflection panel (reused for commit reflections) -->
+            <div id="buildlog-reflection-panel" class="reflection-panel" style="display:none;"></div>
         </section>
 
         <!-- ==================== TIMELINE TAB ==================== -->
@@ -225,6 +176,8 @@
                     <input type="text" id="entries-search" placeholder="Search entries...">
                 </div>
                 <div class="entries-actions">
+                    <button class="btn-secondary btn-sm" id="refresh-entries-btn">Sync Live</button>
+                    <span id="entries-source" class="source-badge"></span>
                     <button class="btn-secondary" id="export-json-btn">Export JSON</button>
                     <label class="btn-secondary import-label" for="import-json-input">Import JSON</label>
                     <input type="file" id="import-json-input" accept=".json" style="display:none;">
