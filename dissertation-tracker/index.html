@@ -24,7 +24,7 @@
                 <button class="tab-btn active" data-tab="memory">Memory Capture</button>
                 <button class="tab-btn" data-tab="buildlog">Build Log</button>
                 <button class="tab-btn" data-tab="timeline">Timeline</button>
-                <button class="tab-btn" data-tab="entries">All Entries</button>
+                <button class="tab-btn" data-tab="entries">Graph</button>
             </div>
         </div>
     </nav>
@@ -164,34 +164,15 @@
             </div>
         </section>
 
-        <!-- ==================== ALL ENTRIES TAB ==================== -->
-        <section id="tab-entries" class="tab-panel">
-            <div class="panel-header">
-                <h2>All Entries</h2>
-                <p>Browse, search, and manage your research data.</p>
-            </div>
-
-            <div class="entries-toolbar">
-                <div class="filter-group">
-                    <input type="text" id="entries-search" placeholder="Search entries...">
-                </div>
-                <div class="entries-actions">
-                    <button class="btn-secondary btn-sm" id="refresh-entries-btn">Sync Live</button>
-                    <span id="entries-source" class="source-badge"></span>
-                    <button class="btn-secondary" id="export-json-btn">Export JSON</button>
-                    <label class="btn-secondary import-label" for="import-json-input">Import JSON</label>
-                    <input type="file" id="import-json-input" accept=".json" style="display:none;">
-                    <button class="btn-secondary" id="export-csv-btn">Export CSV</button>
-                </div>
-            </div>
-
-            <div class="entries-stats" id="entries-stats"></div>
-
-            <div id="entries-list" class="entries-list">
-                <div class="timeline-empty">
-                    <p>No entries yet.</p>
-                </div>
-            </div>
+        <!-- ==================== GRAPH TAB ==================== -->
+        <section id="tab-entries" class="tab-panel graph-tab-panel">
+            <iframe
+                id="graph-iframe"
+                src="graph-viewer.html"
+                class="graph-iframe"
+                title="Dissertation Graph Viewer"
+                loading="lazy"
+            ></iframe>
         </section>
 
     </main>
