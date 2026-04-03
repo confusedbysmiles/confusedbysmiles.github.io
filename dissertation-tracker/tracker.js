@@ -75,7 +75,6 @@ function initTabs() {
             // Refresh content for data-driven tabs
             if (tabName === 'timeline') renderTimeline();
             if (tabName === 'buildlog') renderCommitLog();
-            if (tabName === 'entries') loadLiveEntries();
         });
     });
 }
@@ -670,93 +669,10 @@ function renderTimeline() {
 }
 
 // ============================================
-// ALL ENTRIES RENDERING
+// ALL ENTRIES → GRAPH VIEWER (embedded iframe)
 // ============================================
-
-// Cache for live-fetched entries (null = use localStorage)
-let _entriesData = null;
-
-async function loadLiveEntries() {
-    const sourceEl = document.getElementById('entries-source');
-    const refreshBtn = document.getElementById('refresh-entries-btn');
-
-    // Show local data immediately while fetching
-    _entriesData = null;
-    renderEntries();
-    if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
-    if (refreshBtn) { refreshBtn.textContent = 'Syncing\u2026'; refreshBtn.disabled = true; }
-
-    try {
-        const result = await Neo4j.getEntries();
-        const neo4jEntries = Array.isArray(result) ? result : (result.entries || []);
-
-        if (neo4jEntries.length > 0) {
-            const localEntries = loadEntries();
-            const neo4jIds = new Set(neo4jEntries.map(e => e.id));
-            const localOnly = localEntries.filter(e => !neo4jIds.has(e.id));
-            _entriesData = [...neo4jEntries, ...localOnly];
-            if (sourceEl) {
-                sourceEl.textContent = 'Live \u00b7 ' + _entriesData.length + ' entries';
-                sourceEl.className = 'source-badge source-live';
-            }
-        } else {
-            _entriesData = null;
-            if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
-        }
-    } catch (err) {
-        console.warn('[Entries] Neo4j fetch failed:', err);
-        _entriesData = null;
-        if (sourceEl) { sourceEl.textContent = 'Local'; sourceEl.className = 'source-badge source-local'; }
-    } finally {
-        if (refreshBtn) { refreshBtn.textContent = 'Sync Live'; refreshBtn.disabled = false; }
-    }
-
-    renderEntries();
-}
-
-function renderEntries() {
-    const list = document.getElementById('entries-list');
-    const statsEl = document.getElementById('entries-stats');
-    const allEntries = _entriesData || loadEntries();
-    const searchTerm = document.getElementById('entries-search').value.toLowerCase();
-
-    let entries = allEntries;
-    if (searchTerm) {
-        entries = entries.filter(e =>
-            (e.title && e.title.toLowerCase().includes(searchTerm)) ||
-            (e.description && e.description.toLowerCase().includes(searchTerm)) ||
-            (e.what && e.what.toLowerCase().includes(searchTerm)) ||
-            (e.why && e.why.toLowerCase().includes(searchTerm)) ||
-            (e.tags && e.tags.some(t => t.includes(searchTerm)))
-        );
-    }
-
-    // Sort: most recently created first
-    entries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    // Stats
-    const memories = allEntries.filter(e => e.type === 'memory').length;
-    const buildlogs = allEntries.filter(e => e.type === 'buildlog').length;
-    const reflections = allEntries.filter(e => e.type === 'reflection').length;
-    const allTags = new Set();
-    allEntries.forEach(e => (e.tags || []).forEach(t => allTags.add(t)));
-
-    statsEl.innerHTML = `
-        <div class="stat-card"><span class="stat-number">${allEntries.length}</span><span class="stat-label">Total Entries</span></div>
-        <div class="stat-card"><span class="stat-number">${memories}</span><span class="stat-label">Memories</span></div>
-        <div class="stat-card"><span class="stat-number">${buildlogs}</span><span class="stat-label">Build Logs</span></div>
-        <div class="stat-card"><span class="stat-number">${reflections}</span><span class="stat-label">Reflections</span></div>
-        <div class="stat-card"><span class="stat-number">${allTags.size}</span><span class="stat-label">Unique Tags</span></div>
-    `;
-
-    if (entries.length === 0) {
-        list.innerHTML = '<div class="timeline-empty"><p>No entries found.</p></div>';
-        return;
-    }
-
-    list.innerHTML = entries.map(e => renderEntryCard(e, true)).join('');
-    attachEntryListeners(list);
-}
+// The graph tab renders graph-viewer.html in an iframe.
+// No JS needed here — the iframe handles its own data loading.
 
 // ============================================
 // ENTRY CARD RENDERER (shared by timeline and entries views)
@@ -900,14 +816,6 @@ function initTimelineFilters() {
     });
 }
 
-function initEntriesSearch() {
-    let searchTimeout;
-    document.getElementById('entries-search').addEventListener('input', () => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => renderEntries(), 300);
-    });
-}
-
 // ============================================
 // ENTRY INTERACTIONS (expand, delete, reflect)
 // ============================================
@@ -956,9 +864,7 @@ function initDeleteModal() {
             pendingDeleteId = null;
             document.getElementById('delete-modal').style.display = 'none';
             // Refresh whichever view is active
-            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-            if (activeTab === 'timeline') renderTimeline();
-            if (activeTab === 'entries') { _entriesData = null; renderEntries(); }
+            if (document.querySelector('.tab-btn.active').dataset.tab === 'timeline') renderTimeline();
         }
     });
 
@@ -966,115 +872,6 @@ function initDeleteModal() {
         pendingDeleteId = null;
         document.getElementById('delete-modal').style.display = 'none';
     });
-}
-
-// ============================================
-// EXPORT / IMPORT
-// ============================================
-
-function initExportImport() {
-    // Sync Live button
-    document.getElementById('refresh-entries-btn').addEventListener('click', () => loadLiveEntries());
-
-    // Export JSON
-    document.getElementById('export-json-btn').addEventListener('click', () => {
-        const entries = loadEntries();
-        const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
-        downloadBlob(blob, 'dissertation-tracker-' + dateStamp() + '.json');
-        showToast('Exported ' + entries.length + ' entries as JSON.', 'success');
-    });
-
-    // Import JSON
-    document.getElementById('import-json-input').addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = evt => {
-            try {
-                const imported = JSON.parse(evt.target.result);
-                if (!Array.isArray(imported)) throw new Error('Expected an array');
-
-                const existing = loadEntries();
-                const existingIds = new Set(existing.map(e => e.id));
-                let added = 0;
-
-                imported.forEach(entry => {
-                    if (!existingIds.has(entry.id)) {
-                        existing.push(entry);
-                        added++;
-                    }
-                });
-
-                saveEntries(existing);
-                showToast('Imported ' + added + ' new entries (' + (imported.length - added) + ' duplicates skipped).', 'success');
-                renderEntries();
-            } catch (err) {
-                showToast('Invalid JSON file: ' + err.message, 'error');
-            }
-        };
-        reader.readAsText(file);
-        e.target.value = ''; // Reset so same file can be selected again
-    });
-
-    // Export CSV
-    document.getElementById('export-csv-btn').addEventListener('click', () => {
-        const entries = loadEntries();
-        const csvRows = [];
-
-        // Header
-        csvRows.push([
-            'id', 'type', 'title', 'createdAt', 'sortDate', 'timeframe',
-            'context', 'description', 'what', 'why', 'challenges',
-            'questions', 'link', 'tags', 'emotion', 'prompt'
-        ].join(','));
-
-        entries.forEach(e => {
-            csvRows.push([
-                csvField(e.id),
-                csvField(e.type),
-                csvField(e.title),
-                csvField(e.createdAt),
-                csvField(e.sortDate),
-                csvField(e.timeframe),
-                csvField(e.context),
-                csvField(e.description),
-                csvField(e.what),
-                csvField(e.why),
-                csvField(e.challenges),
-                csvField(e.questions),
-                csvField(e.link),
-                csvField((e.tags || []).join('; ')),
-                csvField(e.emotion),
-                csvField(e.prompt)
-            ].join(','));
-        });
-
-        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-        downloadBlob(blob, 'dissertation-tracker-' + dateStamp() + '.csv');
-        showToast('Exported ' + entries.length + ' entries as CSV.', 'success');
-    });
-}
-
-function csvField(value) {
-    if (value == null) return '""';
-    const str = String(value).replace(/"/g, '""');
-    return '"' + str + '"';
-}
-
-function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function dateStamp() {
-    return new Date().toISOString().slice(0, 10);
 }
 
 // ============================================
@@ -1118,9 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMemoryForm();
     initBuildLog();
     initTimelineFilters();
-    initEntriesSearch();
     initDeleteModal();
-    initExportImport();
 
     Neo4j.health()
         .then(r => console.log('[Neo4j] status:', r.neo4j))
