@@ -107,12 +107,12 @@ function initTagSelectors() {
         }
     });
 
-    document.getElementById('buildlog-custom-tag').addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addCustomTag(e.target, 'buildlog-tag-selector');
-        }
-    });
+    // document.getElementById('buildlog-custom-tag').addEventListener('keydown', e => {
+    //     if (e.key === 'Enter') {
+    //        e.preventDefault();
+    //        addCustomTag(e.target, 'buildlog-tag-selector');
+    //    }
+    //});
 }
 
 function addCustomTag(input, selectorId) {
