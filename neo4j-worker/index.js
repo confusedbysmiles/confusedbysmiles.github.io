@@ -387,6 +387,161 @@ export default {
         return json({ error: err.message }, 500);
       }
     }
-      return json({ error: "Not found" }, 404);
+    // ── AUTH ROUTES ────────────────────────────────────────────────────────────
+
+    // POST /auth/login — body: { username, password }
+    // Returns { token, username, role } or 401
+    if (request.method === "POST" && url.pathname === "/auth/login") {
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const { username, password } = body;
+      if (!username || !password) return json({ error: "username and password required" }, 400);
+
+      try {
+        const raw = await env.AUTH_KV.get(`user:${username}`);
+        if (!raw) return json({ error: "Invalid credentials" }, 401);
+
+        const user = JSON.parse(raw);
+        if (!user.approved) return json({ error: "Account not yet approved" }, 403);
+
+        const hash = await hashPassword(password);
+        if (hash !== user.passwordHash) return json({ error: "Invalid credentials" }, 401);
+
+        // Create a 24-hour session token
+        const token     = crypto.randomUUID();
+        const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+        await env.AUTH_KV.put(`session:${token}`, JSON.stringify({
+          username: user.username,
+          role:     user.role,
+          expiresAt,
+        }), { expirationTtl: 86400 });
+
+        return json({ token, username: user.username, role: user.role });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // POST /auth/register-request — body: { name, username, email, reason }
+    // Stores a pending account request for admin review. Returns 201.
+    if (request.method === "POST" && url.pathname === "/auth/register-request") {
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const { name, username, email, reason } = body;
+      if (!name || !username || !email || !reason) {
+        return json({ error: "name, username, email, and reason are required" }, 400);
+      }
+
+      // Reject if username is already taken
+      try {
+        const existing = await env.AUTH_KV.get(`user:${username}`);
+        if (existing) return json({ error: "Username already taken" }, 409);
+
+        const id = crypto.randomUUID();
+        await env.AUTH_KV.put(`request:${id}`, JSON.stringify({
+          id,
+          name,
+          username,
+          email,
+          reason,
+          createdAt: new Date().toISOString(),
+          status: "pending",
+        }));
+
+        return json({ id, submitted: true }, 201);
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // POST /auth/admin/requests — body: { token }
+    // Admin only. Returns { requests: [...] } of pending requests.
+    if (request.method === "POST" && url.pathname === "/auth/admin/requests") {
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const sessionUser = await validateToken(env, body.token);
+      if (!sessionUser || sessionUser.role !== "admin") {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      try {
+        const list = await env.AUTH_KV.list({ prefix: "request:" });
+        const requests = await Promise.all(
+          list.keys.map(async k => {
+            const raw = await env.AUTH_KV.get(k.name);
+            return raw ? JSON.parse(raw) : null;
+          })
+        );
+        const pending = requests
+          .filter(r => r && r.status === "pending")
+          .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+        return json({ requests: pending });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // POST /auth/admin/approve — body: { token, requestId, action: "approve"|"reject", password }
+    // Admin only. On approve, creates the user account and marks request approved.
+    if (request.method === "POST" && url.pathname === "/auth/admin/approve") {
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const { token, requestId, action, password } = body;
+
+      const sessionUser = await validateToken(env, token);
+      if (!sessionUser || sessionUser.role !== "admin") {
+        return json({ error: "Forbidden" }, 403);
+      }
+
+      if (action !== "approve" && action !== "reject") {
+        return json({ error: "action must be 'approve' or 'reject'" }, 400);
+      }
+
+      try {
+        const raw = await env.AUTH_KV.get(`request:${requestId}`);
+        if (!raw) return json({ error: "Request not found" }, 404);
+
+        const req = JSON.parse(raw);
+        if (req.status !== "pending") {
+          return json({ error: "Request already processed" }, 409);
+        }
+
+        if (action === "approve") {
+          if (!password) return json({ error: "password required to approve" }, 400);
+
+          // Check username isn't already in use
+          const existing = await env.AUTH_KV.get(`user:${req.username}`);
+          if (existing) return json({ error: "Username already taken" }, 409);
+
+          const passwordHash = await hashPassword(password);
+          await env.AUTH_KV.put(`user:${req.username}`, JSON.stringify({
+            username:     req.username,
+            passwordHash,
+            email:        req.email,
+            role:         "user",
+            approved:     true,
+            createdAt:    new Date().toISOString(),
+          }));
+        }
+
+        // Update the request status
+        req.status = action === "approve" ? "approved" : "rejected";
+        await env.AUTH_KV.put(`request:${requestId}`, JSON.stringify(req));
+
+        return json({ success: true, action });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    return json({ error: "Not found" }, 404);
     },
   };
