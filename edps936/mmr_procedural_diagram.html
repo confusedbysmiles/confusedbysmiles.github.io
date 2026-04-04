@@ -112,12 +112,31 @@
     .strands {
       display: grid;
       grid-template-columns: 1fr 40px 1fr;
+      gap: 0;
+      position: relative;
+    }
+    /* dashed centre line spans the full height of the strands grid */
+    .strands::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--secondary) 0, var(--secondary) 6px,
+        transparent 6px, transparent 12px
+      );
+      pointer-events: none;
     }
 
-    /* ── Strand panels ── */
-    .strand { padding: 1.4rem 1.6rem 1.8rem; }
-    .strand.quan { background: var(--quan-tint); border-right: 1px solid var(--secondary); }
-    .strand.qual { background: var(--qual-tint); }
+    /* ── Strand cells (flat grid children) ── */
+    .sc { position: relative; z-index: 1; padding: .45rem 1.6rem; }
+    .sc-first { padding-top: 1.4rem; }
+    .sc-last  { padding-bottom: 1.8rem; }
+    .sc.quan  { background: var(--quan-tint); border-right: 1px solid var(--secondary); }
+    .sc.qual  { background: var(--qual-tint); }
 
     /* strand header */
     .strand-header {
@@ -125,11 +144,11 @@
       align-items: center;
       gap: .65rem;
       padding-bottom: .8rem;
-      margin-bottom: 1rem;
+      margin-bottom: .4rem;
       border-bottom: 2px solid;
     }
-    .strand.quan .strand-header { border-color: var(--primary); }
-    .strand.qual .strand-header { border-color: var(--accent); }
+    .sc.quan .strand-header { border-color: var(--primary); }
+    .sc.qual .strand-header { border-color: var(--accent); }
 
     .strand-badge {
       font-size: .63rem;
@@ -141,32 +160,32 @@
       color: var(--light);
       flex-shrink: 0;
     }
-    .strand.quan .strand-badge { background: var(--primary); }
-    .strand.qual .strand-badge { background: var(--accent); }
+    .sc.quan .strand-badge { background: var(--primary); }
+    .sc.qual .strand-badge { background: var(--accent); }
 
     .strand-design {
       font-size: .95rem;
       font-weight: 600;
       line-height: 1.2;
     }
-    .strand.quan .strand-design { color: var(--primary-dark); }
-    .strand.qual .strand-design { color: var(--accent-dark); }
+    .sc.quan .strand-design { color: var(--primary-dark); }
+    .sc.qual .strand-design { color: var(--accent-dark); }
 
     /* RQ box */
     .rq-box {
       border-radius: 6px;
       padding: .65rem .85rem;
-      margin-bottom: .95rem;
+      margin-bottom: 0;
       font-size: .81rem;
       font-style: italic;
       line-height: 1.5;
     }
-    .strand.quan .rq-box {
+    .sc.quan .rq-box {
       background: var(--quan-tint-md);
       border-left: 3px solid var(--primary);
       color: var(--primary-dark);
     }
-    .strand.qual .rq-box {
+    .sc.qual .rq-box {
       background: var(--qual-tint-md);
       border-left: 3px solid var(--accent);
       color: var(--accent-dark);
@@ -184,12 +203,12 @@
     .sub-rq { margin-top: .35rem; font-size: .77rem; padding-left: 1.1rem; }
     .sub-rq li { margin-bottom: .25rem; }
 
-    /* field rows */
+    /* field rows — one per cell, no bottom margin needed */
     .field {
       display: grid;
       grid-template-columns: 90px 1fr;
       gap: .15rem .5rem;
-      margin-bottom: .6rem;
+      margin-bottom: 0;
       align-items: start;
     }
     .field-label {
@@ -208,36 +227,20 @@
     }
     .field-value em { font-style: italic; color: var(--text-light); }
 
-    /* down arrow inside strand */
+    /* down arrow */
     .strand-arrow {
       text-align: center;
       color: var(--text-light);
       font-size: 1.1rem;
-      margin: .4rem 0;
       line-height: 1;
     }
 
-    /* ── Centre concurrent column ── */
-    .center-col {
+    /* ── Centre column cells ── */
+    .cc { background: var(--light); position: relative; z-index: 1; }
+    .cc-label {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: var(--light);
-      position: relative;
-    }
-    .center-col::before {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 1px;
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--secondary) 0, var(--secondary) 6px,
-        transparent 6px, transparent 12px
-      );
     }
     .concurrent-label {
       font-size: .56rem;
@@ -249,8 +252,6 @@
       color: var(--text-light);
       background: var(--light);
       padding: .5rem .1rem;
-      position: relative;
-      z-index: 1;
       text-align: center;
     }
 
@@ -382,73 +383,35 @@
     <span class="rq-text">To what extent do documented patterns in my technology experiences complement and expand upon narrative accounts of critical moments in my development as an educator focused on equity and access in mathematics?</span>
   </div>
 
-  <!-- ══ Concurrent Strands ══ -->
+  <!-- ══ Concurrent Strands (flat grid — each triplet of cells is one row, so matching categories align) ══ -->
   <div class="strands">
 
-    <!-- QUAN -->
-    <div class="strand quan">
+    <!-- Row 1: Strand headers -->
+    <div class="sc quan sc-first">
       <div class="strand-header">
         <span class="strand-badge">QUAN</span>
         <span class="strand-design">Correlational Design</span>
       </div>
-
-      <div class="rq-box">
-        <span class="rq-box-label">Quantitative Research Question</span>
-        How do documented patterns in my technology experiences across my academic and professional development relate to observable shifts in my mathematics teaching practices?
-      </div>
-
-      <div class="field">
-        <span class="field-label">Sample Size</span>
-        <span class="field-value"><strong>n = 1</strong></span>
-      </div>
-      <div class="field">
-        <span class="field-label">Sample Design</span>
-        <span class="field-value">Purposive autoethnographic self-study</span>
-      </div>
-      <div class="field">
-        <span class="field-label">Site</span>
-        <span class="field-value">Researcher's home workspace; University of Nebraska-Lincoln</span>
-      </div>
-      <div class="field">
-        <span class="field-label">Participant</span>
-        <span class="field-value">Sam Servellon — mathematics educator &amp; PhD student</span>
-      </div>
-
-      <div class="strand-arrow">↓</div>
-
-      <div class="field">
-        <span class="field-label">Data Variables</span>
-        <span class="field-value">Technology interaction types, frequency &amp; contexts; student engagement &amp; performance metrics; temporal patterns in reflective practice; categorical relationships between biographical experience and instructional decisions</span>
-      </div>
-      <div class="field">
-        <span class="field-label">Data Tools</span>
-        <span class="field-value">Web-based Dissertation Tracker; written artifacts; undergraduate &amp; graduate course projects; childhood materials (when available)</span>
-      </div>
-      <div class="field">
-        <span class="field-label">Data Process</span>
-        <span class="field-value">Continuous self-documentation via online tracker; asynchronous artifact retrieval and systematic coding</span>
-      </div>
-
-      <div class="strand-arrow">↓</div>
-
-      <div class="field">
-        <span class="field-label">Data Analysis</span>
-        <span class="field-value">Constant comparative analysis <em>(Charmaz, 2014; Glaser &amp; Strauss, 1967)</em>; grounded theory procedures; frequency analysis; temporal pattern coding; categorical relationship mapping between biography and practice</span>
-      </div>
     </div>
-
-    <!-- Center concurrent divider -->
-    <div class="center-col">
+    <div class="cc cc-label">
       <span class="concurrent-label">Concurrent Collection &amp; Analysis</span>
     </div>
-
-    <!-- QUAL -->
-    <div class="strand qual">
+    <div class="sc qual sc-first">
       <div class="strand-header">
         <span class="strand-badge">QUAL</span>
         <span class="strand-design">Autoethnographic Design</span>
       </div>
+    </div>
 
+    <!-- Row 2: Research questions -->
+    <div class="sc quan">
+      <div class="rq-box">
+        <span class="rq-box-label">Quantitative Research Question</span>
+        How do documented patterns in my technology experiences across my academic and professional development relate to observable shifts in my mathematics teaching practices?
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="rq-box">
         <span class="rq-box-label">Central Qualitative Research Question</span>
         What critical incidents in my technology experiences have fundamentally influenced my pedagogical philosophy and classroom practices?
@@ -457,41 +420,132 @@
           <li>In what ways have critical incidents in my relationship with technology informed my commitment to serving students underserved by traditional mathematics instruction?</li>
         </ul>
       </div>
+    </div>
 
+    <!-- Row 3: Sample Size -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Sample Size</span>
+        <span class="field-value"><strong>n = 1</strong></span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Sample Size</span>
         <span class="field-value"><strong>n = 1</strong> (same participant as QUAN strand)</span>
       </div>
+    </div>
+
+    <!-- Row 4: Sample Design -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Sample Design</span>
+        <span class="field-value">Purposive autoethnographic self-study</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Sample Design</span>
         <span class="field-value">Autoethnographic self-study; researcher as sole participant</span>
       </div>
+    </div>
+
+    <!-- Row 5: Site -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Site</span>
+        <span class="field-value">Researcher's home workspace; University of Nebraska-Lincoln</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Site</span>
         <span class="field-value">Researcher's home and any location chosen for reflective practice</span>
       </div>
+    </div>
+
+    <!-- Row 6: Participant -->
+    <div class="sc quan">
       <div class="field">
         <span class="field-label">Participant</span>
-        <span class="field-value">Sam Servellon — mathematics educator &amp; PhD student</span>
+        <span class="field-value">Sam Seim — mathematics educator &amp; PhD student</span>
       </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
+      <div class="field">
+        <span class="field-label">Participant</span>
+        <span class="field-value">Sam Seim — mathematics educator &amp; PhD student</span>
+      </div>
+    </div>
 
-      <div class="strand-arrow">↓</div>
+    <!-- Row 7: Arrow -->
+    <div class="sc quan"><div class="strand-arrow">↓</div></div>
+    <div class="cc"></div>
+    <div class="sc qual"><div class="strand-arrow">↓</div></div>
 
+    <!-- Row 8: Data Variables / Protocol Topics -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Data Variables</span>
+        <span class="field-value">Technology interaction types, frequency &amp; contexts; student engagement &amp; performance metrics; temporal patterns in reflective practice; categorical relationships between biographical experience and instructional decisions</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Protocol Topics</span>
         <span class="field-value">Formative memories with technology, mathematics &amp; education; pedagogical decision-making processes; explicit past-to-present connections; critical incidents shaping equity-oriented practice</span>
       </div>
+    </div>
+
+    <!-- Row 9: Data Tools -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Data Tools</span>
+        <span class="field-value">Web-based Dissertation Tracker; written artifacts; undergraduate &amp; graduate course projects; childhood materials (when available)</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Data Tools</span>
         <span class="field-value">Self-interviews; web-based Dissertation Tracker; written artifacts; undergraduate &amp; graduate course projects; childhood materials (when available)</span>
       </div>
+    </div>
+
+    <!-- Row 10: Data Process -->
+    <div class="sc quan">
+      <div class="field">
+        <span class="field-label">Data Process</span>
+        <span class="field-value">Continuous self-documentation via online tracker; asynchronous artifact retrieval and systematic coding</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual">
       <div class="field">
         <span class="field-label">Data Process</span>
         <span class="field-value">Continuous; home-based self-reflection and documentation — "reflection through making" positions systematic documentation as the research itself</span>
       </div>
+    </div>
 
-      <div class="strand-arrow">↓</div>
+    <!-- Row 11: Arrow -->
+    <div class="sc quan"><div class="strand-arrow">↓</div></div>
+    <div class="cc"></div>
+    <div class="sc qual"><div class="strand-arrow">↓</div></div>
 
+    <!-- Row 12: Data Analysis -->
+    <div class="sc quan sc-last">
+      <div class="field">
+        <span class="field-label">Data Analysis</span>
+        <span class="field-value">Constant comparative analysis <em>(Charmaz, 2014; Glaser &amp; Strauss, 1967)</em>; grounded theory procedures; frequency analysis; temporal pattern coding; categorical relationship mapping between biography and practice</span>
+      </div>
+    </div>
+    <div class="cc"></div>
+    <div class="sc qual sc-last">
       <div class="field">
         <span class="field-label">Data Analysis</span>
         <span class="field-value">Descriptive thematic analysis with pattern coding <em>(Saldaña, 2021)</em>; thick description; reflexive narrative analysis; identification of recurring themes around critical incidents and pedagogical meaning-making</span>

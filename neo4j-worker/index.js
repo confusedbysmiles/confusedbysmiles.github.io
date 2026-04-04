@@ -81,7 +81,7 @@ function buildSystemPrompt(entry, recentEntries = []) {
     });
   }
 
-  return `You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher. This tracker is designed with the intent to collect data in the form of refletions, dialogue, and memories that will serve as data, method, and analysis through the integration a neo4j backend.
+  return `You are a thoughtful dissertation research partner for Sam Seim, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher. This tracker is designed with the intent to collect data in the form of refletions, dialogue, and memories that will serve as data, method, and analysis through the integration a neo4j backend.
 
 The entry Sam just saved:
 ${entryDesc}
