@@ -1,16 +1,39 @@
 /**
  * Neo4j + Claude Chat Cloudflare Worker
  * Routes:
- *   GET  /health         → Neo4j connectivity check
- *   POST /entry          → Save TrackerEntry node
- *   GET  /entries        → Fetch all entries
- *   POST /query          → Raw Cypher
- *   POST /chat           → Claude API conversation turn
- *   POST /conversation   → Save completed conversation to Neo4j
+ *   GET  /health                  → Neo4j connectivity check
+ *   POST /entry                   → Save TrackerEntry node (auth required)
+ *   GET  /entries                 → Fetch all entries
+ *   POST /query                   → Raw Cypher
+ *   POST /chat                    → Claude API conversation turn
+ *   POST /conversation            → Save completed conversation to Neo4j
+ *   POST /auth/login              → Validate credentials, return session token
+ *   POST /auth/register-request   → Submit an account request for admin review
+ *   POST /auth/admin/requests     → Admin: list pending requests
+ *   POST /auth/admin/approve      → Admin: approve or reject a request
  *
  * Secrets:
  *   NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE
  *   ANTHROPIC_API_KEY
+ *
+ * DEPLOYMENT NOTE:
+ *   Add the following KV namespace binding to wrangler.toml before deploying:
+ *
+ *   [[kv_namespaces]]
+ *   binding = "AUTH_KV"
+ *   id      = "<your-kv-namespace-id>"
+ *
+ *   Create the namespace with: wrangler kv:namespace create AUTH_KV
+ *
+ *   To create the initial admin account, run this one-time wrangler command
+ *   (replace <passwordHash> with the SHA-256 hex of your chosen password,
+ *   or use the seed script below):
+ *
+ *   wrangler kv:key put --namespace-id=<id> "user:sam" \
+ *     '{"username":"sam","passwordHash":"<sha256hex>","email":"sam@example.com","role":"admin","approved":true,"createdAt":"<iso>"}'
+ *
+ *   Quick way to get the SHA-256 hash of a password (Node.js):
+ *     node -e "const c=require('crypto');process.stdout.write(c.createHash('sha256').update('yourpassword').digest('hex')+'\n')"
  */
 
 const ALLOWED_ORIGINS = [
@@ -26,7 +49,7 @@ function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
   };
 }
@@ -101,6 +124,42 @@ Your role in this conversation:
 Start by asking ONE specific, probing question about this entry.`;
 }
 
+// ── Auth helpers ──────────────────────────────────────────────────────────────
+
+/**
+ * SHA-256 hash a password string using the Web Crypto API.
+ * Returns lowercase hex string.
+ */
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data    = encoder.encode(password);
+  const hashBuf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuf))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
+ * Validate a session token stored in AUTH_KV.
+ * Returns { username, role } if valid and not expired, otherwise null.
+ */
+async function validateToken(env, token) {
+  if (!token) return null;
+  try {
+    const raw = await env.AUTH_KV.get(`session:${token}`);
+    if (!raw) return null;
+    const session = JSON.parse(raw);
+    if (Date.now() > session.expiresAt) {
+      // Clean up expired session lazily
+      env.AUTH_KV.delete(`session:${token}`).catch(() => {});
+      return null;
+    }
+    return { username: session.username, role: session.role };
+  } catch {
+    return null;
+  }
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
@@ -133,8 +192,15 @@ export default {
       }
     }
 
-    // POST /entry — save a TrackerEntry + wire Era + Theme nodes
+    // POST /entry — save a TrackerEntry + wire Era + Theme nodes (auth required)
     if (request.method === "POST" && url.pathname === "/entry") {
+      const authHeader = request.headers.get("Authorization") || "";
+      const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+      const sessionUser = await validateToken(env, bearerToken);
+      if (!sessionUser) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
       let entry;
       try { entry = await request.json(); }
       catch { return json({ error: "Invalid JSON" }, 400); }
