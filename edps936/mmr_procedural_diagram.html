@@ -239,10 +239,20 @@
 
     /* ── Centre column cells ── */
     .cc { background: var(--light); position: relative; z-index: 1; }
-    .cc-label {
+
+    /* Absolutely-positioned label so it never adds height to any grid row */
+    .cc-label-abs {
+      position: absolute;
+      left: calc(50% - 20px);
+      width: 40px;
+      top: 0;
+      bottom: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 2;
+      pointer-events: none;
+      background: var(--light);
     }
     .concurrent-label {
       font-size: .56rem;
@@ -252,7 +262,6 @@
       writing-mode: vertical-rl;
       transform: rotate(180deg);
       color: var(--text-light);
-      background: var(--light);
       padding: .5rem .1rem;
       text-align: center;
     }
@@ -388,6 +397,11 @@
   <!-- ══ Concurrent Strands (flat grid — each triplet of cells is one row, so matching categories align) ══ -->
   <div class="strands">
 
+    <!-- Absolutely-positioned centre label — never affects row heights -->
+    <div class="cc-label-abs" aria-hidden="true">
+      <span class="concurrent-label">Concurrent Collection &amp; Analysis</span>
+    </div>
+
     <!-- Row 1: Strand headers -->
     <div class="sc quan sc-first">
       <div class="strand-header">
@@ -395,9 +409,7 @@
         <span class="strand-design">Correlational Design</span>
       </div>
     </div>
-    <div class="cc cc-label">
-      <span class="concurrent-label">Concurrent Collection &amp; Analysis</span>
-    </div>
+    <div class="cc"></div>
     <div class="sc qual sc-first">
       <div class="strand-header">
         <span class="strand-badge">QUAL</span>
