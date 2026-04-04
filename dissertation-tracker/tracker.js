@@ -34,13 +34,20 @@ function saveEntries(entries) {
     }
 }
 
-function addEntry(entry) {
+function addEntry(entry, token) {
     const entries = loadEntries();
     entry.id = generateId();
     entry.createdAt = new Date().toISOString();
     entries.push(entry);
     saveEntries(entries);
-    Neo4j.saveEntry(entry).catch(err => console.warn('[Neo4j] write failed:', err));
+    Neo4j.saveEntry(entry, token)
+        .catch(err => {
+            // If the token was rejected, clear auth state and prompt re-login
+            if (err.message && err.message.includes('401')) {
+                Auth.handleUnauthorized();
+            }
+            console.warn('[Neo4j] write failed:', err);
+        });
     return entry;
 }
 
@@ -153,6 +160,13 @@ function initMemoryForm() {
     form.addEventListener('submit', e => {
         e.preventDefault();
 
+        // Gate: must be logged in to save to Neo4j
+        if (!isLoggedIn()) {
+            Auth.showLoginModal();
+            showToast('Log in to save your memory.', 'error');
+            return;
+        }
+
         const entry = {
             type: 'memory',
             timeframe: document.getElementById('memory-timeframe').value.trim(),
@@ -165,7 +179,8 @@ function initMemoryForm() {
             sortDate: parseSortDate(document.getElementById('memory-timeframe').value.trim())
         };
 
-        const saved = addEntry(entry);
+        const token = getToken();
+        const saved = addEntry(entry, token);
         showToast('Memory saved!', 'success');
         form.reset();
         clearSelectedTags('memory-tag-selector');

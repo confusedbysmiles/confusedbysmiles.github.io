@@ -2,27 +2,210 @@
    Extends sam-servellon-styles.css with tracker-specific styles */
 
 /* ============================================
-   TRACKER HEADER
+   TRACKER TITLE BAR (sits below the shared site header)
    ============================================ */
-.tracker-header {
+.tracker-title-bar {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     color: var(--light);
-    padding: var(--spacing-lg) 0;
-    text-align: center;
+    padding: var(--spacing-md) 0;
 }
 
-.tracker-header h1 {
+.tracker-title-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.tracker-title {
     color: var(--light);
-    font-size: 2rem;
+    font-size: 1.6rem;
     margin-bottom: var(--spacing-xs);
 }
 
-.header-subtitle {
+.tracker-subtitle {
     color: var(--light);
     opacity: 0.9;
     font-style: italic;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 0;
+}
+
+.auth-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.auth-controls .btn-secondary {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.4);
+    color: var(--light);
+}
+.auth-controls .btn-secondary:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.6);
+    color: var(--light);
+}
+
+/* ============================================
+   AUTH MODALS (login, request account, admin)
+   ============================================ */
+.auth-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-md);
+}
+
+.auth-modal {
+    background: var(--light);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    padding: var(--spacing-xl);
+    width: 100%;
+    max-width: 420px;
+    animation: fadeInUp 0.2s ease-out;
+}
+
+.auth-modal.admin-modal {
+    max-width: 600px;
+}
+
+.auth-modal h3 {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.3rem;
+    color: var(--text);
+}
+
+.auth-modal .form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.auth-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+    min-height: 1.2em;
+}
+
+.auth-modal-footer {
+    margin-top: var(--spacing-md);
+    font-size: 0.875rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.auth-modal-footer a {
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.auth-modal-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    justify-content: flex-end;
+}
+
+/* Admin panel */
+.admin-loading {
+    color: var(--text-light);
+    font-style: italic;
+    padding: var(--spacing-md) 0;
+}
+
+.admin-request-card {
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-request-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.admin-request-username {
+    font-weight: 400;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+.admin-request-email,
+.admin-request-reason {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+}
+
+.admin-request-meta {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.admin-request-status {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+}
+.status-pending  { color: #d97706; }
+.status-approved { color: #059669; }
+.status-rejected { color: #dc2626; }
+
+.admin-request-actions {
+    margin-top: var(--spacing-sm);
+    border-top: 1px solid var(--secondary);
+    padding-top: var(--spacing-sm);
+}
+
+.admin-password-group {
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-approve-password {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: var(--font-main);
+}
+
+.admin-password-hint {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.admin-action-btns {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.admin-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-panel-header h3 { margin-bottom: 0; }
+
+.admin-requests-list {
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 /* ============================================

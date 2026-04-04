@@ -17,10 +17,12 @@ const WORKER_URL = "https://dissertation-neo4j.math-generator.workers.dev";
 
 const Neo4j = (() => {
 
-    async function _post(path, body) {
+    async function _post(path, body, token) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch(WORKER_URL + path, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify(body)
         });
         if (!res.ok) {
@@ -42,10 +44,11 @@ const Neo4j = (() => {
     /**
      * Persist a single entry to Neo4j.
      * @param {Object} entry - The entry object (must have an `id` and `type`).
+     * @param {string} [token] - Optional session token for authentication.
      * @returns {Promise<Object>}
      */
-    function saveEntry(entry) {
-        return _post('/entry', entry);
+    function saveEntry(entry, token) {
+        return _post('/entry', entry, token);
     }
 
     /**

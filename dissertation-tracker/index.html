@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dissertation Tracker - Autoethnography</title>
-    <link rel="stylesheet" href="https://servellon.net/sam-servellon-styles.css">
+    <title>Dissertation Tracker - Sam Seim</title>
+    <link rel="stylesheet" href="../sam-servellon-styles.css">
     <link rel="stylesheet" href="tracker.css">
     <link rel="icon" href="/MyCoolS.png" type="image/png">
 </head>
 <body>
-    <!-- Header -->
-    <header class="tracker-header" style="position: relative;">
-        <div class="container">
-            <h1>Dissertation Tracker</h1>
-            <p class="header-subtitle">Reflection Through Making</p>
+    <div id="header-placeholder"></div>
+
+    <!-- Tracker title bar sits below the shared site header -->
+    <div class="tracker-title-bar">
+        <div class="container tracker-title-bar-inner">
+            <div>
+                <h1 class="tracker-title">Dissertation Tracker</h1>
+                <p class="tracker-subtitle">Reflection Through Making</p>
+            </div>
+            <div class="auth-controls">
+                <button class="btn-secondary btn-sm auth-admin-btn" id="admin-btn" style="display:none;">Admin</button>
+                <button class="btn-secondary btn-sm" id="auth-btn">Log in</button>
+            </div>
         </div>
-    </header>
+    </div>
 
     <!-- Navigation Tabs -->
     <nav class="tracker-nav">
@@ -192,7 +200,88 @@
         </div>
     </div>
 
+    <!-- Login modal -->
+    <div id="login-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content auth-modal-content">
+            <div class="auth-modal-header">
+                <h3>Log In</h3>
+                <button class="modal-close-x" id="login-cancel" aria-label="Close">&times;</button>
+            </div>
+            <p>Log in to save memories and reflections to the graph.</p>
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" autocomplete="username" placeholder="your username" spellcheck="false">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" autocomplete="current-password" placeholder="your password">
+            </div>
+            <div class="auth-error" id="login-error" role="alert"></div>
+            <div class="modal-actions auth-modal-actions">
+                <button class="btn-primary" id="login-submit">Log in</button>
+            </div>
+            <div class="auth-modal-footer">
+                <a href="#" id="to-request-link">Request an account</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account request modal -->
+    <div id="request-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content auth-modal-content">
+            <div class="auth-modal-header">
+                <h3>Request Access</h3>
+                <button class="modal-close-x" id="request-cancel" aria-label="Close">&times;</button>
+            </div>
+            <p>Sam will review your request and create an account for you.</p>
+            <div class="form-group">
+                <label for="request-name">Full name</label>
+                <input type="text" id="request-name" placeholder="Your name" autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label for="request-username">Preferred username</label>
+                <input type="text" id="request-username" placeholder="e.g. jsmith" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="request-email">Email</label>
+                <input type="email" id="request-email" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="request-reason">Why do you want access?</label>
+                <textarea id="request-reason" rows="3" placeholder="Briefly explain your connection to this project…"></textarea>
+            </div>
+            <div class="auth-error" id="request-error" role="alert"></div>
+            <div class="modal-actions auth-modal-actions">
+                <button class="btn-primary" id="request-submit">Send Request</button>
+            </div>
+            <div class="auth-modal-footer">
+                <a href="#" id="back-to-login">Back to log in</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin panel modal -->
+    <div id="admin-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content admin-modal-content">
+            <div class="auth-modal-header">
+                <h3>Admin — Pending Requests</h3>
+                <div class="admin-header-actions">
+                    <button class="btn-secondary btn-sm" id="admin-refresh-btn">Refresh</button>
+                    <button class="modal-close-x" id="admin-close-btn" aria-label="Close">&times;</button>
+                </div>
+            </div>
+            <div class="auth-error" id="admin-error" role="alert"></div>
+            <div id="admin-requests-list" class="admin-requests-list">
+                <p class="admin-loading">Loading…</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
     <script src="neo4j-client.js"></script>
+    <script src="auth.js"></script>
     <script src="tracker.js"></script>
+    <script src="component-loader.js"></script>
 </body>
 </html>
