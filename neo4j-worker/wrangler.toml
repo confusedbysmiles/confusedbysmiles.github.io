@@ -1,6 +1,7 @@
 name = "dissertation-neo4j"
 main = "index.js"
 compatibility_date = "2024-01-01"
+
 [[kv_namespaces]]
 binding = "AUTH_KV"
 id      = "5ba7bee63da044ba8214366b6f3c1af1"
