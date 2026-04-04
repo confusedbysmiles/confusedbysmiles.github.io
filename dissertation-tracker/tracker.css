@@ -1438,13 +1438,6 @@
     text-decoration: underline;
 }
 
-/* Auth controls in the tracker title bar */
-.auth-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
 .auth-admin-btn {
     background: rgba(124, 77, 189, 0.08);
 }
