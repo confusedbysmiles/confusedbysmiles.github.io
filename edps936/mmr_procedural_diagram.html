@@ -132,11 +132,13 @@
     }
 
     /* ── Strand cells (flat grid children) ── */
-    .sc { position: relative; z-index: 1; padding: .45rem 1.6rem; }
-    .sc-first { padding-top: 1.4rem; }
-    .sc-last  { padding-bottom: 1.8rem; }
+    .sc { position: relative; z-index: 1; padding: .25rem 1.6rem; }
+    .sc-first { padding-top: 1.2rem; }
+    .sc-last  { padding-bottom: 1.4rem; }
     .sc.quan  { background: var(--quan-tint); border-right: 1px solid var(--secondary); }
     .sc.qual  { background: var(--qual-tint); }
+    /* Arrow rows need less vertical breathing room */
+    .sc .strand-arrow { padding: .05rem 0; }
 
     /* strand header */
     .strand-header {
