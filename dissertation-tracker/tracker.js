@@ -688,7 +688,8 @@ function updateTagFilterOptions() {
     const select = document.getElementById('timeline-tag-filter');
     if (!select) return;
     const currentVal = select.value;
-    const allTags = new Set();
+    // Seed with all approved tags so filters are always available, then add any extras from entries
+    const allTags = new Set(APPROVED_TAGS);
     loadEntries()
         .filter(e => e.approved !== false)
         .forEach(e => (e.tags || []).forEach(t => allTags.add(t)));
