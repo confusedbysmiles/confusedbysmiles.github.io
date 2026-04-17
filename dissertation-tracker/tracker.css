@@ -1557,6 +1557,51 @@
 }
 
 /* ============================================
+   CONVERSATION TRANSCRIPT (Timeline)
+   ============================================ */
+
+.entry-transcript-toggle {
+    margin-top: var(--spacing-sm);
+}
+
+.entry-transcript-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.75;
+    transition: var(--transition);
+}
+
+.entry-transcript-btn:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.entry-transcript {
+    display: none;
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: #0D1117;
+    border-radius: var(--border-radius);
+    border-left: 3px solid #2A3A4A;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #9CA3AF;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.entry-transcript.open {
+    display: block;
+}
+
+/* ============================================
    CONVERSE TAB — full-height chat interface
    ============================================ */
 
