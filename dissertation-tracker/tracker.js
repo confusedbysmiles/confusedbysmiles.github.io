@@ -298,12 +298,17 @@ async function endAndSaveDraft() {
         const { entry: extracted } = await extractResp.json();
 
         const now = new Date().toISOString();
+        const transcript = converseState.messages
+            .map(m => (m.role === 'user' ? 'Sam' : 'Claude') + ': ' + m.content)
+            .join('\n\n');
+
         const draft = {
             ...extracted,
-            id:        generateId(),
-            createdAt: now,
-            sortDate:  parseSortDate(extracted.timeframe || ''),
-            approved:  false,
+            id:         generateId(),
+            createdAt:  now,
+            sortDate:   parseSortDate(extracted.timeframe || ''),
+            approved:   false,
+            transcript,
         };
 
         // Save to localStorage
@@ -651,6 +656,15 @@ function renderEntryCard(entry) {
         '<span class="entry-tag">' + escapeHtml(t) + '</span>'
     ).join('');
 
+    const hasTranscript = entry.transcript && entry.transcript.trim().length > 0;
+    const transcriptHtml = hasTranscript ? `
+        <div class="entry-transcript-toggle">
+            <button class="entry-transcript-btn" data-id="${entry.id}">View conversation ▸</button>
+            <div class="entry-transcript" id="transcript-${entry.id}">${escapeHtml(entry.transcript)}</div>
+        </div>` : '';
+
+    const showExpand = excerpt.length > 200 || fullContent.length > 0;
+
     return `
         <div class="timeline-entry type-${entry.type}" data-id="${entry.id}">
             <div class="entry-header">
@@ -662,8 +676,9 @@ function renderEntryCard(entry) {
             </div>
             <div class="entry-excerpt">${escapeHtml(shortExcerpt)}</div>
             <div class="entry-tags">${tagsHtml}</div>
-            ${excerpt.length > 200 ? '<button class="entry-expand-btn" data-id="' + entry.id + '">Show more</button>' : ''}
+            ${showExpand ? '<button class="entry-expand-btn" data-id="' + entry.id + '">Show more</button>' : ''}
             <div class="entry-full-content" id="full-${entry.id}">${fullContent}</div>
+            ${transcriptHtml}
         </div>
     `;
 }
@@ -756,6 +771,15 @@ function attachEntryListeners(container) {
             const fullEl = document.getElementById('full-' + id);
             const isExpanded = fullEl.classList.toggle('expanded');
             btn.textContent = isExpanded ? 'Show less' : 'Show more';
+        });
+    });
+
+    container.querySelectorAll('.entry-transcript-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const el = document.getElementById('transcript-' + id);
+            const isOpen = el.classList.toggle('open');
+            btn.textContent = isOpen ? 'Hide conversation ▾' : 'View conversation ▸';
         });
     });
 }

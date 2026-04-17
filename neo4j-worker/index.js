@@ -240,7 +240,8 @@ export default {
               e.tags            = $tags,
               e.emotionalResponse = $emotionalResponse,
               e.emotion         = $emotion,
-              e.timeframe       = $timeframe
+              e.timeframe       = $timeframe,
+              e.transcript      = $transcript
         `, {
           id:                entryId,
           type:              body.type              || "memory",
@@ -251,6 +252,7 @@ export default {
           emotionalResponse: body.emotion           || body.emotionalResponse || "",
           emotion:           body.emotion           || body.emotionalResponse || "",
           timeframe:         body.timeframe         || "",
+          transcript:        body.transcript        || "",
         });
 
         // Re-wire Era relationship
@@ -308,7 +310,8 @@ export default {
             date:              $date,
             timeframe:         $timeframe,
             createdAt:         $createdAt,
-            approved:          $approved
+            approved:          $approved,
+            transcript:        $transcript
           })
         `, {
           id,
@@ -323,6 +326,7 @@ export default {
           timeframe:         entry.timeframe         || "",
           createdAt:         entry.createdAt         || now,
           approved:          entry.approved !== undefined ? entry.approved : false,
+          transcript:        entry.transcript        || "",
         });
 
         // Wire Era relationship
