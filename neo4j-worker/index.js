@@ -1,16 +1,19 @@
 /**
  * Neo4j + Claude Chat Cloudflare Worker
  * Routes:
- *   GET  /health                  → Neo4j connectivity check
- *   POST /entry                   → Save TrackerEntry node (auth required)
- *   GET  /entries                 → Fetch all entries
- *   POST /query                   → Raw Cypher
- *   POST /chat                    → Claude API conversation turn
- *   POST /conversation            → Save completed conversation to Neo4j
- *   POST /auth/login              → Validate credentials, return session token
- *   POST /auth/register-request   → Submit an account request for admin review
- *   POST /auth/admin/requests     → Admin: list pending requests
- *   POST /auth/admin/approve      → Admin: approve or reject a request
+ *   GET  /health                    → Neo4j connectivity check
+ *   POST /entry/:id/approve         → Approve (and update) a TrackerEntry
+ *   POST /entry                     → Save TrackerEntry node (auth required)
+ *   GET  /entries/unapproved        → Fetch entries where approved = false
+ *   GET  /entries                   → Fetch all entries
+ *   POST /query                     → Raw Cypher
+ *   POST /chat                      → Claude API conversation turn
+ *   POST /chat/extract              → Extract structured entry from conversation
+ *   POST /conversation              → Save completed conversation to Neo4j
+ *   POST /auth/login                → Validate credentials, return session token
+ *   POST /auth/register-request     → Submit an account request for admin review
+ *   POST /auth/admin/requests       → Admin: list pending requests
+ *   POST /auth/admin/approve        → Admin: approve or reject a request
  *
  * Secrets:
  *   NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE
@@ -24,16 +27,6 @@
  *   id      = "<your-kv-namespace-id>"
  *
  *   Create the namespace with: wrangler kv:namespace create AUTH_KV
- *
- *   To create the initial admin account, run this one-time wrangler command
- *   (replace <passwordHash> with the SHA-256 hex of your chosen password,
- *   or use the seed script below):
- *
- *   wrangler kv:key put --namespace-id=<id> "user:sam" \
- *     '{"username":"sam","passwordHash":"<sha256hex>","email":"sam@example.com","role":"admin","approved":true,"createdAt":"<iso>"}'
- *
- *   Quick way to get the SHA-256 hash of a password (Node.js):
- *     node -e "const c=require('crypto');process.stdout.write(c.createHash('sha256').update('yourpassword').digest('hex')+'\n')"
  */
 
 const ALLOWED_ORIGINS = [
@@ -91,6 +84,28 @@ async function runCypher(env, statement, parameters = {}) {
   return data.data || { fields: [], values: [] };
 }
 
+// System prompt when Sam opens a fresh conversation (no entry context)
+function buildFreshSystemPrompt(allEntries = []) {
+  const allEntriesJson = JSON.stringify(allEntries);
+  return `You are a dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. His dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on students retaking Algebra 1.
+
+Sam is also building a Student Agency Math Problem Generator. He documents formative memories and build decisions — this tracker data IS his quantitative research strand.
+
+You have access to all of Sam's existing entries:
+${allEntriesJson}
+
+Your job is to have a natural research conversation. You might:
+- Ask about formative experiences with math, teaching, or technology
+- Surface connections between what he's sharing and existing entries
+- Help him articulate things he hasn't named yet
+- Ask follow-up questions that deepen the reflection
+
+Keep responses concise (2-4 sentences). Be a thought partner, not a therapist.
+When the conversation feels complete, say something like:
+'This feels like a complete thought — want me to draft this as an entry for your review?'`;
+}
+
+// System prompt for reflection on a specific saved entry
 function buildSystemPrompt(entry, recentEntries = []) {
   const entryDesc = entry.type === "memory"
     ? `A memory titled "${entry.title}" from ${entry.timeframe || "an unspecified time"}, context: ${entry.context || "unspecified"}.\n"${entry.content || entry.description || ""}"\nEmotional response: ${entry.emotion || entry.emotionalResponse || "not noted"}`
@@ -104,7 +119,7 @@ function buildSystemPrompt(entry, recentEntries = []) {
     });
   }
 
-  return `You are a thoughtful dissertation research partner for Sam Seim, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher. This tracker is designed with the intent to collect data in the form of refletions, dialogue, and memories that will serve as data, method, and analysis through the integration a neo4j backend.
+  return `You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher.
 
 The entry Sam just saved:
 ${entryDesc}
@@ -126,10 +141,6 @@ Start by asking ONE specific, probing question about this entry.`;
 
 // ── Auth helpers ──────────────────────────────────────────────────────────────
 
-/**
- * SHA-256 hash a password string using the Web Crypto API.
- * Returns lowercase hex string.
- */
 async function hashPassword(password) {
   const encoder = new TextEncoder();
   const data    = encoder.encode(password);
@@ -139,10 +150,6 @@ async function hashPassword(password) {
     .join("");
 }
 
-/**
- * Validate a session token stored in AUTH_KV.
- * Returns { username, role } if valid and not expired, otherwise null.
- */
 async function validateToken(env, token) {
   if (!token) return null;
   try {
@@ -150,7 +157,6 @@ async function validateToken(env, token) {
     if (!raw) return null;
     const session = JSON.parse(raw);
     if (Date.now() > session.expiresAt) {
-      // Clean up expired session lazily
       env.AUTH_KV.delete(`session:${token}`).catch(() => {});
       return null;
     }
@@ -158,6 +164,20 @@ async function validateToken(env, token) {
   } catch {
     return null;
   }
+}
+
+// ── Entry row mapper (shared between /entries and /entries/unapproved) ────────
+function mapEntryRows(result) {
+  const fields = result.fields;
+  return result.values.map(row => {
+    const node  = row[fields.indexOf("e")];
+    const props = node._properties || node.properties || node;
+    return {
+      ...props,
+      era:    row[fields.indexOf("era")],
+      themes: row[fields.indexOf("themes")] || [],
+    };
+  });
 }
 
 export default {
@@ -182,7 +202,7 @@ export default {
         status, headers: { ...cors, "Content-Type": "application/json" },
       });
 
-    // GET /health
+    // ── GET /health ────────────────────────────────────────────────────────────
     if (request.method === "GET" && url.pathname === "/health") {
       try {
         await runCypher(env, "RETURN 1 AS ok");
@@ -192,7 +212,72 @@ export default {
       }
     }
 
-    // POST /entry — save a TrackerEntry + wire Era + Theme nodes (auth required)
+    // ── POST /entry/:id/approve ─────────────────────────────────────────────
+    // Update all fields from body, then set approved = true
+    const approveMatch = url.pathname.match(/^\/entry\/([^/]+)\/approve$/);
+    if (request.method === "POST" && approveMatch) {
+      const entryId = approveMatch[1];
+
+      const authHeader = request.headers.get("Authorization") || "";
+      const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+      const sessionUser = await validateToken(env, bearerToken);
+      if (!sessionUser) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      try {
+        await runCypher(env, `
+          MATCH (e:TrackerEntry {id: $id})
+          SET e.approved        = true,
+              e.type            = $type,
+              e.title           = $title,
+              e.content         = $content,
+              e.context         = $context,
+              e.tags            = $tags,
+              e.emotionalResponse = $emotionalResponse,
+              e.emotion         = $emotion,
+              e.timeframe       = $timeframe
+        `, {
+          id:                entryId,
+          type:              body.type              || "memory",
+          title:             body.title             || "",
+          content:           body.content           || body.description || "",
+          context:           body.context           || "",
+          tags:              body.tags              || [],
+          emotionalResponse: body.emotion           || body.emotionalResponse || "",
+          emotion:           body.emotion           || body.emotionalResponse || "",
+          timeframe:         body.timeframe         || "",
+        });
+
+        // Re-wire Era relationship
+        if (body.context) {
+          await runCypher(env, `
+            MATCH (e:TrackerEntry {id: $id})
+            MERGE (era:Era {name: $era})
+            MERGE (e)-[:SITUATED_IN]->(era)
+          `, { id: entryId, era: body.context });
+        }
+
+        // Re-wire Theme relationships
+        for (const tag of (body.tags || [])) {
+          await runCypher(env, `
+            MATCH (e:TrackerEntry {id: $id})
+            MERGE (t:Theme {name: $tag})
+            MERGE (e)-[:SURFACES]->(t)
+          `, { id: entryId, tag });
+        }
+
+        return json({ approved: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── POST /entry ────────────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/entry") {
       const authHeader = request.headers.get("Authorization") || "";
       const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
@@ -205,11 +290,11 @@ export default {
       try { entry = await request.json(); }
       catch { return json({ error: "Invalid JSON" }, 400); }
 
-      const id  = crypto.randomUUID();
+      // Use the frontend-provided ID if present so Neo4j and localStorage stay in sync
+      const id  = entry.id || crypto.randomUUID();
       const now = new Date().toISOString();
 
       try {
-        // 1. Create the TrackerEntry node
         await runCypher(env, `
           CREATE (e:TrackerEntry {
             id:                $id,
@@ -219,22 +304,28 @@ export default {
             context:           $context,
             tags:              $tags,
             emotionalResponse: $emotionalResponse,
+            emotion:           $emotion,
             date:              $date,
-            createdAt:         $createdAt
+            timeframe:         $timeframe,
+            createdAt:         $createdAt,
+            approved:          $approved
           })
         `, {
           id,
           type:              entry.type              || "memory",
           title:             entry.title             || "",
           content:           entry.content || entry.description || entry.what || "",
-          context:           entry.context || "",
+          context:           entry.context           || "",
           tags:              entry.tags              || [],
-          emotionalResponse: entry.emotionalResponse || "",
+          emotionalResponse: entry.emotion || entry.emotionalResponse || "",
+          emotion:           entry.emotion || entry.emotionalResponse || "",
           date:              entry.date              || now,
-          createdAt:         now,
+          timeframe:         entry.timeframe         || "",
+          createdAt:         entry.createdAt         || now,
+          approved:          entry.approved !== undefined ? entry.approved : false,
         });
 
-       // 2. Wire Era relationship
+        // Wire Era relationship
         if (entry.context) {
           await runCypher(env, `
             MATCH (e:TrackerEntry {id: $id})
@@ -243,7 +334,7 @@ export default {
           `, { id, era: entry.context });
         }
 
-        // 3. Wire Theme relationships for each tag
+        // Wire Theme relationships
         for (const tag of (entry.tags || [])) {
           await runCypher(env, `
             MATCH (e:TrackerEntry {id: $id})
@@ -258,7 +349,24 @@ export default {
       }
     }
 
-    // GET /entries — fetch all TrackerEntry nodes
+    // ── GET /entries/unapproved ────────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/entries/unapproved") {
+      try {
+        const result = await runCypher(env, `
+          MATCH (e:TrackerEntry)
+          WHERE e.approved = false
+          OPTIONAL MATCH (e)-[:SITUATED_IN]->(era:Era)
+          OPTIONAL MATCH (e)-[:SURFACES]->(t:Theme)
+          RETURN e, era.name AS era, collect(t.name) AS themes
+          ORDER BY e.createdAt DESC
+        `);
+        return json({ entries: mapEntryRows(result) });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── GET /entries ───────────────────────────────────────────────────────────
     if (request.method === "GET" && url.pathname === "/entries") {
       try {
         const result = await runCypher(env, `
@@ -268,25 +376,13 @@ export default {
           RETURN e, era.name AS era, collect(t.name) AS themes
           ORDER BY e.createdAt DESC
         `);
-
-        const fields = result.fields;
-        const entries = result.values.map(row => {
-          const node   = row[fields.indexOf("e")];
-          const props  = node._properties || node.properties || node;
-          return {
-            ...props,
-            era:    row[fields.indexOf("era")],
-            themes: row[fields.indexOf("themes")] || [],
-          };
-        });
-
-        return json({ entries });
+        return json({ entries: mapEntryRows(result) });
       } catch (err) {
         return json({ error: err.message }, 500);
       }
     }
-  
-    // POST /query — run raw Cypher (one statement)
+
+    // ── POST /query ────────────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/query") {
       let body;
       try { body = await request.json(); }
@@ -302,18 +398,20 @@ export default {
       }
     }
 
-    // POST /chat
+    // ── POST /chat ─────────────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/chat") {
       let body;
       try { body = await request.json(); }
       catch { return json({ error: "Invalid JSON" }, 400); }
 
-      const { entry, messages = [], recentEntries = [] } = body;
-      if (!entry) return json({ error: "Missing entry" }, 400);
+      const { entry, messages = [], allEntries = [] } = body;
+
+      // Fresh conversation (no entry context) uses the full dissertation prompt
+      const systemPrompt = entry
+        ? buildSystemPrompt(entry, allEntries)
+        : buildFreshSystemPrompt(allEntries);
 
       try {
-        const systemPrompt = buildSystemPrompt(entry, recentEntries);
-
         const apiResp = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
           headers: {
@@ -345,7 +443,81 @@ export default {
       }
     }
 
-    // POST /conversation
+    // ── POST /chat/extract ─────────────────────────────────────────────────────
+    if (request.method === "POST" && url.pathname === "/chat/extract") {
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const { messages = [] } = body;
+      if (messages.length === 0) return json({ error: "No messages to extract from" }, 400);
+
+      const extractSystemPrompt = `You are extracting structured data from a research conversation.
+Return ONLY valid JSON matching this exact shape, no markdown, no explanation:
+{ "type": "...", "title": "...", "content": "...", "context": "...", "tags": [...], "emotion": "...", "timeframe": "..." }
+
+Rules:
+- type: "memory" if the conversation is about a past experience, "buildlog" if about building/coding
+- title: concise, under 80 characters
+- content: the full substance of what was discussed, written as a cohesive narrative (not bullet points)
+- context: must be exactly one of: "As a Student", "As a Teacher", "As a Researcher", "Personal"
+- tags: array of strings, only use tags from the approved list, pick all that apply
+- emotion: 1-3 words describing the emotional tone
+- timeframe: approximate time period if mentioned (e.g. "Fall 2015", "2023"), empty string if not mentioned
+
+Approved tags: equity, access, technology, math, agency, curriculum, identity, frustration, breakthrough, mentor, feature, bug fix, design choice, pedagogy, student voice, accessibility, AI integration, pivot`;
+
+      const transcript = messages
+        .map(m => `${m.role === "user" ? "Sam" : "Claude"}: ${m.content}`)
+        .join("\n\n");
+
+      try {
+        const apiResp = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type":      "application/json",
+            "x-api-key":         env.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model:      "claude-sonnet-4-6",
+            max_tokens: 1024,
+            system:     extractSystemPrompt,
+            messages:   [{
+              role:    "user",
+              content: "Extract structured data from this conversation:\n\n" + transcript,
+            }],
+          }),
+        });
+
+        if (!apiResp.ok) {
+          const err = await apiResp.text();
+          return json({ error: `Claude API error: ${err}` }, 502);
+        }
+
+        const data = await apiResp.json();
+        const text = data.content?.[0]?.text || "{}";
+
+        let entry;
+        try {
+          entry = JSON.parse(text);
+        } catch {
+          // Claude occasionally wraps JSON in markdown fences — strip and retry
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            entry = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error("Failed to parse JSON from Claude response");
+          }
+        }
+
+        return json({ entry });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── POST /conversation ─────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/conversation") {
       let body;
       try { body = await request.json(); }
@@ -387,10 +559,10 @@ export default {
         return json({ error: err.message }, 500);
       }
     }
+
     // ── AUTH ROUTES ────────────────────────────────────────────────────────────
 
-    // POST /auth/login — body: { username, password }
-    // Returns { token, username, role } or 401
+    // POST /auth/login
     if (request.method === "POST" && url.pathname === "/auth/login") {
       let body;
       try { body = await request.json(); }
@@ -409,7 +581,6 @@ export default {
         const hash = await hashPassword(password);
         if (hash !== user.passwordHash) return json({ error: "Invalid credentials" }, 401);
 
-        // Create a 24-hour session token
         const token     = crypto.randomUUID();
         const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
         await env.AUTH_KV.put(`session:${token}`, JSON.stringify({
@@ -424,8 +595,7 @@ export default {
       }
     }
 
-    // POST /auth/register-request — body: { name, username, email, reason }
-    // Stores a pending account request for admin review. Returns 201.
+    // POST /auth/register-request
     if (request.method === "POST" && url.pathname === "/auth/register-request") {
       let body;
       try { body = await request.json(); }
@@ -436,18 +606,13 @@ export default {
         return json({ error: "name, username, email, and reason are required" }, 400);
       }
 
-      // Reject if username is already taken
       try {
         const existing = await env.AUTH_KV.get(`user:${username}`);
         if (existing) return json({ error: "Username already taken" }, 409);
 
         const id = crypto.randomUUID();
         await env.AUTH_KV.put(`request:${id}`, JSON.stringify({
-          id,
-          name,
-          username,
-          email,
-          reason,
+          id, name, username, email, reason,
           createdAt: new Date().toISOString(),
           status: "pending",
         }));
@@ -458,8 +623,7 @@ export default {
       }
     }
 
-    // POST /auth/admin/requests — body: { token }
-    // Admin only. Returns { requests: [...] } of pending requests.
+    // POST /auth/admin/requests
     if (request.method === "POST" && url.pathname === "/auth/admin/requests") {
       let body;
       try { body = await request.json(); }
@@ -487,8 +651,7 @@ export default {
       }
     }
 
-    // POST /auth/admin/approve — body: { token, requestId, action: "approve"|"reject", password }
-    // Admin only. On approve, creates the user account and marks request approved.
+    // POST /auth/admin/approve
     if (request.method === "POST" && url.pathname === "/auth/admin/approve") {
       let body;
       try { body = await request.json(); }
@@ -517,22 +680,20 @@ export default {
         if (action === "approve") {
           if (!password) return json({ error: "password required to approve" }, 400);
 
-          // Check username isn't already in use
           const existing = await env.AUTH_KV.get(`user:${req.username}`);
           if (existing) return json({ error: "Username already taken" }, 409);
 
           const passwordHash = await hashPassword(password);
           await env.AUTH_KV.put(`user:${req.username}`, JSON.stringify({
-            username:     req.username,
+            username:  req.username,
             passwordHash,
-            email:        req.email,
-            role:         "user",
-            approved:     true,
-            createdAt:    new Date().toISOString(),
+            email:     req.email,
+            role:      "user",
+            approved:  true,
+            createdAt: new Date().toISOString(),
           }));
         }
 
-        // Update the request status
         req.status = action === "approve" ? "approved" : "rejected";
         await env.AUTH_KV.put(`request:${requestId}`, JSON.stringify(req));
 
@@ -543,5 +704,5 @@ export default {
     }
 
     return json({ error: "Not found" }, 404);
-    },
-  };
+  },
+};

@@ -29,9 +29,9 @@
     <nav class="tracker-nav">
         <div class="container">
             <div class="tab-group">
-                <button class="tab-btn active" data-tab="memory">Memory Capture</button>
-                <button class="tab-btn" data-tab="buildlog">Build Log</button>
+                <button class="tab-btn active" data-tab="converse">Converse</button>
                 <button class="tab-btn" data-tab="timeline">Timeline</button>
+                <button class="tab-btn" data-tab="review">Review <span id="review-dot" class="review-count-dot" style="display:none;"></span></button>
                 <button class="tab-btn" data-tab="entries">Graph</button>
             </div>
         </div>
@@ -39,103 +39,24 @@
 
     <main class="container">
 
-        <!-- ==================== MEMORY CAPTURE TAB ==================== -->
-        <section id="tab-memory" class="tab-panel active">
-            <div class="panel-header">
-                <h2>Capture a Memory</h2>
-                <p>Log formative experiences with tech, math, and education.</p>
-            </div>
-
-            <form id="memory-form" class="entry-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="memory-timeframe">When?</label>
-                        <input type="text" id="memory-timeframe" placeholder='e.g. "1995", "Fall 2015", "Spring 2023"' required>
-                        <span class="form-hint">Flexible - use whatever feels right</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="memory-context">Context</label>
-                        <select id="memory-context" required>
-                            <option value="">Select...</option>
-                            <option value="student">As a Student</option>
-                            <option value="teacher">As a Teacher</option>
-                            <option value="personal">Personal</option>
-                            <option value="researcher">As a Researcher</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="memory-title">Title</label>
-                    <input type="text" id="memory-title" placeholder="A short headline for this memory" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="memory-description">What happened?</label>
-                    <textarea id="memory-description" rows="6" placeholder="Describe the experience. Be as raw and honest as you want - this is your data." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="memory-tags">Tags</label>
-                    <div class="tag-selector" id="memory-tag-selector">
-                        <button type="button" class="tag-btn" data-tag="equity">equity</button>
-                        <button type="button" class="tag-btn" data-tag="access">access</button>
-                        <button type="button" class="tag-btn" data-tag="technology">technology</button>
-                        <button type="button" class="tag-btn" data-tag="math">math</button>
-                        <button type="button" class="tag-btn" data-tag="agency">agency</button>
-                        <button type="button" class="tag-btn" data-tag="curriculum">curriculum</button>
-                        <button type="button" class="tag-btn" data-tag="identity">identity</button>
-                        <button type="button" class="tag-btn" data-tag="frustration">frustration</button>
-                        <button type="button" class="tag-btn" data-tag="breakthrough">breakthrough</button>
-                        <button type="button" class="tag-btn" data-tag="mentor">mentor</button>
-                    </div>
-                    <input type="text" id="memory-custom-tag" placeholder="Add a custom tag and press Enter">
-                </div>
-
-                <div class="form-group">
-                    <label for="memory-emotion">Emotional response <span class="optional">(optional)</span></label>
-                    <input type="text" id="memory-emotion" placeholder="How does remembering this make you feel?">
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">Save Memory</button>
-                    <button type="button" class="btn-secondary" id="memory-reflect-btn" style="display:none;">Get Reflection Prompt</button>
-                </div>
-            </form>
-
-            <!-- AI Reflection Panel (appears after saving) -->
-            <div id="memory-reflection-panel" class="reflection-panel" style="display:none;">
-                <h3>Reflection</h3>
-                <div id="memory-reflection-content" class="reflection-content"></div>
-                <div class="form-group">
-                    <label for="memory-reflection-response">Your response</label>
-                    <textarea id="memory-reflection-response" rows="4" placeholder="Write your reflection here..."></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-primary" id="save-memory-reflection">Save Reflection</button>
-                    <button type="button" class="btn-secondary" id="skip-memory-reflection">Skip</button>
+        <!-- ==================== CONVERSE TAB ==================== -->
+        <section id="tab-converse" class="tab-panel active converse-panel">
+            <div class="converse-chat-area" id="converse-messages">
+                <div class="chat-typing" id="converse-typing">
+                    <span></span><span></span><span></span>
                 </div>
             </div>
-        </section>
-
-        <!-- ==================== BUILD LOG TAB ==================== -->
-        <section id="tab-buildlog" class="tab-panel">
-            <div class="panel-header">
-                <h2>Build Log</h2>
-                <p>Git commit history for the dissertation tracker &amp; viewer.</p>
+            <div class="converse-input-row">
+                <button class="chat-speech-btn" id="converse-speech-btn" title="Hold to speak">&#127908;</button>
+                <textarea
+                    id="converse-input"
+                    class="converse-textarea"
+                    placeholder="Share a memory, experience, or build decision… (Enter to send, Shift+Enter for new line)"
+                    rows="2"
+                ></textarea>
+                <button class="chat-send-btn" id="converse-send-btn" title="Send">&#8594;</button>
+                <button class="converse-end-btn" id="converse-end-btn" title="End conversation and save a draft entry">End &amp; Save Draft</button>
             </div>
-
-            <div class="buildlog-toolbar">
-                <button class="btn-secondary btn-sm" id="refresh-commits-btn">Refresh</button>
-                <span id="commits-status" class="source-badge"></span>
-            </div>
-
-            <div id="commits-list" class="commits-list">
-                <div class="commits-loading"><p>Loading commit history&hellip;</p></div>
-            </div>
-
-            <!-- Chat reflection panel (reused for commit reflections) -->
-            <div id="buildlog-reflection-panel" class="reflection-panel" style="display:none;"></div>
         </section>
 
         <!-- ==================== TIMELINE TAB ==================== -->
@@ -167,8 +88,16 @@
 
             <div id="timeline-container" class="timeline-container">
                 <div class="timeline-empty">
-                    <p>No entries yet. Start capturing memories or logging builds!</p>
+                    <p>No entries yet. Start a conversation!</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- ==================== REVIEW TAB ==================== -->
+        <section id="tab-review" class="tab-panel">
+            <!-- Content rendered dynamically by initReviewTab() -->
+            <div class="review-loading">
+                <p>Loading unapproved entries&hellip;</p>
             </div>
         </section>
 
