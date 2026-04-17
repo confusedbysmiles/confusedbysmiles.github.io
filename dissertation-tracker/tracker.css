@@ -1555,3 +1555,171 @@
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
 }
+
+/* ============================================
+   CONVERSE TAB — full-height chat interface
+   ============================================ */
+
+/* The converse panel fills the viewport below header + nav */
+.converse-panel {
+    display: none;
+    flex-direction: column;
+    padding: 0 !important;
+    height: calc(100vh - 138px);  /* same math as graph iframe */
+    overflow: hidden;
+}
+
+.converse-panel.active {
+    display: flex;
+}
+
+.converse-chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: #0D1117;
+}
+
+/* Reuse existing .chat-message-* styles from the old chat panel */
+
+.converse-input-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem var(--spacing-lg);
+    border-top: 1px solid #2A3A4A;
+    background: #0D1117;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.converse-textarea {
+    flex: 1;
+    background: #161B27;
+    border: 1px solid #2A3A4A;
+    border-radius: 6px;
+    color: #F0F4F8;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.85rem;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.converse-textarea:focus {
+    outline: none;
+    border-color: #00D4AA;
+}
+
+.converse-end-btn {
+    padding: 0 1rem;
+    height: 36px;
+    background: transparent;
+    border: 1px solid #2A3A4A;
+    border-radius: 6px;
+    color: #9CA3AF;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.converse-end-btn:hover {
+    border-color: #00D4AA;
+    color: #00D4AA;
+}
+
+.converse-end-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   REVIEW TAB — editable entry cards
+   ============================================ */
+
+.review-loading {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-light);
+}
+
+.review-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.review-count-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.review-card {
+    margin-bottom: var(--spacing-lg);
+}
+
+.review-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--secondary);
+}
+
+.review-approve-btn {
+    background: linear-gradient(135deg, #059669 0%, #00b894 100%);
+}
+
+.review-approve-btn:hover {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+}
+
+.review-approve-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Review badge dot in the tab button */
+.review-count-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 9px;
+    margin-left: 4px;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .converse-panel {
+        height: calc(100vh - 120px);
+    }
+
+    .converse-input-row {
+        padding: 0.6rem var(--spacing-md);
+        flex-wrap: wrap;
+    }
+
+    .converse-end-btn {
+        width: 100%;
+        order: 3;
+    }
+
+    .review-nav {
+        flex-wrap: wrap;
+    }
+}

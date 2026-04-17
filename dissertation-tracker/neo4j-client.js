@@ -70,6 +70,25 @@ const Neo4j = (() => {
     }
 
     /**
+     * Retrieve only unapproved entries (approved = false) from Neo4j.
+     * @returns {Promise<{entries: Array}>}
+     */
+    function getUnapproved() {
+        return _get('/entries/unapproved');
+    }
+
+    /**
+     * Approve an entry, persisting any edits made in the Review tab.
+     * @param {string} id - The entry id.
+     * @param {Object} entry - The full (possibly edited) entry object.
+     * @param {string} [token] - Session token for authentication.
+     * @returns {Promise<Object>}
+     */
+    function approveEntry(id, entry, token) {
+        return _post(`/entry/${encodeURIComponent(id)}/approve`, entry, token);
+    }
+
+    /**
      * Check worker and Neo4j connectivity.
      * @returns {Promise<{status: string, neo4j: string}>}
      */
@@ -77,7 +96,7 @@ const Neo4j = (() => {
         return _get('/health');
     }
 
-    return { saveEntry, getEntries, query, health };
+    return { saveEntry, getEntries, getUnapproved, approveEntry, query, health };
 })();
 
 window.Neo4j = Neo4j;
