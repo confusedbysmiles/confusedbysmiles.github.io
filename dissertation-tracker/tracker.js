@@ -563,10 +563,35 @@ function getReviewFormValues(originalEntry) {
 // TIMELINE RENDERING
 // ============================================
 
-function renderTimeline() {
+async function renderTimeline() {
     const container = document.getElementById('timeline-container');
-    const entries   = getFilteredEntries('timeline');
 
+    // Show cached entries immediately while the Neo4j fetch runs
+    paintTimeline(container, getFilteredEntries('timeline'));
+
+    try {
+        const data = await Neo4j.getEntries();
+        const neo4jEntries = (data.entries || []).map(e => ({
+            ...e,
+            // Compute a sortDate if the node doesn't have one
+            sortDate: e.sortDate || parseSortDate(e.timeframe || '') || e.createdAt || new Date().toISOString(),
+        }));
+
+        // Preserve any local unapproved drafts not yet in Neo4j
+        const localDrafts = loadEntries().filter(e => e.approved === false);
+        const neo4jIds    = new Set(neo4jEntries.map(e => e.id));
+        const uniqueDrafts = localDrafts.filter(d => !neo4jIds.has(d.id));
+
+        // Neo4j is the source of truth — sync to localStorage
+        saveEntries([...neo4jEntries, ...uniqueDrafts]);
+    } catch (err) {
+        console.warn('[Timeline] Neo4j unreachable, using localStorage:', err);
+    }
+
+    paintTimeline(container, getFilteredEntries('timeline'));
+}
+
+function paintTimeline(container, entries) {
     if (entries.length === 0) {
         container.innerHTML = '<div class="timeline-empty"><p>No entries match your filters.</p></div>';
         return;
