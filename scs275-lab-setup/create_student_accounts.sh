@@ -75,9 +75,9 @@ while IFS= read -r username || [[ -n "$username" ]]; do
     [[ "$username" == \#* ]] && continue
 
     # Validate: lowercase letters, digits, underscores, hyphens only
-    if ! [[ "$username" =~ ^[a-z][a-z0-9_-]{0,31}$ ]]; then
+    if ! [[ "$username" =~ ^[a-z][a-z0-9._-]{0,31}$ ]]; then
         echo "  [SKIP] '$username' — invalid username (must start with a letter,"
-        echo "         contain only a-z 0-9 _ - and be 32 chars or fewer)."
+        echo "         contain only a-z 0-9 . _ - and be 32 chars or fewer)."
         SKIPPED+=("$username")
         continue
     fi
