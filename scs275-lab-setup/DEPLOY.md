@@ -402,8 +402,8 @@ scp -i ~/.ssh/scs275-lab.pem \
 
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<DVWA-IP>
-sudo bash create_student_accounts.sh students.txt
-exit
+sudo -i
+bash /home/ubuntu/create_student_accounts.sh /home/ubuntu/students.txt
 ```
 
 The script will:
@@ -419,8 +419,8 @@ The keys are also saved to `/root/student-keys/` on the instance for reference.
 
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP>
-sudo bash create_student_accounts.sh students.txt
-exit
+sudo -i
+bash /home/ubuntu/create_student_accounts.sh /home/ubuntu/students.txt
 ```
 
 Same process — copy the output. Students need a key for each server.
