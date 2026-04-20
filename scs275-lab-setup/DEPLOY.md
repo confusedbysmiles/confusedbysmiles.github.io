@@ -7,12 +7,16 @@ on fresh Ubuntu 22.04 EC2 instances. Follow every step in order.
 
 ## What You Will End Up With
 
-| Server | Purpose | Port |
-|--------|---------|------|
-| `scs275-dvwa` | DVWA web application target | 80 (HTTP) |
-| `scs275-exploit-lab` | Buffer overflow exploit target | 4444 (TCP) + 22 (SSH) |
+| Server | Purpose | Exposed port | How students connect |
+|--------|---------|-------------|----------------------|
+| `scs275-dvwa` | DVWA web application target | 22 (SSH only) | SSH tunnel → browser on localhost |
+| `scs275-exploit-lab` | Buffer overflow exploit target | 22 (SSH only) | SSH → `nc localhost 4444` on the instance |
 
-Estimated total time: **30–45 minutes**
+**Security model:** Neither server exposes application ports to the internet.
+Every student has their own named Linux account and SSH key. Access is controlled
+by authentication, not IP filtering. All traffic is encrypted in transit.
+
+Estimated total time: **45–60 minutes** (plus ~2 min per student account)
 Estimated AWS cost while running: **~$0.03/hour** for both instances combined
 
 ---
@@ -20,11 +24,11 @@ Estimated AWS cost while running: **~$0.03/hour** for both instances combined
 ## Before You Start — What You Need
 
 1. An AWS account with permission to create EC2 instances, security groups, and key pairs.
-2. Your campus or VPN IP address/range (you will restrict access to this). To find your current IP, search "what is my IP" in any browser.
+2. A roster of student usernames (e.g. `jsmith`, `adoe`) — one account will be created per student.
 3. A terminal application:
    - Mac/Linux: Terminal (built in)
    - Windows: PowerShell, Windows Terminal, or Git Bash
-4. The two setup scripts from this repository (`setup_dvwa.sh` and `setup_exploit_lab.sh`) on your local machine.
+4. The scripts from this repository on your local machine (`setup_dvwa.sh`, `setup_exploit_lab.sh`, and `create_student_accounts.sh`).
 
 ---
 
@@ -78,34 +82,28 @@ Security groups act as firewalls. You need one per server. **Do this before laun
 
 **2.3** Fill in the **Basic details** section:
 - **Security group name:** `scs275-dvwa-sg`
-- **Description:** `DVWA lab server — HTTP for students, SSH for admin`
+- **Description:** `DVWA lab server — SSH only, students use SSH tunnels`
 - **VPC:** Leave as default (the pre-selected default VPC is fine)
 
-**2.4** Under **Inbound rules**, click **Add rule** and add the following two rules:
+**2.4** Under **Inbound rules**, click **Add rule** and add **one rule only**:
 
-**Rule 1 — SSH for your admin access:**
+**Rule 1 — SSH (the only open port):**
 - **Type:** SSH
 - **Protocol:** TCP (auto-filled)
 - **Port range:** 22 (auto-filled)
-- **Source:** Custom → type your IP address followed by `/32`
-  (example: if your IP is `203.0.113.50`, enter `203.0.113.50/32`)
-- **Description:** Admin SSH
-
-**Rule 2 — HTTP for students:**
-- Click **Add rule** again
-- **Type:** HTTP
-- **Protocol:** TCP (auto-filled)
-- **Port range:** 80 (auto-filled)
-- **Source:** Custom → enter your campus/student IP range in CIDR notation
-  (example: `203.0.113.0/24` covers addresses `.0` through `.255`)
-  If you are unsure of the range, ask your network administrator.
-  As a last resort you can use `0.0.0.0/0` (open to everyone) but be aware
-  DVWA is intentionally vulnerable and should not be public-facing long-term.
-- **Description:** Student HTTP access
+- **Source:** `0.0.0.0/0`
+  (Students connect from various locations; SSH with individual key pairs is the
+  security boundary — not IP restriction. Port 80 is never exposed publicly.)
+- **Description:** SSH for admin and student accounts
 
 **2.5** Leave **Outbound rules** at the default (allow all outbound).
 
 **2.6** Click **Create security group**.
+
+> **Why no port 80?** DVWA is intentionally vulnerable. Exposing it directly
+> to the internet — even to a campus range — creates unnecessary risk. Students
+> reach it via an SSH tunnel that forwards port 80 to their local machine.
+> The web traffic never leaves the encrypted SSH connection.
 
 ---
 
@@ -115,27 +113,24 @@ Security groups act as firewalls. You need one per server. **Do this before laun
 
 **2.8** Fill in the **Basic details** section:
 - **Security group name:** `scs275-exploit-sg`
-- **Description:** `Exploit lab server — port 4444 for students, SSH for admin`
+- **Description:** `Exploit lab server — SSH only, students connect to vuln_server via localhost`
 - **VPC:** Leave as default
 
-**2.9** Under **Inbound rules**, click **Add rule** and add these two rules:
+**2.9** Under **Inbound rules**, add **one rule only**:
 
-**Rule 1 — SSH for your admin access:**
+**Rule 1 — SSH (the only open port):**
 - **Type:** SSH
 - **Protocol:** TCP (auto-filled)
 - **Port range:** 22 (auto-filled)
-- **Source:** Custom → `<your-ip>/32`
-- **Description:** Admin SSH
-
-**Rule 2 — Exploit target port for students:**
-- Click **Add rule**
-- **Type:** Custom TCP
-- **Protocol:** TCP (auto-filled)
-- **Port range:** 4444
-- **Source:** Custom → student IP range (same CIDR as above)
-- **Description:** Student exploit lab access
+- **Source:** `0.0.0.0/0`
+- **Description:** SSH for admin and student accounts
 
 **2.10** Click **Create security group**.
+
+> **Why no port 4444?** Students SSH into the instance as their own account
+> and run their exploits from within that session (`nc localhost 4444`). The
+> vulnerable server is only reachable from inside the machine — an internet-
+> facing exploit target would be a serious liability.
 
 ---
 
@@ -254,21 +249,39 @@ If you see an error instead, scroll up to find the first line that says `Error:`
 
 ## PHASE 6 — Initialise the DVWA Database (Required — Do This Once)
 
-DVWA requires a one-time database setup step before it will work.
+DVWA requires a one-time database setup step. Because port 80 is not publicly
+exposed, you reach it through an **SSH tunnel** that forwards the port to your
+local machine. You will use this same tunnel method to verify it works; students
+use the same approach.
 
-**6.1** Open a web browser and go to: `http://<DVWA-IP>/`
+**6.1** Open a **new terminal window** on your local machine (keep it open — the tunnel runs in it).
 
-You should see the DVWA login page. If you see a blank page or connection error, wait 30 seconds and refresh — Docker containers can take a moment to fully start after the script completes.
+**6.2** Start the SSH tunnel. This forwards port 8080 on your local machine to port 80 on the DVWA instance:
+```bash
+ssh -i ~/.ssh/scs275-lab.pem \
+    -L 8080:localhost:80 \
+    -N \
+    ubuntu@<DVWA-IP>
+```
+- `-L 8080:localhost:80` — forward local port 8080 to the instance's port 80
+- `-N` — don't open a shell, just hold the tunnel open
+- The command will appear to hang with no output — that is correct. The tunnel is active.
 
-**6.2** Log in with:
+**6.3** In your web browser, go to: `http://localhost:8080/`
+
+You should see the DVWA login page. If you see "connection refused", wait 30 seconds and refresh — Docker may still be starting.
+
+**6.4** Log in with:
 - **Username:** `admin`
 - **Password:** `password`
 
-**6.3** After login you will be redirected to a setup page. Scroll to the bottom and click the **Create / Reset Database** button.
+**6.5** After login you will be redirected to a setup page. Scroll to the bottom and click the **Create / Reset Database** button.
 
-**6.4** The page will reload and show a success message. DVWA is now fully operational. Click **Login** and sign in again with the same credentials.
+**6.6** The page reloads with a success message. Click **Login** and sign in again with the same credentials.
 
-**6.5** Confirm the security level: In the left sidebar click **DVWA Security**. The level should already be set to **Low**. If it is not, change it to Low and click Submit.
+**6.7** Confirm the security level: In the left sidebar click **DVWA Security**. It should show **Low**. If not, set it to Low and click Submit.
+
+**6.8** Press `Ctrl+C` in the tunnel terminal to close it. The tunnel is only needed when you or a student want to browse DVWA.
 
 ---
 
@@ -301,120 +314,189 @@ When it finishes you will see a banner confirming the target is running on port 
 
 ### Verify DVWA
 
-**8.1** In your browser, navigate to `http://<DVWA-IP>/` and confirm you can log in.
-
-**8.2** In your terminal, run a quick HTTP check:
+**8.1** Open a terminal and start the admin SSH tunnel:
 ```bash
-curl -s -o /dev/null -w "HTTP status: %{http_code}\n" http://<DVWA-IP>/
+ssh -i ~/.ssh/scs275-lab.pem -L 8080:localhost:80 -N ubuntu@<DVWA-IP>
 ```
-You should see `HTTP status: 302` or `200`. Anything in the 200–302 range is good.
+
+**8.2** In your browser go to `http://localhost:8080/` and confirm you can log in with `admin` / `password`. Press `Ctrl+C` in the terminal when done.
 
 ### Verify Exploit Lab
 
-**8.3** Confirm the vulnerable server is listening and ASLR is disabled:
+**8.3** Confirm the vulnerable server is listening on port 4444 (localhost only) and ASLR is disabled:
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP> \
     "systemctl is-active vuln-server && \
-     echo 'ASLR value (0=disabled):' && cat /proc/sys/kernel/randomize_va_space && \
+     echo 'ASLR (0=disabled):' && cat /proc/sys/kernel/randomize_va_space && \
      echo 'Listening:' && ss -tlnp | grep 4444"
 ```
 
 Expected output:
 ```
 active
-ASLR value (0=disabled):
+ASLR (0=disabled):
 0
 Listening:
-LISTEN  0  5  0.0.0.0:4444  ...
+LISTEN  0  5  127.0.0.1:4444  ...
 ```
 
-**8.4** Connect to the exploit target to confirm it responds:
+Note: `127.0.0.1:4444` (loopback only) is correct — the server is intentionally not bound to `0.0.0.0` since students reach it from within their SSH session.
+
+**8.4** Connect to the exploit target from within an SSH session:
 ```bash
-nc <EXPLOIT-IP> 4444
+ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP>
+# Now you are inside the instance:
+nc localhost 4444
 ```
-You should immediately see `echo> `. Type anything and press Enter — it echoes it back. Press `Ctrl+C` to disconnect.
+You should immediately see `echo> `. Type anything and press Enter — it echoes back. Press `Ctrl+C`, then `exit`.
 
-**8.5** Confirm the binary's security profile from your local machine:
+**8.5** Confirm the binary's security profile:
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP> \
     "checksec --file=/home/student/vuln_server"
 ```
 
-Expected output shows:
-- `Stack: No canary found`
-- `NX: NX disabled` (executable stack)
-- `PIE: No PIE`
+Expected: `Stack: No canary found`, `NX: NX disabled`, `PIE: No PIE`.
 
 ---
 
-## PHASE 9 — Give Students Access
+## PHASE 9 — Create Individual Student Accounts
 
-### DVWA Students
+Each student gets their own named Linux account on **both** servers. The helper
+script `create_student_accounts.sh` automates this. You will run it twice —
+once on each instance.
 
-Share the following with your class — no SSH access is needed:
+### Step 9.1 — Prepare your student roster file
+
+On your local machine, create a plain-text file called `students.txt` with one
+username per line. Usernames must be lowercase letters and numbers only (no
+spaces). Good practice is to use `firstlast` or `first_last` format:
+
 ```
-URL:      http://<DVWA-IP>/
-Username: admin
-Password: password
+jsmith
+adoe
+mgarcia
+lwang
+pnguyen
 ```
 
-### Exploit Lab Students
+Save the file in the `scs275-lab-setup/` directory alongside the scripts.
 
-Students need SSH access as the `student` user. The two options below go from simplest to most secure.
+### Step 9.2 — Copy the roster and account script to both instances
 
----
+```bash
+# DVWA instance
+scp -i ~/.ssh/scs275-lab.pem \
+    students.txt \
+    create_student_accounts.sh \
+    ubuntu@<DVWA-IP>:~/
 
-**Option A — Shared password (simplest, fine for a single lab session)**
+# Exploit lab instance
+scp -i ~/.ssh/scs275-lab.pem \
+    students.txt \
+    create_student_accounts.sh \
+    ubuntu@<EXPLOIT-IP>:~/
+```
 
-SSH into the exploit lab as ubuntu/admin:
+### Step 9.3 — Run the account creation script on the DVWA instance
+
+```bash
+ssh -i ~/.ssh/scs275-lab.pem ubuntu@<DVWA-IP>
+sudo bash create_student_accounts.sh students.txt
+exit
+```
+
+The script will:
+- Create a Linux account for each username in `students.txt`
+- Generate a unique ed25519 SSH key pair for each student
+- Print a summary table of every username and their private key
+
+**Copy the entire output** before you close the terminal — it contains each
+student's private key, which you will distribute to them individually.
+The keys are also saved to `/root/student-keys/` on the instance for reference.
+
+### Step 9.4 — Run the account creation script on the Exploit Lab instance
+
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP>
+sudo bash create_student_accounts.sh students.txt
+exit
 ```
 
-Set a password for the student account:
+Same process — copy the output. Students need a key for each server.
+
+### Step 9.5 — Distribute keys to students
+
+For each student, send them (via your LMS, email, or lab handout):
+1. Their **DVWA private key** (the text block starting with `-----BEGIN OPENSSH PRIVATE KEY-----`)
+2. Their **Exploit Lab private key** (a separate key)
+3. The connection instructions below
+
+**What to tell students — save this as a handout:**
+
+---
+
+#### Student Connection Instructions
+
+**Setting up your SSH key**
+
+Save the private key file your instructor gave you. Then in your terminal:
+
 ```bash
-sudo passwd student
-# Enter a lab password twice when prompted
+# Mac / Linux
+mkdir -p ~/.ssh
+# Paste your key into a file — use the filename your instructor specified,
+# e.g. scs275-dvwa.pem or scs275-exploit.pem
+chmod 400 ~/.ssh/scs275-dvwa.pem
+chmod 400 ~/.ssh/scs275-exploit.pem
 ```
 
-Enable password authentication in SSH:
-```bash
-sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' \
-    /etc/ssh/sshd_config
-sudo systemctl restart ssh
-```
-
-Type `exit`. Students now connect with:
-```bash
-ssh student@<EXPLOIT-IP>
-# Enter the lab password you set
+On Windows (PowerShell):
+```powershell
+icacls "$env:USERPROFILE\.ssh\scs275-dvwa.pem" /inheritance:r /grant:r "$($env:USERNAME):(R)"
 ```
 
 ---
 
-**Option B — Individual SSH keys (more secure, better for multi-week courses)**
+**Connecting to DVWA (web application lab)**
 
-For each student, they generate a key pair on their own machine:
+DVWA is accessed through your browser, but you first need to open an SSH
+tunnel to reach it. Open a terminal and run:
+
 ```bash
-ssh-keygen -t ed25519 -C "student-name" -f ~/.ssh/scs275-student
-```
-They send you the contents of `~/.ssh/scs275-student.pub` (the public key — sharing this is safe).
-
-You add each key to the instance:
-```bash
-ssh -i ~/.ssh/scs275-lab.pem ubuntu@<EXPLOIT-IP>
-
-sudo -u student mkdir -p /home/student/.ssh
-sudo chmod 700 /home/student/.ssh
-sudo -u student bash -c 'echo "PASTE-STUDENT-PUBLIC-KEY-HERE" \
-    >> /home/student/.ssh/authorized_keys'
-sudo chmod 600 /home/student/.ssh/authorized_keys
+ssh -i ~/.ssh/scs275-dvwa.pem \
+    -L 8080:localhost:80 \
+    -N \
+    <YOUR-USERNAME>@<DVWA-IP>
 ```
 
-The student connects with:
+Leave this terminal open (it will appear to hang — that is normal).
+Open your browser and go to: **http://localhost:8080/**
+
+Log in with: **admin** / **password**
+
+To stop: press `Ctrl+C` in the terminal.
+
+---
+
+**Connecting to the Exploit Lab**
+
+SSH into the exploit server using your key:
+
 ```bash
-ssh -i ~/.ssh/scs275-student student@<EXPLOIT-IP>
+ssh -i ~/.ssh/scs275-exploit.pem <YOUR-USERNAME>@<EXPLOIT-IP>
 ```
+
+Once logged in, connect to the vulnerable target:
+```bash
+nc localhost 4444
+```
+
+You should see `echo> ` — this is the vulnerable server. Press `Ctrl+C` to
+disconnect from it. Your gdb, pwntools scripts, and exploit development all
+run from within this SSH session.
+
+---
 
 ---
 
@@ -476,24 +558,39 @@ Wait ~60 seconds after starting for the instances to pass health checks before d
 
 ## Troubleshooting
 
-### "Connection refused" when SSHing
+### "Connection refused" or "Permission denied" when SSHing
 
 - The instance may not have finished booting — wait 60 seconds and try again.
-- Check that your IP matches the one in the security group inbound rule. Your IP may have changed if you are on a dynamic connection. Update the rule if needed: EC2 → Security Groups → `scs275-dvwa-sg` → Inbound rules → Edit.
+- `Permission denied (publickey)` means the wrong key is being used, or the
+  key file permissions are too open. Confirm `chmod 400` on the `.pem` file.
+- If a student's key stops working, re-run `create_student_accounts.sh` with
+  just their username in a single-line `students.txt` — it will regenerate
+  their key without touching other accounts.
 
 ### DVWA page shows a database connection error
 
-The MariaDB container may still be starting. Wait 30 seconds and refresh. If it persists, SSH into the instance and check logs:
+The MariaDB container may still be starting. Wait 30 seconds and refresh.
+If it persists, check the logs from inside an SSH session:
 ```bash
 ssh -i ~/.ssh/scs275-lab.pem ubuntu@<DVWA-IP>
 docker-compose -f /opt/dvwa/docker-compose.yml logs --tail=50
 ```
 
-### Port 4444 times out from student machines
+### Student's SSH tunnel connects but browser shows "connection refused"
 
-- Confirm the security group inbound rule for port 4444 covers the student IP range.
+- The tunnel opened successfully but DVWA may still be starting — wait
+  30 seconds and refresh the browser.
+- Confirm the tunnel is forwarding the right port:
+  `ssh ... -L 8080:localhost:80 ...` (local 8080 → remote 80).
+- Confirm DVWA is running on the instance:
+  `ssh -i ~/.ssh/scs275-lab.pem ubuntu@<DVWA-IP> "docker ps"`
+
+### Student cannot reach port 4444
+
+- Port 4444 is only accessible from localhost (inside the SSH session).
+  The student must run `nc localhost 4444` from within their SSH session,
+  not from their local machine.
 - Confirm the service is running: `systemctl status vuln-server`
-- Confirm the firewall on the instance itself is not blocking it: `sudo ufw status` (should be inactive or show 4444 allowed).
 
 ### The setup script fails mid-way
 
@@ -520,25 +617,27 @@ EC2 → Elastic IPs → select both → Actions → Release Elastic IP addresses
 Use this to confirm everything is ready before each lab session.
 
 ### One-Time Setup
-- [ ] Key pair `scs275-lab.pem` created and saved with `chmod 400`
-- [ ] Security group `scs275-dvwa-sg` created (ports 22, 80)
-- [ ] Security group `scs275-exploit-sg` created (ports 22, 4444)
-- [ ] DVWA instance launched: Ubuntu 22.04, t3.small, 20 GB, correct security group
-- [ ] Exploit lab instance launched: Ubuntu 22.04, t3.micro, 15 GB, correct security group
-- [ ] `setup_dvwa.sh` ran successfully and showed success banner
-- [ ] DVWA database initialised (clicked "Create / Reset Database" in browser)
+- [ ] Key pair `scs275-lab.pem` created, moved to `~/.ssh/`, `chmod 400`'d
+- [ ] Security group `scs275-dvwa-sg` created — **port 22 only**, source `0.0.0.0/0`
+- [ ] Security group `scs275-exploit-sg` created — **port 22 only**, source `0.0.0.0/0`
+- [ ] DVWA instance launched: Ubuntu 22.04, t3.small, 20 GB, `scs275-dvwa-sg`
+- [ ] Exploit lab instance launched: Ubuntu 22.04, t3.micro, 15 GB, `scs275-exploit-sg`
+- [ ] `setup_dvwa.sh` ran to completion (success banner shown)
+- [ ] DVWA database initialised via SSH tunnel + browser ("Create / Reset Database" clicked)
 - [ ] DVWA security level confirmed as **Low**
-- [ ] `setup_exploit_lab.sh` ran successfully and showed success banner
+- [ ] `setup_exploit_lab.sh` ran to completion (success banner shown)
 - [ ] ASLR confirmed disabled: `cat /proc/sys/kernel/randomize_va_space` returns `0`
-- [ ] Port 4444 responds to `nc <EXPLOIT-IP> 4444` with `echo> ` prompt
+- [ ] Exploit server responds: SSH in → `nc localhost 4444` → `echo> ` prompt seen
+- [ ] `students.txt` roster file prepared
+- [ ] `create_student_accounts.sh` run on **both** instances
+- [ ] Individual private keys distributed to each student
 - [ ] Elastic IPs assigned (if multi-session course)
-- [ ] Student access configured (password or SSH keys)
 
 ### Before Each Lab Session
-- [ ] Both instances started and showing 2/2 health checks
-- [ ] DVWA loads in browser: `http://<DVWA-IP>/`
-- [ ] Port 4444 responds: `nc <EXPLOIT-IP> 4444`
-- [ ] Student connection details distributed
+- [ ] Both instances started and showing 2/2 health checks (wait ~60 seconds)
+- [ ] Admin SSH tunnel confirms DVWA loads: `ssh -L 8080:localhost:80 -N ubuntu@<DVWA-IP>` then `http://localhost:8080/`
+- [ ] Exploit server is active: `ssh ubuntu@<EXPLOIT-IP> "systemctl is-active vuln-server"`
+- [ ] Students have their key files and the connection instructions handout
 
 ### After Each Lab Session
 - [ ] Both instances stopped to avoid charges
