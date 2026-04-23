@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dissertation Tracker: Prototype Reflection – Sam Seim</title>
+    <link rel="icon" href="/MyCoolS.png" type="image/png">
+    <style>
+        /* ── Google Fonts ── */
+        @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* ── Reset ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ── Design tokens (mirrors sam-servellon-styles.css) ── */
+        :root {
+            --primary:        #7c4dbd;
+            --primary-light:  #9b6ed4;
+            --primary-dark:   #6a3fa8;
+            --secondary:      #e6e6e6;
+            --accent:         #10b981;
+            --accent-dark:    #059669;
+            --text:           #333333;
+            --text-light:     #666666;
+            --light:          #ffffff;
+            --light-gray:     #f5f5f5;
+            --dark:           #222222;
+            --shadow:         rgba(0, 0, 0, 0.1);
+            --shadow-dark:    rgba(0, 0, 0, 0.2);
+            --container-width: 1200px;
+            --spacing-xs:     0.25rem;
+            --spacing-sm:     0.5rem;
+            --spacing-md:     1rem;
+            --spacing-lg:     2rem;
+            --spacing-xl:     3rem;
+            --border-radius:  8px;
+            --border-radius-lg: 12px;
+            --transition:     all 0.3s ease;
+            --font-main:      "Jost", sans-serif;
+        }
+
+        /* ── Base ── */
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        p { margin-bottom: var(--spacing-md); line-height: 1.7; }
+
+        a { color: var(--primary); text-decoration: none; transition: var(--transition); }
+        a:hover { color: var(--accent); }
+
+        /* ── Container ── */
+        .container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        main { flex: 1; padding: 4rem 0; min-height: 60vh; }
+
+        /* ── Site header (gradient banner) ── */
+        .site-header {
+            background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+            color: var(--light);
+            padding: var(--spacing-lg) 0;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .profile-container-small {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .profile-image-small {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--light);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .profile-info-small h1 {
+            font-size: 2rem;
+            color: var(--light);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-info-small p {
+            font-size: 1.1rem;
+            color: var(--light);
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+
+        .pronouns { font-size: 1rem; font-weight: normal; opacity: 0.9; }
+
+        /* ── Site nav ── */
+        .main-nav {
+            background: var(--light);
+            box-shadow: 0 2px 4px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md) 0;
+            margin: 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links li { margin: 0; }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: var(--spacing-sm) 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        /* ── Breadcrumb back links ── */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-lg);
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .breadcrumb a { color: var(--primary); }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-sep { color: var(--secondary); user-select: none; }
+
+        /* ── Page header ── */
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .page-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(124, 77, 189, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            color: var(--primary);
+            border: 1px solid rgba(124, 77, 189, 0.25);
+            border-radius: 20px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+            border-radius: 2px;
+        }
+
+        /* ── Content section cards ── */
+        .content-section {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 2px 8px var(--shadow);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .content-section h2 {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .content-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+            color: var(--light);
+            padding: var(--spacing-xl) 0;
+            margin-top: 4rem;
+            box-shadow: 0 -5px 30px var(--shadow);
+        }
+
+        .footer-inner {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ── Animation ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .profile-container-small { flex-direction: column; text-align: center; }
+            .nav-links { flex-direction: column; gap: var(--spacing-sm); align-items: center; }
+            .page-title { font-size: 2rem; }
+            .content-section { padding: var(--spacing-lg); }
+        }
+
+        @media (max-width: 480px) {
+            :root { --spacing-lg: 1.5rem; --spacing-xl: 2rem; }
+            .page-title { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Site header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="profile-container-small">
+                <img src="../sam-servellon.jpeg" alt="Sam Seim" class="profile-image-small">
+                <div class="profile-info-small">
+                    <h1>Sam Seim <span class="pronouns">they/them</span></h1>
+                    <p>PhD Student in Educational Studies</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Site nav -->
+    <nav class="main-nav" aria-label="Site navigation">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/pedagogy.html">Pedagogy &amp; Praxis</a></li>
+                <li><a href="/experience.html">Experience &amp; Education</a></li>
+                <li><a href="/publications.html">Publications</a></li>
+                <li><a href="/activities.html">Activities</a></li>
+                <li><a href="/classes.html">Classes</a></li>
+                <li><a href="mailto:sam@servellon.net">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Back navigation -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/dissertation-tracker/">&larr; Dissertation Tracker</a>
+            <span class="breadcrumb-sep" aria-hidden="true">&middot;</span>
+            <a href="/edps936/index.html">&larr; EDPS 936 Portfolio</a>
+        </nav>
+
+        <!-- Page header -->
+        <div class="page-header">
+            <div class="page-badge">TEAC 882B &middot; Spring 2026</div>
+            <h1 class="page-title">Dissertation Tracker: Prototype Reflection</h1>
+        </div>
+
+        <!-- ══ Section placeholders ══ -->
+
+        <section class="content-section" id="prototype" aria-labelledby="prototype-heading">
+            <h2 id="prototype-heading">The Prototype</h2>
+        </section>
+
+        <section class="content-section" id="opportunity" aria-labelledby="opportunity-heading">
+            <h2 id="opportunity-heading">The Opportunity</h2>
+        </section>
+
+        <section class="content-section" id="architecture" aria-labelledby="architecture-heading">
+            <h2 id="architecture-heading">Architecture</h2>
+        </section>
+
+        <section class="content-section" id="schema" aria-labelledby="schema-heading">
+            <h2 id="schema-heading">Schema</h2>
+        </section>
+
+        <section class="content-section" id="experience" aria-labelledby="experience-heading">
+            <h2 id="experience-heading">The Experience</h2>
+        </section>
+
+        <section class="content-section" id="learned" aria-labelledby="learned-heading">
+            <h2 id="learned-heading">What I Learned</h2>
+        </section>
+
+        <section class="content-section" id="next-steps" aria-labelledby="next-steps-heading">
+            <h2 id="next-steps-heading">Next Steps</h2>
+        </section>
+
+        <section class="content-section" id="also-see" aria-labelledby="also-see-heading">
+            <h2 id="also-see-heading">Also See</h2>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-inner">
+                TEAC 882B &middot; Web Design &amp; Databases &middot; Spring 2026 &middot; Sam Seim &middot; University of Nebraska&ndash;Lincoln
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
