@@ -254,6 +254,203 @@
             :root { --spacing-lg: 1.5rem; --spacing-xl: 2rem; }
             .page-title { font-size: 1.8rem; }
         }
+
+        /* ── Section subheading ── */
+        .section-subheading {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-top: -0.5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* ── Link card grid (§1 prototype) ── */
+        .link-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: var(--spacing-md);
+        }
+
+        .link-card {
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .link-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--shadow-dark);
+            color: var(--text);
+        }
+
+        .link-card--primary {
+            border-left-color: var(--primary);
+            background: linear-gradient(135deg, rgba(124, 77, 189, 0.05) 0%, #ffffff 100%);
+        }
+
+        .link-card--secondary {
+            border-left-color: var(--accent);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, #ffffff 100%);
+        }
+
+        .link-card__label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 0.45rem;
+        }
+
+        .link-card--secondary .link-card__label { color: var(--accent); }
+
+        .link-card__title {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .link-card__desc {
+            flex: 1;
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.65;
+            margin-bottom: 1rem;
+        }
+
+        .link-card__cta {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+        }
+
+        .link-card--secondary .link-card__cta { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .link-card-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Architecture diagram (§3) ── */
+        .arch-diagram-wrap {
+            margin-top: var(--spacing-md);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .arch-diagram {
+            display: block;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ── Schema table (§4) ── */
+        .schema-table-wrap {
+            margin: var(--spacing-md) 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .schema-table thead tr {
+            background: linear-gradient(135deg, rgba(124, 77, 189, 0.1) 0%, rgba(16, 185, 129, 0.06) 100%);
+        }
+
+        .schema-table th {
+            text-align: left;
+            padding: 0.6rem 1rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            white-space: nowrap;
+        }
+
+        .schema-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--secondary);
+            vertical-align: top;
+            line-height: 1.55;
+            color: var(--text);
+        }
+
+        .schema-table tbody tr:last-child td { border-bottom: none; }
+
+        .schema-table tbody tr:hover td {
+            background: rgba(124, 77, 189, 0.03);
+        }
+
+        .node-name {
+            font-family: "Courier New", monospace;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        .node-props {
+            font-family: "Courier New", monospace;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .node-purpose {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.86rem;
+        }
+
+        /* ── Relationship code block ── */
+        .rel-block {
+            background: var(--light-gray);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 1.1rem 1.5rem;
+            margin: var(--spacing-md) 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.88rem;
+            line-height: 2.1;
+            overflow-x: auto;
+        }
+
+        .rel-line { display: block; white-space: nowrap; }
+        .rel-node { color: var(--primary); font-weight: 700; }
+        .rel-type { color: var(--accent-dark); font-weight: 700; }
+
+        /* ── Schema note ── */
+        .schema-note {
+            margin-top: var(--spacing-md);
+            padding: 0.9rem 1.25rem;
+            border-left: 3px solid var(--accent);
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.75;
+        }
     </style>
 </head>
 <body>
@@ -305,18 +502,185 @@
 
         <section class="content-section" id="prototype" aria-labelledby="prototype-heading">
             <h2 id="prototype-heading">The Prototype</h2>
+
+            <div class="link-card-grid">
+
+                <a class="link-card link-card--primary"
+                   href="https://www.servellon.net/dissertation-tracker"
+                   target="_blank" rel="noopener">
+                    <span class="link-card__label">Live Prototype</span>
+                    <span class="link-card__title">Dissertation Autoethnography Tracker</span>
+                    <span class="link-card__desc">The working Dissertation Autoethnography Tracker &mdash; conversation-first entry capture, Neo4j graph backend, and Claude API integration.</span>
+                    <span class="link-card__cta">Open tracker &rarr;</span>
+                </a>
+
+                <a class="link-card link-card--secondary"
+                   href="https://github.com/confusedbysmiles/confusedbysmiles.github.io/tree/main/dissertation-tracker"
+                   target="_blank" rel="noopener">
+                    <span class="link-card__label">GitHub Repository</span>
+                    <span class="link-card__title">Source Code</span>
+                    <span class="link-card__desc">Full source code for the tracker, Cloudflare Worker, and Neo4j integration.</span>
+                    <span class="link-card__cta">View on GitHub &rarr;</span>
+                </a>
+
+            </div>
         </section>
 
         <section class="content-section" id="opportunity" aria-labelledby="opportunity-heading">
-            <h2 id="opportunity-heading">The Opportunity</h2>
+            <h2 id="opportunity-heading">The Issue &amp; Opportunity</h2>
+
+            <p>The Dissertation Tracker has been an on-and-off idea for several semesters, with quite a few iterations over the last three months. The core problem it addresses has always been the same: autoethnographic research requires systematic self-documentation, but the act of documentation can feel artificial &mdash; a bureaucratic interruption to the thinking it&rsquo;s supposed to capture.</p>
+
+            <p>The opportunity this class created was to take that nagging idea seriously. Not just as a journal or a form, but as real infrastructure &mdash; a web application backed by a graph database, with an AI research partner built in, that could generate dissertation data as a byproduct of authentic reflection rather than in spite of it. The tracker became the method, not just a method tool.</p>
         </section>
 
         <section class="content-section" id="architecture" aria-labelledby="architecture-heading">
-            <h2 id="architecture-heading">Architecture</h2>
+            <h2 id="architecture-heading">System Architecture</h2>
+            <p class="section-subheading">How the pieces connect</p>
+
+            <div class="arch-diagram-wrap">
+                <svg class="arch-diagram" viewBox="0 0 800 475" xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="System architecture diagram showing Browser UI, localStorage, Cloudflare Worker, Neo4j Aura, and Anthropic Claude API">
+
+                    <defs>
+                        <marker id="arr" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 9 3, 0 6" fill="#888"/>
+                        </marker>
+                        <marker id="arr-teal" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 9 3, 0 6" fill="#10b981"/>
+                        </marker>
+                        <marker id="arr-dark" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 9 3, 0 6" fill="#374151"/>
+                        </marker>
+                    </defs>
+
+                    <!-- ── Browser / UI ── -->
+                    <rect x="250" y="12" width="300" height="68" rx="8"
+                          fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+                    <text x="400" y="37" text-anchor="middle"
+                          font-size="14" font-weight="700" fill="#333333" font-family="Jost, sans-serif">Browser / UI</text>
+                    <text x="400" y="57" text-anchor="middle"
+                          font-size="11" fill="#6b7280" font-family="Jost, sans-serif">Converse &nbsp;·&nbsp; Timeline &nbsp;·&nbsp; Review &nbsp;·&nbsp; Graph View</text>
+
+                    <!-- Arrow: Browser → localStorage -->
+                    <line x1="400" y1="80" x2="400" y2="113"
+                          stroke="#aaaaaa" stroke-width="2" marker-end="url(#arr)"/>
+
+                    <!-- ── localStorage ── -->
+                    <rect x="292" y="116" width="216" height="48" rx="6"
+                          fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6 3"/>
+                    <text x="400" y="137" text-anchor="middle"
+                          font-size="13" font-weight="600" fill="#555555" font-family="Jost, sans-serif">localStorage</text>
+                    <text x="400" y="155" text-anchor="middle"
+                          font-size="10" fill="#9ca3af" font-family="Jost, sans-serif">UI source of truth</text>
+
+                    <!-- Arrow: localStorage → Worker -->
+                    <line x1="400" y1="164" x2="400" y2="196"
+                          stroke="#aaaaaa" stroke-width="2" marker-end="url(#arr)"/>
+
+                    <!-- ── Cloudflare Worker ── -->
+                    <rect x="68" y="198" width="664" height="132" rx="8"
+                          fill="#7c4dbd" stroke="#6a3fa8" stroke-width="1.5"/>
+                    <text x="400" y="222" text-anchor="middle"
+                          font-size="14" font-weight="700" fill="#ffffff" font-family="Jost, sans-serif">Cloudflare Worker</text>
+                    <text x="400" y="239" text-anchor="middle"
+                          font-size="10" fill="rgba(255,255,255,0.7)" font-family="Jost, sans-serif">dissertation-neo4j.math-generator.workers.dev</text>
+
+                    <!-- Routes — column 1 -->
+                    <text x="110" y="262" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">POST /entry</text>
+                    <text x="110" y="280" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">GET  /entries</text>
+                    <text x="110" y="298" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">POST /chat</text>
+                    <text x="110" y="316" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">POST /chat/extract</text>
+
+                    <!-- Routes — column 2 -->
+                    <text x="390" y="262" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">GET  /entries/unapproved</text>
+                    <text x="390" y="280" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">POST /entry/:id/approve</text>
+                    <text x="390" y="298" font-size="10.5" fill="rgba(255,255,255,0.92)"
+                          font-family="Courier New, monospace">GET  /health</text>
+
+                    <!-- Arrow: Worker → Neo4j (left) -->
+                    <line x1="158" y1="330" x2="118" y2="378"
+                          stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-teal)"/>
+
+                    <!-- Arrow: Worker → Claude (right) -->
+                    <line x1="642" y1="330" x2="682" y2="378"
+                          stroke="#374151" stroke-width="2.5" marker-end="url(#arr-dark)"/>
+
+                    <!-- ── Neo4j Aura ── -->
+                    <rect x="14" y="380" width="216" height="78" rx="7"
+                          fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+                    <text x="122" y="406" text-anchor="middle"
+                          font-size="13" font-weight="700" fill="#ffffff" font-family="Jost, sans-serif">Neo4j Aura</text>
+                    <text x="122" y="423" text-anchor="middle"
+                          font-size="10" fill="rgba(255,255,255,0.88)" font-family="Jost, sans-serif">TrackerEntry &nbsp;·&nbsp; Era</text>
+                    <text x="122" y="440" text-anchor="middle"
+                          font-size="10" fill="rgba(255,255,255,0.88)" font-family="Jost, sans-serif">Theme &nbsp;·&nbsp; Conversation</text>
+
+                    <!-- ── Anthropic Claude API ── -->
+                    <rect x="570" y="380" width="216" height="78" rx="7"
+                          fill="#374151" stroke="#1f2937" stroke-width="1.5"/>
+                    <text x="678" y="406" text-anchor="middle"
+                          font-size="13" font-weight="700" fill="#ffffff" font-family="Jost, sans-serif">Anthropic Claude API</text>
+                    <text x="678" y="423" text-anchor="middle"
+                          font-size="10" fill="rgba(255,255,255,0.88)" font-family="Jost, sans-serif">conversation</text>
+                    <text x="678" y="440" text-anchor="middle"
+                          font-size="10" fill="rgba(255,255,255,0.88)" font-family="Jost, sans-serif">+ extraction</text>
+
+                </svg>
+            </div>
         </section>
 
         <section class="content-section" id="schema" aria-labelledby="schema-heading">
-            <h2 id="schema-heading">Schema</h2>
+            <h2 id="schema-heading">Database Schema</h2>
+            <p class="section-subheading">Neo4j graph model &mdash; nodes and relationships</p>
+
+            <div class="schema-table-wrap">
+                <table class="schema-table">
+                    <thead>
+                        <tr>
+                            <th>Node</th>
+                            <th>Properties</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="node-name">TrackerEntry</span></td>
+                            <td><span class="node-props">id<br>type<br>title<br>content<br>context<br>tags[]<br>emotionalResponse<br>date<br>createdAt<br>approved</span></td>
+                            <td><span class="node-purpose">Core research artifact</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="node-name">Era</span></td>
+                            <td><span class="node-props">name</span></td>
+                            <td><span class="node-purpose">As a Student / Teacher / Researcher / Personal</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="node-name">Theme</span></td>
+                            <td><span class="node-props">name</span></td>
+                            <td><span class="node-purpose">Auto-created from entry tags</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="node-name">Conversation</span></td>
+                            <td><span class="node-props">id<br>entryId<br>messages (JSON)<br>summary<br>turnCount<br>createdAt</span></td>
+                            <td><span class="node-purpose">Claude API conversation transcript</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="rel-block" aria-label="Graph relationships">
+                <span class="rel-line"><span class="rel-node">(TrackerEntry)</span>-[<span class="rel-type">:SITUATED_IN</span>]-&gt;<span class="rel-node">(Era)</span></span>
+                <span class="rel-line"><span class="rel-node">(TrackerEntry)</span>-[<span class="rel-type">:SURFACES</span>]-&gt;<span class="rel-node">(Theme)</span></span>
+                <span class="rel-line"><span class="rel-node">(Conversation)</span>-[<span class="rel-type">:REFLECTS_ON</span>]-&gt;<span class="rel-node">(TrackerEntry)</span></span>
+            </div>
+
+            <p class="schema-note">The graph structure is not incidental &mdash; it mirrors the dissertation&rsquo;s theoretical framework. Entries are not rows in a table; they are nodes in a network of lived experience.</p>
         </section>
 
         <section class="content-section" id="experience" aria-labelledby="experience-heading">
