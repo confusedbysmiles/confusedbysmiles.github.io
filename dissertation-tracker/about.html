@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dissertation Tracker: Prototype Reflection – Sam Seim</title>
+    <meta name="description" content="TEAC 882B prototype reflection for the Dissertation Autoethnography Tracker — Through the Rearview Mirror">
     <link rel="icon" href="/MyCoolS.png" type="image/png">
     <style>
         /* ── Google Fonts ── */
@@ -574,6 +575,23 @@
         @media (max-width: 640px) {
             .next-steps-grid { grid-template-columns: 1fr; }
         }
+
+        /* ── Muted / coming-soon card variant (§8) ── */
+        .link-card--muted {
+            border-left-color: #d1d5db;
+            background: #f9fafb;
+            cursor: default;
+        }
+
+        .link-card--muted:hover {
+            transform: none;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .link-card--muted .link-card__label { color: #9ca3af; }
+        .link-card--muted .link-card__title { color: var(--text-light); }
+        .link-card--muted .link-card__desc  { color: #9ca3af; }
+        .link-card--muted .link-card__cta   { color: #9ca3af; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -868,7 +886,27 @@
         </section>
 
         <section class="content-section" id="also-see" aria-labelledby="also-see-heading">
-            <h2 id="also-see-heading">Also See</h2>
+            <h2 id="also-see-heading">Also Worth Seeing</h2>
+
+            <div class="link-card-grid">
+
+                <a class="link-card link-card--primary"
+                   href="https://confusedbysmiles.github.io/dissertation-tracker/graph-viewer.html"
+                   target="_blank" rel="noopener">
+                    <span class="link-card__label">Live Graph Viewer</span>
+                    <span class="link-card__title">Interactive Neo4j Graph</span>
+                    <span class="link-card__desc">An interactive D3 force-directed graph of the live Neo4j database. Every node is real dissertation data pulled fresh on load.</span>
+                    <span class="link-card__cta">Open graph viewer &rarr;</span>
+                </a>
+
+                <div class="link-card link-card--muted" aria-disabled="true">
+                    <span class="link-card__label">EDPS 936 Final Presentation</span>
+                    <span class="link-card__title">Through the Rearview Mirror</span>
+                    <span class="link-card__desc">The full mixed methods research proposal for Through the Rearview Mirror, presented to EDPS 936.</span>
+                    <span class="link-card__cta">Coming soon</span>
+                </div>
+
+            </div>
         </section>
 
     </main>
