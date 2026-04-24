@@ -10,6 +10,10 @@
  *   POST /chat                      → Claude API conversation turn
  *   POST /chat/extract              → Extract structured entry from conversation
  *   POST /conversation              → Save completed conversation to Neo4j
+ *   POST /conversation/:id/pin      → Pin a conversation for later resumption
+ *   GET  /conversations/pinned      → Fetch all pinned conversations
+ *   POST /entry/:id/flag-unresolved → Flag an entry as needing more examination
+ *   GET  /entries/unresolved        → Fetch entries flagged as unresolved
  *   POST /auth/login                → Validate credentials, return session token
  *   POST /auth/register-request     → Submit an account request for admin review
  *   POST /auth/admin/requests       → Admin: list pending requests
@@ -101,11 +105,21 @@ Your job is to have a natural research conversation. You might:
 
 Keep responses concise (2-4 sentences). Be a thought partner, not a therapist.
 When the conversation feels complete, say something like:
-'This feels like a complete thought — want me to draft this as an entry for your review?'`;
+'This feels like a complete thought — want me to draft this as an entry for your review?'
+
+MISSING CONNECTIONS:
+You have access to all entries in the database. As you converse, actively look for
+entries that share themes, tags, timeframes, or emotional resonance but are NOT
+already linked in the graph. When you notice one, say something like:
+'Something you just said reminds me of [entry title] — I don't think those two
+are connected yet in your graph. Is there a relationship worth naming there?'
+Do this at most once per conversation — don't turn every exchange into a pattern-matching exercise.`;
 }
 
 // System prompt for reflection on a specific saved entry
-function buildSystemPrompt(entry, recentEntries = []) {
+function buildSystemPrompt(entry, recentEntries = [], sessionContext = {}) {
+  const { pinnedConversation = null, unresolvedEntries = [] } = sessionContext;
+
   const entryDesc = entry.type === "memory"
     ? `A memory titled "${entry.title}" from ${entry.timeframe || "an unspecified time"}, context: ${entry.context || "unspecified"}.\n"${entry.content || entry.description || ""}"\nEmotional response: ${entry.emotion || entry.emotionalResponse || "not noted"}`
     : `A build log: "${entry.title || entry.what}"\nWhy: "${entry.why || ""}"\nChallenges: "${entry.challenges || "none noted"}"\nQuestions: "${entry.questions || "none noted"}"`;
@@ -118,7 +132,24 @@ function buildSystemPrompt(entry, recentEntries = []) {
     });
   }
 
-  return `You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher.
+  let pinnedSection = "";
+  if (pinnedConversation) {
+    pinnedSection = `RESUMING A PINNED CONVERSATION:
+The last conversation was paused with this note: '${pinnedConversation.pinContext}'
+Previous messages are included in the conversation history below.
+Pick up naturally from where things left off.\n\n`;
+  }
+
+  let unresolvedSection = "";
+  if (unresolvedEntries.length > 0) {
+    unresolvedSection = `\nUNRESOLVED THREADS TO SURFACE WHEN RELEVANT:
+The following entries were flagged as needing more examination:
+${unresolvedEntries.map(e => `- ${e.title}: ${e.unresolvedNote}`).join("\n")}
+When the conversation naturally touches on these themes, gently surface them.
+Don't force it — wait for an opening.`;
+  }
+
+  return `${pinnedSection}You are a thoughtful dissertation research partner for Sam Servellon, a doctoral student at the University of Nebraska-Lincoln. Their dissertation is titled "Through the Rearview Mirror: Excavating the Biographical Roots of Equity-Focused Mathematics Teaching." It is an autoethnographic concurrent convergent mixed methods study focused on their life experiences from childhood to now as student, teacher, learner, and researcher.
 
 The entry Sam just saved:
 ${entryDesc}
@@ -135,7 +166,15 @@ Your role in this conversation:
 - Reference specific details from their entry, don't be generic
 - When they seem done, suggest saving the conversation as dissertation data
 
-Start by asking ONE specific, probing question about this entry.`;
+Start by asking ONE specific, probing question about this entry.${unresolvedSection}
+
+MISSING CONNECTIONS:
+You have access to all entries in the database. As you converse, actively look for
+entries that share themes, tags, timeframes, or emotional resonance but are NOT
+already linked in the graph. When you notice one, say something like:
+'Something you just said reminds me of [entry title] — I don't think those two
+are connected yet in your graph. Is there a relationship worth naming there?'
+Do this at most once per conversation — don't turn every exchange into a pattern-matching exercise.`;
 }
 
 // ── Auth helpers ──────────────────────────────────────────────────────────────
@@ -276,6 +315,28 @@ export default {
       }
     }
 
+    // ── POST /entry/:id/flag-unresolved ───────────────────────────────────────
+    const flagUnresolvedMatch = url.pathname.match(/^\/entry\/([^/]+)\/flag-unresolved$/);
+    if (request.method === "POST" && flagUnresolvedMatch) {
+      const entryId = flagUnresolvedMatch[1];
+
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const note = body.note || "";
+
+      try {
+        await runCypher(env, `
+          MATCH (e:TrackerEntry {id: $id})
+          SET e.unresolved = true, e.unresolvedNote = $note
+        `, { id: entryId, note });
+        return json({ flagged: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
     // ── POST /entry ────────────────────────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/entry") {
       const authHeader = request.headers.get("Authorization") || "";
@@ -348,6 +409,33 @@ export default {
       }
     }
 
+    // ── GET /entries/unresolved ────────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/entries/unresolved") {
+      try {
+        const result = await runCypher(env, `
+          MATCH (e:TrackerEntry)
+          WHERE e.unresolved = true
+          RETURN e
+          ORDER BY e.createdAt DESC
+        `);
+        const fields = result.fields;
+        const entries = result.values.map(row => {
+          const node  = row[fields.indexOf("e")];
+          const props = node._properties || node.properties || node;
+          return {
+            id:             props.id,
+            title:          props.title,
+            type:           props.type,
+            unresolvedNote: props.unresolvedNote || "",
+            createdAt:      props.createdAt,
+          };
+        });
+        return json({ entries });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
     // ── GET /entries/unapproved ────────────────────────────────────────────────
     if (request.method === "GET" && url.pathname === "/entries/unapproved") {
       try {
@@ -403,11 +491,11 @@ export default {
       try { body = await request.json(); }
       catch { return json({ error: "Invalid JSON" }, 400); }
 
-      const { entry, messages = [], allEntries = [] } = body;
+      const { entry, messages = [], allEntries = [], sessionContext = {} } = body;
 
       // Fresh conversation (no entry context) uses the full dissertation prompt
       const systemPrompt = entry
-        ? buildSystemPrompt(entry, allEntries)
+        ? buildSystemPrompt(entry, allEntries, sessionContext)
         : buildFreshSystemPrompt(allEntries);
 
       try {
@@ -531,12 +619,14 @@ Approved tags: equity, access, technology, math, agency, curriculum, identity, f
       try {
         await runCypher(env, `
           CREATE (c:Conversation {
-            id:        $id,
-            entryId:   $entryId,
-            messages:  $messages,
-            summary:   $summary,
-            turnCount: $turnCount,
-            createdAt: $createdAt
+            id:         $id,
+            entryId:    $entryId,
+            messages:   $messages,
+            summary:    $summary,
+            turnCount:  $turnCount,
+            createdAt:  $createdAt,
+            pinned:     false,
+            pinContext: ""
           })
         `, {
           id,
@@ -554,6 +644,58 @@ Approved tags: equity, access, technology, math, agency, curriculum, identity, f
         `, { id, entryId });
 
         return json({ id, saved: true }, 201);
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── POST /conversation/:id/pin ─────────────────────────────────────────────
+    const pinConvMatch = url.pathname.match(/^\/conversation\/([^/]+)\/pin$/);
+    if (request.method === "POST" && pinConvMatch) {
+      const convId = pinConvMatch[1];
+
+      let body;
+      try { body = await request.json(); }
+      catch { return json({ error: "Invalid JSON" }, 400); }
+
+      const pinContext = body.pinContext || "";
+
+      try {
+        await runCypher(env, `
+          MATCH (c:Conversation {id: $id})
+          SET c.pinned = true, c.pinContext = $pinContext
+        `, { id: convId, pinContext });
+        return json({ pinned: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── GET /conversations/pinned ──────────────────────────────────────────────
+    if (request.method === "GET" && url.pathname === "/conversations/pinned") {
+      try {
+        const result = await runCypher(env, `
+          MATCH (c:Conversation)
+          WHERE c.pinned = true
+          OPTIONAL MATCH (c)-[:REFLECTS_ON]->(e:TrackerEntry)
+          RETURN c, e.title AS entryTitle
+          ORDER BY c.createdAt DESC
+        `);
+        const fields = result.fields;
+        const conversations = result.values.map(row => {
+          const node  = row[fields.indexOf("c")];
+          const props = node._properties || node.properties || node;
+          let messages = [];
+          try { messages = JSON.parse(props.messages || "[]"); } catch { /* leave empty */ }
+          return {
+            id:           props.id,
+            pinContext:   props.pinContext || "",
+            createdAt:    props.createdAt,
+            entryTitle:   row[fields.indexOf("entryTitle")] || null,
+            messages,
+          };
+        });
+        return json({ conversations });
       } catch (err) {
         return json({ error: err.message }, 500);
       }
