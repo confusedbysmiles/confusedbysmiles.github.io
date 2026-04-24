@@ -51,8 +51,8 @@ function setActiveNavLink() {
 
 // Load components when DOM is ready
 document.addEventListener('DOMContentLoaded', async function() {
-    await loadComponent('header-placeholder', 'header.html');
-    await loadComponent('footer-placeholder', 'footer.html');
+    await loadComponent('header-placeholder', 'shared/header.html');
+    await loadComponent('footer-placeholder', 'shared/footer.html');
     setActiveNavLink();
 });
 
