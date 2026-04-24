@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sam Seim - PhD Student in Educational Studies</title>
     
-    <link rel="stylesheet" href="sam-servellon-styles.css">
+    <link rel="stylesheet" href="shared/sam-servellon-styles.css">
     
     <!-- Inline fix for CTA cards - DELETE THIS once CSS is updated -->
     <style>
@@ -23,14 +23,14 @@
             }
         }
     </style>
-    <link rel="icon" href="/MyCoolS.png" type="image/png">
+    <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
 </head>
 <body>
     <!-- Header with larger profile image for homepage -->
     <header class="header">
         <div class="container">
             <div class="profile-container">
-                <img src="sam-servellon.jpeg" alt="Sam Seim" class="profile-image">
+                <img src="shared/sam-servellon.jpeg" alt="Sam Seim" class="profile-image">
                 <div class="profile-info">
                     <h1>Sam Seim <span class="pronouns">they/them</span></h1>
                     <p>PhD Student in Educational Studies</p>
@@ -168,7 +168,7 @@
         // Custom loader for homepage - only load footer
         async function loadFooter() {
             try {
-                const response = await fetch('footer.html');
+                const response = await fetch('shared/footer.html');
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const html = await response.text();
                 const element = document.getElementById('footer-placeholder');

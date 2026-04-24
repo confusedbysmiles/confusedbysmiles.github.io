@@ -1,17 +1,13 @@
-// edps936/component-loader.js
+// teac259a/component-loader.js
 // Loads shared header/footer from the shared/ directory at the repo root.
 
 async function loadComponent(elementId, filePath) {
     try {
         const response = await fetch(filePath);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
         const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = html;
-        }
+        if (element) element.innerHTML = html;
     } catch (error) {
         console.error(`Error loading ${filePath}:`, error);
     }
@@ -34,9 +30,7 @@ function setActiveNavLink() {
     if (navId) {
         setTimeout(() => {
             const navLink = document.getElementById(navId);
-            if (navLink) {
-                navLink.classList.add('active');
-            }
+            if (navLink) navLink.classList.add('active');
         }, 100);
     }
 }
