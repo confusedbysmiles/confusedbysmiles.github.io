@@ -33,6 +33,7 @@
                 <button class="tab-btn" data-tab="timeline">Timeline</button>
                 <button class="tab-btn" data-tab="review">Review <span id="review-dot" class="review-count-dot" style="display:none;"></span></button>
                 <button class="tab-btn" data-tab="entries">Graph</button>
+                <button class="tab-btn" data-tab="commits">Commits</button>
             </div>
         </div>
     </nav>
@@ -111,6 +112,17 @@
                 title="Dissertation Graph Viewer"
                 loading="lazy"
             ></iframe>
+        </section>
+
+        <!-- ==================== COMMITS TAB ==================== -->
+        <section id="tab-commits" class="tab-panel">
+            <div class="commits-header">
+                <h2>Build History</h2>
+                <p class="commits-sub">Git commit history for the dissertation tracker.
+                   Hit Reflect to open a conversation about any commit.</p>
+            </div>
+            <div id="commits-loading" class="timeline-empty">Loading commit history…</div>
+            <div id="commits-list"></div>
         </section>
 
     </main>

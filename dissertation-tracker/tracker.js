@@ -74,7 +74,8 @@ function initTabs() {
             document.getElementById('tab-' + tabName).classList.add('active');
 
             if (tabName === 'timeline') renderTimeline();
-            if (tabName === 'review') initReviewTab();
+            if (tabName === 'review')   initReviewTab();
+            if (tabName === 'commits')  renderCommits();
             if (tabName === 'converse' && !converseInitialized) {
                 converseInitialized = true;
                 initConverseTab();
@@ -146,6 +147,7 @@ const converseState = {
     pinnedConversationId:  null,
     sessionContext:        {},
     currentEntryId:        null,
+    entry:                 null,   // set when reflecting on a specific entry or commit
 };
 
 async function initConverseTab() {
@@ -388,7 +390,8 @@ async function fetchConverseReply() {
                 messages:       converseState.messages,
                 allEntries:     converseState.allEntries,
                 sessionContext: converseState.sessionContext,
-                // entry is intentionally omitted — signals fresh conversation mode
+                // entry omitted when null — signals fresh conversation mode
+                entry:          converseState.entry || undefined,
             }),
         });
 
@@ -528,6 +531,7 @@ async function endAndSaveDraft() {
 
         // Clear the conversation and start fresh
         converseState.messages = [];
+        converseState.entry    = null;
         const container = document.getElementById('converse-messages');
         if (container) {
             const typing = document.getElementById('converse-typing');
@@ -547,6 +551,134 @@ async function endAndSaveDraft() {
         btn.textContent = 'End & Save Draft';
         btn.disabled = false;
     }
+}
+
+// ============================================
+// COMMITS TAB
+// ============================================
+
+async function renderCommits() {
+    const loading = document.getElementById('commits-loading');
+    const list    = document.getElementById('commits-list');
+    loading.style.display = 'block';
+    list.innerHTML = '';
+
+    try {
+        const resp = await fetch(
+            'https://api.github.com/repos/confusedbysmiles/confusedbysmiles.github.io' +
+            '/commits?path=dissertation-tracker&per_page=50'
+        );
+        if (!resp.ok) throw new Error('GitHub API error ' + resp.status);
+        const commits = await resp.json();
+
+        loading.style.display = 'none';
+
+        if (!commits.length) {
+            list.innerHTML = '<div class="timeline-empty"><p>No commits found.</p></div>';
+            return;
+        }
+
+        list.innerHTML = commits.map(c => {
+            const sha     = c.sha.slice(0, 7);
+            const message = c.commit.message;
+            const [subject, ...bodyLines] = message.split('\n');
+            const body    = bodyLines.join('\n').trim();
+            const date    = new Date(c.commit.author.date);
+            const dateStr = date.toLocaleDateString('en-US',
+                { month: 'short', day: 'numeric', year: 'numeric' });
+            const author  = c.commit.author.name;
+            const url     = c.html_url;
+
+            return `
+                <div class="commit-card" data-sha="${sha}" data-subject="${escapeHtml(subject)}"
+                     data-body="${escapeHtml(body)}" data-date="${dateStr}" data-url="${url}">
+                    <div class="commit-header">
+                        <span class="commit-sha">
+                            <a href="${url}" target="_blank" rel="noopener">${sha}</a>
+                        </span>
+                        <span class="commit-date">${dateStr}</span>
+                    </div>
+                    <div class="commit-subject">${escapeHtml(subject)}</div>
+                    ${body ? `<div class="commit-body">${escapeHtml(body)}</div>` : ''}
+                    <div class="commit-footer">
+                        <span class="commit-author">${escapeHtml(author)}</span>
+                        <button class="commit-reflect-btn btn-secondary"
+                                data-sha="${sha}"
+                                data-subject="${escapeHtml(subject)}"
+                                data-body="${escapeHtml(body)}"
+                                data-date="${dateStr}"
+                                data-url="${url}">
+                            Reflect →
+                        </button>
+                    </div>
+                </div>`;
+        }).join('');
+
+        list.querySelectorAll('.commit-reflect-btn').forEach(btn => {
+            btn.addEventListener('click', () => reflectOnCommit(btn.dataset));
+        });
+
+    } catch (err) {
+        console.error('[Commits]', err);
+        loading.innerHTML = '<p>Could not load commit history. ' +
+            '<a href="https://github.com/confusedbysmiles/confusedbysmiles.github.io/' +
+            'commits/main/dissertation-tracker" target="_blank" rel="noopener">' +
+            'View on GitHub →</a></p>';
+    }
+}
+
+async function reflectOnCommit({ sha, subject, body, date, url }) {
+    // Switch to Converse tab — converseInitialized is already true, so
+    // initConverseTab() does NOT run again; no state overwrite risk
+    document.querySelector('[data-tab="converse"]').click();
+
+    // Wait a tick for the panel to become visible
+    await new Promise(r => setTimeout(r, 100));
+
+    // Reset conversation state for this commit
+    converseState.messages       = [];
+    converseState.sessionContext = {};
+    converseState.entry = {
+        type:    'coding',
+        title:   subject,
+        content: body || subject,
+        context: 'As a Researcher',
+        tags:    ['technology', 'AI integration'],
+        date:    date,
+        sha:     sha,
+        url:     url,
+    };
+
+    // Clear the visual chat area
+    const container = document.getElementById('converse-messages');
+    if (container) {
+        const typing = document.getElementById('converse-typing');
+        Array.from(container.children).forEach(child => {
+            if (child.id !== 'converse-typing') container.removeChild(child);
+        });
+        if (typing && !container.contains(typing)) container.appendChild(typing);
+    }
+
+    // Re-enable inputs in case a previous conversation was pinned/closed
+    const input     = document.getElementById('converse-input');
+    const sendBtn   = document.getElementById('converse-send-btn');
+    const speechBtn = document.getElementById('converse-speech-btn');
+    if (input)     { input.disabled = false; input.placeholder = 'Share a memory, experience, or build decision… (Enter to send, Shift+Enter for new line)'; }
+    if (sendBtn)   sendBtn.disabled = false;
+    if (speechBtn) speechBtn.disabled = false;
+
+    // Ensure allEntries is populated (may already be from init)
+    if (converseState.allEntries.length === 0) {
+        try {
+            const data = await Neo4j.getEntries();
+            converseState.allEntries = data.entries || [];
+        } catch (err) {
+            converseState.allEntries = loadEntries().filter(e => e.approved !== false);
+        }
+    }
+
+    // Kick off Claude's opening question
+    await fetchConverseReply();
 }
 
 // ============================================
