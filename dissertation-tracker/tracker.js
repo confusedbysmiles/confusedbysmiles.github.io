@@ -74,7 +74,8 @@ function initTabs() {
             document.getElementById('tab-' + tabName).classList.add('active');
 
             if (tabName === 'timeline') renderTimeline();
-            if (tabName === 'review') initReviewTab();
+            if (tabName === 'review')   initReviewTab();
+            if (tabName === 'commits')  renderCommits();
             if (tabName === 'converse' && !converseInitialized) {
                 converseInitialized = true;
                 initConverseTab();
@@ -130,12 +131,23 @@ function parseSortDate(timeframe) {
 // CONVERSE TAB
 // ============================================
 
+// Returns true only when the authenticated user is sseim
+function isSseim() {
+    const user = (typeof getUser === 'function') ? getUser() : null;
+    return user?.username === 'sseim';
+}
+
 const converseState = {
-    messages:    [],
-    allEntries:  [],
-    isTyping:    false,
-    recognition: null,
-    isListening: false,
+    messages:              [],
+    allEntries:            [],
+    isTyping:              false,
+    recognition:           null,
+    isListening:           false,
+    currentConversationId: null,
+    pinnedConversationId:  null,
+    sessionContext:        {},
+    currentEntryId:        null,
+    entry:                 null,   // set when reflecting on a specific entry or commit
 };
 
 async function initConverseTab() {
@@ -157,8 +169,97 @@ async function initConverseTab() {
     if (speechBtn) speechBtn.addEventListener('click', toggleConverseSpeech);
     document.getElementById('converse-end-btn').addEventListener('click', endAndSaveDraft);
 
-    // Kick off Claude's opening message
+    if (!isSseim()) {
+        await fetchConverseReply();
+        return;
+    }
+
+    // ── sseim-only features ────────────────────────────────────────────────
+
+    // Wire flag-as-unresolved button
+    const flagBtn = document.getElementById('converse-flag-btn');
+    if (flagBtn) {
+        flagBtn.style.display = '';
+        flagBtn.addEventListener('click', flagCurrentEntryUnresolved);
+    }
+
+    // Load unresolved entries and stash them in sessionContext so Claude surfaces them
+    try {
+        const data = await fetch(`${WORKER_URL}/entries/unresolved`).then(r => r.json());
+        if (data.entries && data.entries.length > 0) {
+            converseState.sessionContext = { unresolvedEntries: data.entries };
+        }
+    } catch (err) {
+        console.warn('[Converse] Could not fetch unresolved entries:', err);
+    }
+
+    // Check for pinned conversations — show resume banner if one exists
+    try {
+        const data = await fetch(`${WORKER_URL}/conversations/pinned`).then(r => r.json());
+        if (data.conversations && data.conversations.length > 0) {
+            showPinnedBanner(data.conversations[0]);
+            return; // wait for Resume / Start Fresh choice
+        }
+    } catch (err) {
+        console.warn('[Converse] Could not fetch pinned conversations:', err);
+    }
+
     await fetchConverseReply();
+}
+
+function showPinnedBanner(pinnedConv) {
+    const container = document.getElementById('converse-messages');
+    if (!container) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'pinned-banner';
+    banner.style.cssText = [
+        'padding: 1rem 1.25rem',
+        'background: #1A2A1A',
+        'border: 1px solid #00D4AA55',
+        'border-radius: 8px',
+        'margin: 0.5rem 0',
+        'align-self: stretch',
+    ].join(';');
+    banner.innerHTML = `
+        <p style="color:#9CA3AF;font-size:0.9rem;margin:0 0 0.75rem;">
+            📌 You left something pinned: <em style="color:#E0F7F0;">${escapeHtml(pinnedConv.pinContext)}</em>
+        </p>
+        <div style="display:flex;gap:0.5rem;">
+            <button class="btn-primary btn-sm" id="resume-pinned-btn">Resume</button>
+            <button class="converse-end-btn" id="start-fresh-btn" style="height:30px;font-size:0.8rem;padding:0 0.75rem;">Start Fresh</button>
+        </div>
+    `;
+
+    const typing = document.getElementById('converse-typing');
+    container.insertBefore(banner, typing);
+
+    document.getElementById('resume-pinned-btn').addEventListener('click', async () => {
+        banner.remove();
+        converseState.messages = Array.isArray(pinnedConv.messages) ? pinnedConv.messages : [];
+        converseState.pinnedConversationId = pinnedConv.id;
+        converseState.sessionContext = {
+            ...converseState.sessionContext,
+            pinnedConversation: { messages: pinnedConv.messages, pinContext: pinnedConv.pinContext },
+        };
+        converseState.messages.forEach(msg => appendConverseMessage(msg.role, msg.content));
+        await fetchConverseReply();
+    });
+
+    document.getElementById('start-fresh-btn').addEventListener('click', async () => {
+        banner.remove();
+        await fetchConverseReply();
+    });
+}
+
+const PIN_PHRASES = [
+    'put a pin', 'pin this', 'pick this up later', 'come back to this',
+    'save this for later', "let's return to this", 'flag this',
+];
+
+function isPinIntent(text) {
+    const lower = text.toLowerCase();
+    return PIN_PHRASES.some(phrase => lower.includes(phrase));
 }
 
 async function sendConverseMessage() {
@@ -167,9 +268,114 @@ async function sendConverseMessage() {
     if (!text || converseState.isTyping) return;
 
     input.value = '';
+
+    if (isSseim() && isPinIntent(text)) {
+        await pinCurrentConversation();
+        return;
+    }
+
     appendConverseMessage('user', text);
     converseState.messages.push({ role: 'user', content: text });
     await fetchConverseReply();
+}
+
+async function pinCurrentConversation() {
+    if (converseState.messages.length === 0) {
+        appendConverseMessage('assistant', "📌 Nothing to pin yet — start a conversation first.");
+        return;
+    }
+
+    const lastAssistant = [...converseState.messages].reverse().find(m => m.role === 'assistant');
+    const pinContext = (lastAssistant ? lastAssistant.content.trim() : 'Conversation in progress').slice(0, 200);
+
+    try {
+        // Extract a draft entry so the conversation has a Neo4j anchor
+        const extractResp = await fetch(`${WORKER_URL}/chat/extract`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ messages: converseState.messages }),
+        });
+        if (!extractResp.ok) throw new Error(`Extract failed ${extractResp.status}`);
+        const { entry: extracted } = await extractResp.json();
+
+        const now   = new Date().toISOString();
+        const draft = {
+            ...extracted,
+            id:        generateId(),
+            createdAt: now,
+            sortDate:  parseSortDate(extracted.timeframe || ''),
+            approved:  false,
+        };
+
+        // Persist entry locally and to Neo4j
+        const entries = loadEntries();
+        entries.push(draft);
+        saveEntries(entries);
+        const token = getToken();
+        await Neo4j.saveEntry(draft, token);
+
+        // Save conversation node to Neo4j
+        const convResp = await fetch(`${WORKER_URL}/conversation`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ entryId: draft.id, messages: converseState.messages, summary: pinContext }),
+        });
+        if (!convResp.ok) throw new Error(`Conversation save failed ${convResp.status}`);
+        const convData      = await convResp.json();
+        const conversationId = convData.id;
+
+        // Pin it
+        await fetch(`${WORKER_URL}/conversation/${encodeURIComponent(conversationId)}/pin`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ pinContext }),
+        });
+
+        converseState.currentConversationId = conversationId;
+        converseState.currentEntryId        = draft.id;
+
+    } catch (err) {
+        console.error('[Pin] error:', err);
+    }
+
+    appendConverseMessage('assistant', "📌 Pinned. I'll pick up from here next time you open the tracker.");
+
+    const input    = document.getElementById('converse-input');
+    const sendBtn  = document.getElementById('converse-send-btn');
+    const speechBtn = document.getElementById('converse-speech-btn');
+    if (input)     { input.disabled = true; input.placeholder = 'Conversation pinned.'; }
+    if (sendBtn)   sendBtn.disabled = true;
+    if (speechBtn) speechBtn.disabled = true;
+}
+
+async function flagCurrentEntryUnresolved() {
+    if (!isSseim()) return;
+
+    const entryId = converseState.currentEntryId;
+    if (!entryId) {
+        showToast('No entry to flag — save a draft first.', 'error');
+        return;
+    }
+
+    const note = prompt('What needs more examination?');
+    if (note === null) return;
+    if (!note.trim()) {
+        showToast('Please add a note describing what needs examination.', 'error');
+        return;
+    }
+
+    try {
+        const resp = await fetch(`${WORKER_URL}/entry/${encodeURIComponent(entryId)}/flag-unresolved`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ note: note.trim() }),
+        });
+        if (!resp.ok) throw new Error(`Flag failed ${resp.status}`);
+        showToast("Flagged — I'll bring this up again when it's relevant.", 'success');
+    } catch (err) {
+        console.error('[Flag] error:', err);
+        showToast('Could not flag entry. Try again.', 'error');
+    }
 }
 
 async function fetchConverseReply() {
@@ -181,9 +387,11 @@ async function fetchConverseReply() {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({
-                messages:   converseState.messages,
-                allEntries: converseState.allEntries,
-                // entry is intentionally omitted — signals fresh conversation mode
+                messages:       converseState.messages,
+                allEntries:     converseState.allEntries,
+                sessionContext: converseState.sessionContext,
+                // entry omitted when null — signals fresh conversation mode
+                entry:          converseState.entry || undefined,
             }),
         });
 
@@ -316,12 +524,14 @@ async function endAndSaveDraft() {
         await Neo4j.saveEntry(draft, token);
 
         showToast('Draft saved — find it in the Review tab', 'success');
+        converseState.currentEntryId = draft.id;
 
         // Update the review badge count
         setUnapprovedCount(unapprovedCount + 1);
 
         // Clear the conversation and start fresh
         converseState.messages = [];
+        converseState.entry    = null;
         const container = document.getElementById('converse-messages');
         if (container) {
             const typing = document.getElementById('converse-typing');
@@ -341,6 +551,134 @@ async function endAndSaveDraft() {
         btn.textContent = 'End & Save Draft';
         btn.disabled = false;
     }
+}
+
+// ============================================
+// COMMITS TAB
+// ============================================
+
+async function renderCommits() {
+    const loading = document.getElementById('commits-loading');
+    const list    = document.getElementById('commits-list');
+    loading.style.display = 'block';
+    list.innerHTML = '';
+
+    try {
+        const resp = await fetch(
+            'https://api.github.com/repos/confusedbysmiles/confusedbysmiles.github.io' +
+            '/commits?path=dissertation-tracker&per_page=50'
+        );
+        if (!resp.ok) throw new Error('GitHub API error ' + resp.status);
+        const commits = await resp.json();
+
+        loading.style.display = 'none';
+
+        if (!commits.length) {
+            list.innerHTML = '<div class="timeline-empty"><p>No commits found.</p></div>';
+            return;
+        }
+
+        list.innerHTML = commits.map(c => {
+            const sha     = c.sha.slice(0, 7);
+            const message = c.commit.message;
+            const [subject, ...bodyLines] = message.split('\n');
+            const body    = bodyLines.join('\n').trim();
+            const date    = new Date(c.commit.author.date);
+            const dateStr = date.toLocaleDateString('en-US',
+                { month: 'short', day: 'numeric', year: 'numeric' });
+            const author  = c.commit.author.name;
+            const url     = c.html_url;
+
+            return `
+                <div class="commit-card" data-sha="${sha}" data-subject="${escapeHtml(subject)}"
+                     data-body="${escapeHtml(body)}" data-date="${dateStr}" data-url="${url}">
+                    <div class="commit-header">
+                        <span class="commit-sha">
+                            <a href="${url}" target="_blank" rel="noopener">${sha}</a>
+                        </span>
+                        <span class="commit-date">${dateStr}</span>
+                    </div>
+                    <div class="commit-subject">${escapeHtml(subject)}</div>
+                    ${body ? `<div class="commit-body">${escapeHtml(body)}</div>` : ''}
+                    <div class="commit-footer">
+                        <span class="commit-author">${escapeHtml(author)}</span>
+                        <button class="commit-reflect-btn btn-secondary"
+                                data-sha="${sha}"
+                                data-subject="${escapeHtml(subject)}"
+                                data-body="${escapeHtml(body)}"
+                                data-date="${dateStr}"
+                                data-url="${url}">
+                            Reflect →
+                        </button>
+                    </div>
+                </div>`;
+        }).join('');
+
+        list.querySelectorAll('.commit-reflect-btn').forEach(btn => {
+            btn.addEventListener('click', () => reflectOnCommit(btn.dataset));
+        });
+
+    } catch (err) {
+        console.error('[Commits]', err);
+        loading.innerHTML = '<p>Could not load commit history. ' +
+            '<a href="https://github.com/confusedbysmiles/confusedbysmiles.github.io/' +
+            'commits/main/dissertation-tracker" target="_blank" rel="noopener">' +
+            'View on GitHub →</a></p>';
+    }
+}
+
+async function reflectOnCommit({ sha, subject, body, date, url }) {
+    // Switch to Converse tab — converseInitialized is already true, so
+    // initConverseTab() does NOT run again; no state overwrite risk
+    document.querySelector('[data-tab="converse"]').click();
+
+    // Wait a tick for the panel to become visible
+    await new Promise(r => setTimeout(r, 100));
+
+    // Reset conversation state for this commit
+    converseState.messages       = [];
+    converseState.sessionContext = {};
+    converseState.entry = {
+        type:    'coding',
+        title:   subject,
+        content: body || subject,
+        context: 'As a Researcher',
+        tags:    ['technology', 'AI integration'],
+        date:    date,
+        sha:     sha,
+        url:     url,
+    };
+
+    // Clear the visual chat area
+    const container = document.getElementById('converse-messages');
+    if (container) {
+        const typing = document.getElementById('converse-typing');
+        Array.from(container.children).forEach(child => {
+            if (child.id !== 'converse-typing') container.removeChild(child);
+        });
+        if (typing && !container.contains(typing)) container.appendChild(typing);
+    }
+
+    // Re-enable inputs in case a previous conversation was pinned/closed
+    const input     = document.getElementById('converse-input');
+    const sendBtn   = document.getElementById('converse-send-btn');
+    const speechBtn = document.getElementById('converse-speech-btn');
+    if (input)     { input.disabled = false; input.placeholder = 'Share a memory, experience, or build decision… (Enter to send, Shift+Enter for new line)'; }
+    if (sendBtn)   sendBtn.disabled = false;
+    if (speechBtn) speechBtn.disabled = false;
+
+    // Ensure allEntries is populated (may already be from init)
+    if (converseState.allEntries.length === 0) {
+        try {
+            const data = await Neo4j.getEntries();
+            converseState.allEntries = data.entries || [];
+        } catch (err) {
+            converseState.allEntries = loadEntries().filter(e => e.approved !== false);
+        }
+    }
+
+    // Kick off Claude's opening question
+    await fetchConverseReply();
 }
 
 // ============================================
