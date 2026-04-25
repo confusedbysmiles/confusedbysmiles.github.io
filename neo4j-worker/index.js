@@ -120,10 +120,19 @@ Do this at most once per conversation — don't turn every exchange into a patte
 function buildSystemPrompt(entry, recentEntries = [], sessionContext = {}) {
   const { pinnedConversation = null, unresolvedEntries = [] } = sessionContext;
 
-  const entryDesc = entry.type === "memory"
+  const entryDesc = entry.type === "coding"
+    ? `A git commit from ${entry.date}: "${entry.title}"
+${entry.content ? `Commit notes: "${entry.content}"` : ""}
+${entry.url ? `View on GitHub: ${entry.url}` : ""}
+
+This is a moment in the build history of the dissertation tracker itself.`
+    : entry.type === "memory"
     ? `A memory titled "${entry.title}" from ${entry.timeframe || "an unspecified time"}, context: ${entry.context || "unspecified"}.\n"${entry.content || entry.description || ""}"\nEmotional response: ${entry.emotion || entry.emotionalResponse || "not noted"}`
     : `A build log: "${entry.title || entry.what}"\nWhy: "${entry.why || ""}"\nChallenges: "${entry.challenges || "none noted"}"\nQuestions: "${entry.questions || "none noted"}"`;
 
+  const openingInstruction = entry.type === "coding"
+    ? `Start by asking ONE specific question about what this build decision or moment reveals about the researcher's relationship to the work — not what was built, but what it meant to build it.`
+    : `Start by asking ONE specific, probing question about this entry.`;
   let recentCtx = "";
   if (recentEntries.length > 0) {
     recentCtx = "\n\nOther recent entries in their tracker for cross-referencing:\n";
@@ -166,7 +175,7 @@ Your role in this conversation:
 - Reference specific details from their entry, don't be generic
 - When they seem done, suggest saving the conversation as dissertation data
 
-Start by asking ONE specific, probing question about this entry.${unresolvedSection}
+${openingInstruction}${unresolvedSection}
 
 MISSING CONNECTIONS:
 You have access to all entries in the database. As you converse, actively look for
