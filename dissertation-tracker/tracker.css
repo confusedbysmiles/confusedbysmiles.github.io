@@ -1723,3 +1723,56 @@
         flex-wrap: wrap;
     }
 }
+
+/* ============================================
+   COMMITS TAB
+   ============================================ */
+.commits-header { margin-bottom: 1.5rem; }
+.commits-sub { color: #6B7280; font-size: 0.85rem; margin-top: 0.25rem; }
+
+.commit-card {
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.75rem;
+    background: var(--card-bg, #fff);
+    transition: box-shadow 0.15s;
+}
+.commit-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+.commit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.commit-sha a {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--accent, #7C3AED);
+    text-decoration: none;
+}
+.commit-sha a:hover { text-decoration: underline; }
+.commit-date { font-size: 0.72rem; color: #9CA3AF; }
+
+.commit-subject {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: var(--text, #111827);
+}
+.commit-body {
+    font-size: 0.8rem;
+    color: #6B7280;
+    white-space: pre-wrap;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+.commit-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+.commit-author { font-size: 0.72rem; color: #9CA3AF; }
+.commit-reflect-btn { font-size: 0.78rem; padding: 0.3rem 0.8rem; }
