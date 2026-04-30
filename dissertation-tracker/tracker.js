@@ -697,7 +697,7 @@ const reviewState = {
     currentIndex: 0,
 };
 
-let unapprovedCount = 0;
+let timelineEntries = null; // cache from Neo4j; null means stale/needs fetch
 
 function setUnapprovedCount(count) {
     unapprovedCount = Math.max(0, count);
@@ -807,6 +807,7 @@ function renderReviewPanel() {
             if (reviewState.currentIndex >= reviewState.entries.length && reviewState.currentIndex > 0) {
                 reviewState.currentIndex--;
             }
+            timelineEntries = null; // invalidate so Timeline re-fetches from Neo4j
             setUnapprovedCount(reviewState.entries.length);
             renderReviewPanel();
         } catch (err) {
@@ -843,6 +844,8 @@ function renderReviewCard(entry) {
                 <select id="review-type">
                     <option value="memory"${entry.type === 'memory' ? ' selected' : ''}>Memory</option>
                     <option value="buildlog"${entry.type === 'buildlog' ? ' selected' : ''}>Build Log</option>
+                    <option value="reflection"${entry.type === 'reflection' ? ' selected' : ''}>Reflection</option>
+                    <option value="coding"${entry.type === 'coding' ? ' selected' : ''}>Coding</option>
                 </select>
             </div>
             <div class="form-group">
@@ -901,12 +904,29 @@ function getReviewFormValues(originalEntry) {
 // TIMELINE RENDERING
 // ============================================
 
-function renderTimeline() {
+async function renderTimeline() {
     const container = document.getElementById('timeline-container');
-    const entries   = getFilteredEntries('timeline');
+
+    if (!timelineEntries) {
+        container.innerHTML = '<div class="timeline-empty"><p>Loading&hellip;</p></div>';
+        try {
+            const data = await Neo4j.getEntries();
+            timelineEntries = (data.entries || [])
+                .filter(e => e.approved !== false)
+                .map(e => ({ ...e, sortDate: e.sortDate || parseSortDate(e.timeframe || '') }));
+        } catch (err) {
+            console.warn('[Timeline] Neo4j unavailable, using localStorage:', err);
+            timelineEntries = loadEntries()
+                .filter(e => e.approved !== false)
+                .map(e => ({ ...e, sortDate: e.sortDate || parseSortDate(e.timeframe || '') }));
+        }
+    }
+
+    const entries = applyTimelineFilters(timelineEntries);
 
     if (entries.length === 0) {
         container.innerHTML = '<div class="timeline-empty"><p>No entries match your filters.</p></div>';
+        updateTagFilterOptions();
         return;
     }
 
@@ -937,8 +957,8 @@ function renderTimeline() {
 // ============================================
 
 function renderEntryCard(entry) {
-    const typeLabels = { memory: 'Memory', buildlog: 'Build Log', reflection: 'Reflection' };
-    const badgeClass = { memory: 'badge-memory', buildlog: 'badge-buildlog', reflection: 'badge-reflection' };
+    const typeLabels = { memory: 'Memory', buildlog: 'Build Log', reflection: 'Reflection', coding: 'Coding' };
+    const badgeClass = { memory: 'badge-memory', buildlog: 'badge-buildlog', reflection: 'badge-reflection', coding: 'badge-coding' };
 
     const date      = new Date(entry.sortDate || entry.createdAt);
     const dateStr   = formatDate(date);
@@ -993,32 +1013,29 @@ function buildField(label, value) {
 // FILTERING
 // ============================================
 
+function applyTimelineFilters(entries) {
+    let result = entries;
+
+    const activeTypeFilter = document.querySelector('.timeline-filters .filter-btn.active');
+    const typeFilter = activeTypeFilter ? activeTypeFilter.dataset.filterType : 'all';
+    if (typeFilter !== 'all') result = result.filter(e => e.type === typeFilter);
+
+    const tagFilter = document.getElementById('timeline-tag-filter').value;
+    if (tagFilter) result = result.filter(e => e.tags && e.tags.includes(tagFilter));
+
+    const search = document.getElementById('timeline-search').value.toLowerCase();
+    if (search) result = result.filter(e =>
+        (e.title       && e.title.toLowerCase().includes(search)) ||
+        (e.content     && e.content.toLowerCase().includes(search)) ||
+        (e.description && e.description.toLowerCase().includes(search))
+    );
+
+    return result;
+}
+
 function getFilteredEntries(view) {
-    // Only show approved entries (or old entries without the approved field)
+    // Legacy — kept for delete modal's renderTimeline call (active-tab check path)
     let entries = loadEntries().filter(e => e.approved !== false);
-
-    if (view === 'timeline') {
-        const activeTypeFilter = document.querySelector('.timeline-filters .filter-btn.active');
-        const typeFilter = activeTypeFilter ? activeTypeFilter.dataset.filterType : 'all';
-        if (typeFilter !== 'all') {
-            entries = entries.filter(e => e.type === typeFilter);
-        }
-
-        const tagFilter = document.getElementById('timeline-tag-filter').value;
-        if (tagFilter) {
-            entries = entries.filter(e => e.tags && e.tags.includes(tagFilter));
-        }
-
-        const search = document.getElementById('timeline-search').value.toLowerCase();
-        if (search) {
-            entries = entries.filter(e =>
-                (e.title       && e.title.toLowerCase().includes(search)) ||
-                (e.content     && e.content.toLowerCase().includes(search)) ||
-                (e.description && e.description.toLowerCase().includes(search))
-            );
-        }
-    }
-
     return entries;
 }
 
@@ -1028,9 +1045,8 @@ function updateTagFilterOptions() {
     const currentVal = select.value;
     // Seed with all approved tags so filters are always available, then add any extras from entries
     const allTags = new Set(APPROVED_TAGS);
-    loadEntries()
-        .filter(e => e.approved !== false)
-        .forEach(e => (e.tags || []).forEach(t => allTags.add(t)));
+    const source = timelineEntries || loadEntries().filter(e => e.approved !== false);
+    source.forEach(e => (e.tags || []).forEach(t => allTags.add(t)));
 
     let options = '<option value="">All tags</option>';
     Array.from(allTags).sort().forEach(tag => {
@@ -1087,6 +1103,7 @@ function initDeleteModal() {
         ).catch(err => console.warn('[Neo4j] delete failed:', err));
 
         deleteEntry(pendingDeleteId);
+        timelineEntries = null; // invalidate so Timeline re-fetches
         showToast('Entry deleted.', 'success');
 
         if (pendingDeleteIsReview) {
