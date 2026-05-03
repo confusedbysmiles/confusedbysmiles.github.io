@@ -148,6 +148,7 @@ const converseState = {
     sessionContext:        {},
     currentEntryId:        null,
     entry:                 null,   // set when reflecting on a specific entry or commit
+    pendingFile: null,
 };
 
 async function initConverseTab() {
@@ -168,6 +169,17 @@ async function initConverseTab() {
     const speechBtn = document.getElementById('converse-speech-btn');
     if (speechBtn) speechBtn.addEventListener('click', toggleConverseSpeech);
     document.getElementById('converse-end-btn').addEventListener('click', endAndSaveDraft);
+    document.getElementById('chat-file-btn')
+    .addEventListener('click', () => {
+        document.getElementById('chat-file-input').click();
+    });
+    document.getElementById('chat-file-input')
+    .addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        await handleFileSelected(file);
+        e.target.value = '';
+    });
 
     if (!isSseim()) {
         await fetchConverseReply();
@@ -383,16 +395,26 @@ async function fetchConverseReply() {
     showConverseTyping(true);
 
     try {
-        const resp = await fetch(`${WORKER_URL}/chat`, {
+        const endpoint = converseState.pendingFile
+            ? `${WORKER_URL}/chat/with-file`
+            : `${WORKER_URL}/chat`;
+
+        const body = {
+            messages:       converseState.messages,
+            allEntries:     converseState.allEntries,
+            sessionContext: converseState.sessionContext,
+            entry:          converseState.entry || undefined,
+            ...(converseState.pendingFile && {
+                fileKey:  converseState.pendingFile.key,
+                filename: converseState.pendingFile.filename,
+                mimeType: converseState.pendingFile.mimeType,
+            }),
+        };
+
+        const resp = await fetch(endpoint, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({
-                messages:       converseState.messages,
-                allEntries:     converseState.allEntries,
-                sessionContext: converseState.sessionContext,
-                // entry omitted when null — signals fresh conversation mode
-                entry:          converseState.entry || undefined,
-            }),
+            body:    JSON.stringify(body),
         });
 
         if (!resp.ok) throw new Error(`Worker error ${resp.status}`);
@@ -402,12 +424,90 @@ async function fetchConverseReply() {
             converseState.messages.push({ role: 'assistant', content: data.reply });
             appendConverseMessage('assistant', data.reply);
         }
+
+        converseState.pendingFile = null;
     } catch (err) {
         console.error('[Converse] chat error:', err);
         appendConverseMessage('assistant', 'Something went wrong reaching the server. Check your connection and try again.');
     } finally {
         converseState.isTyping = false;
         showConverseTyping(false);
+    }
+}
+
+async function handleFileSelected(file) {
+    const allowed = [
+        'image/jpeg', 'image/png', 'image/gif',
+        'image/webp', 'application/pdf',
+    ];
+    if (!allowed.includes(file.type)) {
+        showToast('Only images and PDFs are supported.', 'error');
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        showToast('File must be under 10MB.', 'error');
+        return;
+    }
+
+    appendConverseMessage('assistant', `📎 Uploading ${file.name}…`);
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('filename', file.name);
+        formData.append('mimeType', file.type);
+        if (converseState.currentConversationId) {
+            formData.append('conversationId', converseState.currentConversationId);
+        }
+
+        const resp = await fetch(`${WORKER_URL}/upload`, {
+            method: 'POST',
+            body:   formData,
+        });
+
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error || 'Upload failed');
+        }
+
+        const { id, key } = await resp.json();
+
+        converseState.pendingFile = {
+            id, key,
+            filename: file.name,
+            mimeType: file.type,
+        };
+
+        // Remove the uploading indicator bubble
+        const msgs    = document.getElementById('converse-messages');
+        const bubbles = msgs.querySelectorAll('.chat-message-assistant');
+        if (bubbles.length > 0) bubbles[bubbles.length - 1].remove();
+
+        // Render preview bubble
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'chat-message chat-message-assistant';
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src   = `${WORKER_URL}/file/${encodeURIComponent(key)}`;
+            img.alt   = file.name;
+            img.style.cssText = 'max-width:100%;max-height:200px;border-radius:6px;display:block;';
+            const caption = document.createElement('div');
+            caption.style.cssText = 'font-size:0.75rem;color:#9CA3AF;margin-top:0.25rem;';
+            caption.textContent = file.name;
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(caption);
+        } else {
+            previewDiv.textContent = `📄 ${file.name}`;
+        }
+        const typing = document.getElementById('converse-typing');
+        msgs.insertBefore(previewDiv, typing);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        await fetchConverseReply();
+
+    } catch (err) {
+        console.error('[File upload]', err);
+        showToast(`Upload failed: ${err.message}`, 'error');
     }
 }
 
