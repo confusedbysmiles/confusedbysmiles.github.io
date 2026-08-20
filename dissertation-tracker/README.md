@@ -6,124 +6,109 @@ Built for TEAC 882B: Advanced Web Design and Databases.
 
 ## What It Does
 
-- **Memory Capture** — Log formative experiences with tech, math, and education (flexible dates, tags, emotional responses)
-- **Build Log** — Quick-capture development decisions, challenges, and questions for the Math Generator project
-- **Timeline View** — Visual timeline of all entries, filterable by type, tag, and search
-- **AI Reflection** — Optional Claude-powered reflection prompts that help surface connections between memories and design choices
-- **Export/Import** — Download your data as JSON or CSV anytime; import JSON to restore or merge
+- **Converse** — Talk with Claude about a memory or build decision; the conversation is the capture mechanism. When a thought feels complete, the backend extracts it into a structured draft entry.
+- **Timeline** — Visual timeline of all entries, filterable by type and tag, with search.
+- **Review** — Draft entries land unapproved. Edit and approve them here before they count as data.
+- **All Entries** — Embedded graph view (`graph-viewer.html`) of entries and their relationships in Neo4j.
+- **Build History** — Recent commits touching `dissertation-tracker/`, pulled live from the GitHub API.
+- **File attachments** — Attach a file to a conversation turn; it's stored in R2 and Claude reads it in context.
+- **Accounts** — Login is required to write. New accounts are requested and then admin-approved.
 
 ## Quick Start
 
-1. The tracker is already deployed at `servellon.net/dissertation-tracker/`
-2. Open the page and start logging. All data is saved in your browser's localStorage.
-3. Use **Export JSON** regularly to back up your data.
+1. The tracker is deployed at `www.drseim.com/dissertation-tracker/`
+2. Log in (writes require a session token), open **Converse**, and start talking.
+3. Visit **Review** to approve extracted drafts — unapproved entries are not yet real data.
 
 ## File Structure
 
 ```
 dissertation-tracker/
-├── index.html              # Main interface (single-page app with tabs)
-├── tracker.css             # Styles (extends sam-servellon-styles.css)
-├── tracker.js              # All frontend logic
-├── worker/
-│   └── reflection-worker.js  # Cloudflare Worker for AI reflection prompts
-└── README.md               # This file
+├── index.html          # Main interface (single-page app with tabs)
+├── about.html          # Project write-up / architecture documentation
+├── graph-viewer.html   # Neo4j graph visualization (embedded in All Entries)
+├── tracker.js          # Frontend logic — tabs, converse, timeline, review
+├── tracker.css         # Styles (extends sam-seim-styles.css)
+├── neo4j-client.js     # window.Neo4j — wraps the worker's data endpoints
+├── auth.js             # window.Auth — session tokens, login, admin approval
+├── component-loader.js # Shared header/footer injection
+└── README.md           # This file
 ```
+
+The backend is **not in this repo** — see [Backend](#backend).
 
 ## Storage
 
-Data is stored in **localStorage** under the key `dissertation-tracker-entries`. This means:
+Two layers:
 
-- Data stays on your browser/device
-- Works offline
-- No accounts or API keys needed for basic use
-- **Back up regularly** using the Export JSON button
+- **localStorage** under `dissertation-tracker-entries` — what the UI renders. Fast, works offline.
+- **Neo4j Aura** — the durable store, reached through the Cloudflare Worker so database credentials never touch the browser.
 
-### Moving Data Between Devices
+Writes go to localStorage first, then fire-and-forget to Neo4j. If the worker or database is down the UI keeps working, but **that write may not have been persisted** — check the **Review** tab or `/health` after any session where saves looked slow or errored.
 
-1. On the source device: click **Export JSON** in the All Entries tab
-2. On the target device: click **Import JSON** and select the file
-3. Duplicates (matching IDs) are automatically skipped
+> There is currently **no Export/Import or CSV download** in the app. Earlier versions had one; it was removed. Backups mean a Neo4j Aura snapshot, not a button in the UI. If you're on Aura Free, note that instances auto-pause after 3 days idle and are **deleted 30 days after pausing** — a paused instance shows up as `error code: 1016` from `/health`.
 
-## Setting Up AI Reflection Prompts (Optional)
+## Backend
 
-The tracker works fully without AI. To enable Claude-powered reflection prompts:
+All server-side code and every credential live in a separate repository:
 
-### 1. Deploy the Cloudflare Worker
+```
+confusedbysmiles.github.io/cloudflare-workers/neo4j-worker/
+```
+
+That deploys the **`dissertation-neo4j`** worker at `https://dissertation-neo4j.math-generator.workers.dev`, which handles Neo4j proxying, Claude conversation turns and entry extraction, KV-backed session auth, and R2 file storage. Endpoints the frontend calls: `/chat`, `/chat/extract`, `/chat/with-file`, `/conversation`, `/entry`, `/entries`, `/upload`, `/auth/*`, `/health`.
+
+Secrets are wrangler secrets on that worker — never in this repo, never in client code:
+
+```
+NEO4J_URI  NEO4J_USERNAME  NEO4J_PASSWORD  NEO4J_DATABASE  ANTHROPIC_API_KEY
+```
+
+To rotate one:
 
 ```bash
-# If you already have a Cloudflare Workers project for the Math Generator,
-# you can add this as a new worker in the same account.
-
-# Create a new directory for the worker
-mkdir dissertation-reflection && cd dissertation-reflection
-
-# Copy the worker file
-cp path/to/dissertation-tracker/worker/reflection-worker.js .
-
-# Create wrangler.toml
-cat > wrangler.toml << 'EOF'
-name = "dissertation-reflection"
-main = "reflection-worker.js"
-compatibility_date = "2024-01-01"
-EOF
-
-# Set your API key
-wrangler secret put ANTHROPIC_API_KEY
-# (paste your key when prompted)
-
-# Deploy
-wrangler deploy
+cd ../cloudflare-workers/neo4j-worker && wrangler secret put ANTHROPIC_API_KEY
 ```
 
-### 2. Update the Tracker
+Wrangler rolls out a new worker version automatically — no `wrangler deploy` needed for a secret change.
 
-Open `tracker.js` and set the `REFLECTION_API_ENDPOINT` on line 11:
+Quick triage: `/chat` uses `ANTHROPIC_API_KEY` and never touches the database, so it isolates an API-key problem from a Neo4j problem.
 
-```javascript
-const REFLECTION_API_ENDPOINT = 'https://dissertation-reflection.YOUR-SUBDOMAIN.workers.dev';
+```bash
+curl -s https://dissertation-neo4j.math-generator.workers.dev/health
 ```
-
-### 3. Use It
-
-After saving any entry, a "Get Reflection Prompt" button appears. Click it to receive a tailored reflection question from Claude. You can write your response and save it as a linked reflection entry.
-
-**Without the API configured**, the tracker falls back to locally-generated reflection prompts that still work well.
 
 ## Data Format
 
-Each entry is a JSON object with these fields:
+Fields the current code reads or writes:
 
-| Field | Type | Present In |
-|-------|------|-----------|
-| `id` | string | All |
-| `type` | `"memory"` / `"buildlog"` / `"reflection"` | All |
-| `title` | string | All |
-| `createdAt` | ISO date string | All |
-| `sortDate` | ISO date string | All |
-| `tags` | string[] | All |
-| `timeframe` | string | Memory |
-| `context` | `"student"` / `"teacher"` / `"personal"` / `"researcher"` | Memory |
-| `description` | string | Memory, Reflection |
-| `emotion` | string | Memory |
-| `what` | string | Build Log |
-| `why` | string | Build Log |
-| `challenges` | string | Build Log |
-| `questions` | string | Build Log |
-| `link` | URL string | Build Log |
-| `prompt` | string | Reflection |
-| `parentId` | string | Reflection |
-| `parentType` | string | Reflection |
+| Field | Type | Notes |
+|-------|------|-------|
+| `id` | string | Generated client-side |
+| `type` | `"memory"` / `"buildlog"` / `"reflection"` / `"coding"` | Editable in Review |
+| `title` | string | |
+| `content` | string | Main body text |
+| `createdAt` | ISO date string | When the entry was captured |
+| `sortDate` | ISO date string | Parsed from `timeframe`; orders the timeline |
+| `timeframe` | string | Free-text period ("summer after 4th grade") |
+| `context` | string | e.g. `"As a Learner"` |
+| `emotion` | string | Emotional response |
+| `tags` | string[] | |
+| `approved` | boolean | `false` until approved in Review |
+| `prompt` | string | Reflection entries |
+
+Older entries may carry `description` (→ `content`), `emotionalResponse` (→ `emotion`), `what`, and `date`. The code falls back to these on read but no longer writes them.
 
 ## Cost
 
-- **Without AI**: Free (static HTML/CSS/JS on GitHub Pages)
-- **With AI reflection**: ~$0.005-$0.01 per reflection prompt (Claude Sonnet)
+- Static frontend on GitHub Pages: free
+- Neo4j Aura Free tier: free
+- Claude API: roughly a cent or two per conversation, billed per turn (Sonnet, 512 max tokens per reply)
 
 ## Tips for Consistent Use
 
-1. Keep the tab open — bookmark `servellon.net/dissertation-tracker/`
-2. Use Build Log for quick entries during coding sessions (low friction)
-3. Use Memory Capture for longer, reflective entries when you have time
-4. Export JSON weekly as a backup
-5. The CSV export works well for importing into qualitative analysis tools
+1. Bookmark `www.drseim.com/dissertation-tracker/` and keep the tab open
+2. Use **Converse** for capture — talking is lower friction than filling in a form
+3. Clear the **Review** queue regularly; unapproved drafts aren't data yet
+4. Flag anything that needs more thought — it resurfaces via `/entries/unresolved`
+5. Keep the Aura instance awake, or expect the 3-day auto-pause
