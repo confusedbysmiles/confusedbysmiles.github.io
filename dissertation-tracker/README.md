@@ -41,10 +41,12 @@ The backend is **not in this repo** — see [Backend](#backend).
 
 Two layers:
 
-- **localStorage** under `dissertation-tracker-entries` — what the UI renders. Fast, works offline.
-- **Neo4j Aura** — the durable store, reached through the Cloudflare Worker so database credentials never touch the browser.
+- **Neo4j Aura** — the source of truth, reached through the Cloudflare Worker so database credentials never touch the browser.
+- **localStorage** under `dissertation-tracker-entries` — a local mirror and offline fallback.
 
-Writes go to localStorage first, then fire-and-forget to Neo4j. If the worker or database is down the UI keeps working, but **that write may not have been persisted** — check the **Review** tab or `/health` after any session where saves looked slow or errored.
+**Reads** come from Neo4j; `renderTimeline()` falls back to localStorage only if the worker is unreachable (look for `[Timeline] Neo4j unavailable` in the console). This is why the timeline populates correctly on a device that has never been used before.
+
+**Writes** go to localStorage first, then fire-and-forget to Neo4j. If the worker or database is down the UI still looks like it saved, but **that write may not have been persisted** — check `/health` after any session where saves looked slow or errored.
 
 > There is currently **no Export/Import or CSV download** in the app. Earlier versions had one; it was removed. Backups mean a Neo4j Aura snapshot, not a button in the UI. If you're on Aura Free, note that instances auto-pause after 3 days idle and are **deleted 30 days after pausing** — a paused instance shows up as `error code: 1016` from `/health`.
 
