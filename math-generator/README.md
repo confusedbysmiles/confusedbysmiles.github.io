@@ -33,7 +33,7 @@ const ANTHROPIC_API_KEY = 'sk-ant-api03-xxxxxxxxxxxxx';
 
 ### 3. Upload to Your GitHub Repository
 
-Since you're hosting on `servellon.net` through GitHub:
+Since you're hosting on `drseim.com` through GitHub:
 
 1. Create a folder called `math-generator` (or whatever you want)
 2. Put all three files in that folder:
@@ -41,7 +41,7 @@ Since you're hosting on `servellon.net` through GitHub:
    - script.js
    - math-generator-styles.css
 3. Commit and push to GitHub
-4. Your site should be live at `servellon.net/math-generator`
+4. Your site should be live at `drseim.com/math-generator`
 
 ## 💰 API Costs
 
