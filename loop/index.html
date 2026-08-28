@@ -17,64 +17,11 @@
 
     <!-- Scoped styles for this page only. Three of these repair things the
          page would otherwise inherit; see the comments. -->
+    <!-- Page-specific styles. The accessibility repairs that used to live here
+         (underlines, focus ring, left-aligned copy, padding, reduced motion)
+         are now fixed site-wide in sam-seim-styles.css, so only the things
+         genuinely specific to this page remain. -->
     <style>
-        /* Site links are distinguished from body text by colour alone.
-           Underline them here so the distinction survives colour blindness
-           and greyscale printing. */
-        .loop-materials a,
-        .loop-contact a {
-            text-decoration: underline;
-            text-underline-offset: 3px;
-
-            /* The site sets `transition: all` on every link, which animates the
-               focus outline in over 0.3s — sluggish and easy to miss when you
-               are tabbing. Transition colour only, so focus appears at once. */
-            transition: color 0.2s ease;
-
-            /* An address is one unbreakable token. At 200% zoom on a 320px
-               screen it runs off the side with nowhere to wrap. */
-            overflow-wrap: anywhere;
-        }
-
-        /* The stylesheet has no global focus style, so focus falls back to the
-           browser default and disappears entirely wherever an outline is
-           suppressed. Make it explicit and unmissable on this page. */
-        .loop-materials a:focus-visible,
-        .loop-contact a:focus-visible {
-            outline: 3px solid var(--primary);
-            outline-offset: 3px;
-            border-radius: 2px;
-        }
-
-        /* .content-section uses 2.5rem padding, which scales with the root font
-           size: at 200% text on a 320px screen it eats 160px a side and leaves
-           128px for the words, forcing a horizontal scrollbar. Cap it in px at
-           the low end so zoomed text keeps its room. */
-        .loop-page .content-section {
-            padding: clamp(16px, 5vw, 2.5rem);
-        }
-
-        /* .content-section p is justified site-wide. Justification opens
-           irregular rivers of white space and is measurably harder to read for
-           dyslexic readers. Left-align on this page. */
-        .loop-page .content-section p {
-            text-align: left;
-        }
-
-        /* h2 is 1.8rem site-wide, which also doubles under text zoom: at 200%
-           on a 320px screen a single word is wider than the column. Step it
-           down on narrow viewports and let a long word break rather than
-           push the page sideways. */
-        .loop-page .content-section h2 {
-            overflow-wrap: anywhere;
-        }
-
-        @media (max-width: 480px) {
-            .loop-page .content-section h2 {
-                font-size: 1.4rem;
-            }
-        }
-
         .loop-materials {
             list-style: none;
             padding: 0;
@@ -91,6 +38,9 @@
             font-size: 1.15rem;
             font-weight: 500;
             display: inline-block;
+            /* an address is one unbreakable token and will run off a narrow
+               screen under text zoom with nowhere to wrap */
+            overflow-wrap: anywhere;
         }
 
         .loop-note {
@@ -100,18 +50,10 @@
             line-height: 1.6;
         }
 
-        /* --accent (#10b981) is the site-wide colour for .content-section h2.
-           It measures 2.54:1 on white, below the 3.0 that large text needs.
-           --accent-dark reaches 3.77:1, so scope the darker token here. This
-           does not touch the global stylesheet. */
-        .loop-page .content-section h2 {
-            color: var(--accent-dark);
-        }
-
         .loop-lead {
             display: inline-block;
             font-weight: 600;
-            color: #047857;   /* 5.48:1 — this is body-size text, so it needs 4.5 */
+            color: var(--accent-text);
             margin-right: var(--spacing-xs);
         }
 
@@ -119,22 +61,14 @@
             margin-bottom: var(--spacing-sm);
         }
 
+        .loop-contact a {
+            overflow-wrap: anywhere;
+        }
+
         .loop-closing {
             margin-top: var(--spacing-lg);
             font-size: 1.1rem;
             line-height: 1.7;
-        }
-
-        /* The site animates .content-section in on load. Respect a stated
-           preference for reduced motion. */
-        @media (prefers-reduced-motion: reduce) {
-            .loop-page .content-section {
-                animation: none;
-                opacity: 1;
-            }
-            .loop-page * {
-                transition: none !important;
-            }
         }
     </style>
 </head>

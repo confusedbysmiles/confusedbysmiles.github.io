@@ -12,20 +12,30 @@
 
 /* Variables */
 :root {
-    --primary: #7c4dbd;
-    --primary-light: #9b6ed4;
-    --primary-dark: #6a3fa8;
-    --secondary: #e6e6e6;
-    --accent: #10b981;
-    --accent-dark: #059669;
-    --blue: #667eea;
-    --text: #333333;
-    --text-light: #666666;
-    --light: #ffffff;
-    --light-gray: #f5f5f5;
-    --dark: #222222;
-    --shadow: rgba(0, 0, 0, 0.1);
-    --shadow-dark: rgba(0, 0, 0, 0.2);
+    /* Hierarchy: green leads, blue second, plum third.
+       Every hue below clears 4.5:1 as text on both --light and --light-gray,
+       and white clears 4.5:1 on both ends of the header/footer gradient. */
+    --primary: #146b4d;              /* deep forest green — 6.26:1 on --light */
+    --primary-light: #1d8a63;
+    --primary-dark: #0e5138;
+
+    --accent: #3b4a91;               /* indigo — 7.88:1 on --light */
+    --accent-dark: #2e3a73;
+    --accent-text: #3b4a91;          /* kept as an alias: --accent now passes as text */
+
+    --plum: #57406f;                 /* third hue — 8.56:1 on --light */
+    --blue: #3b4a91;                 /* legacy alias, points at --accent */
+    --blue-text: #3b4a91;
+
+    --secondary: #d8dbd6;
+    --text: #252a27;
+    --text-light: #555c57;           /* 6.64:1 on --light */
+    --light: #fbfbfa;                /* cards — off-white, less glare than pure white */
+    --light-gray: #e8eae6;           /* page ground — soft gray-green */
+    --dark: #1c211e;
+
+    --shadow: rgba(28, 33, 30, 0.10);
+    --shadow-dark: rgba(28, 33, 30, 0.20);
     --container-width: 1200px;
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -75,11 +85,51 @@ li {
 a {
     color: var(--primary);
     text-decoration: none;
-    transition: var(--transition);
+    /* colour only: `all` animated the focus outline in over 0.3s, which made
+       the ring fade up slowly while tabbing instead of appearing at once */
+    transition: color 0.3s ease;
 }
 
 a:hover {
-    color: var(--accent);
+    color: var(--accent-text);
+}
+
+/* ---- Accessibility baseline -------------------------------------------- */
+
+/* There was no global focus style, so keyboard focus fell back to the browser
+   default and vanished anywhere an outline was suppressed. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+    /* Several rules set `transition: all`. Some of them (.nav-links a) have
+       the same specificity as this one but sit later in the file, so they win
+       the tie and re-animate outline-width up from 0 — the ring faded in
+       instead of appearing. A focus indicator should never be animated. */
+    transition: none !important;
+}
+
+/* The footer sits on a purple/green gradient, where a purple ring disappears. */
+.footer a:focus-visible {
+    outline-color: var(--light);
+}
+
+/* Links in running text need more than colour to mark them (WCAG 1.4.1).
+   Nav links, cards and buttons are exempt: there the link is evident from
+   its position and shape rather than its colour. */
+.content-section p a,
+.content-section li a,
+main p a,
+main li a,
+.cc-text a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 /* Container */
@@ -87,7 +137,8 @@ a:hover {
     width: 100%;
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 var(--spacing-lg);
+    /* px floor so zoomed text keeps its column on a narrow screen */
+    padding: 0 clamp(16px, 4vw, 2rem);
 }
 
 /* Main Content Area */
@@ -99,7 +150,7 @@ main {
 
 /* Header Styles */
 .header {
-    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: var(--light);
     padding: var(--spacing-lg) 0;
     box-shadow: 0 2px 8px var(--shadow);
@@ -217,7 +268,7 @@ main {
     transform: translateX(-50%);
     width: 100px;
     height: 3px;
-    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     border-radius: 2px;
 }
 
@@ -232,15 +283,18 @@ main {
 .content-section {
     background: var(--light);
     border-radius: var(--border-radius);
-    padding: 2.5rem;
+    /* was 2.5rem: rem padding scales with the root font size, so at 200% text
+       on a 320px screen it took 160px a side and forced a sideways scroll */
+    padding: clamp(16px, 5vw, 2.5rem);
     margin-bottom: var(--spacing-lg);
     box-shadow: 0 2px 8px var(--shadow);
     animation: fadeInUp 0.6s ease-out;
 }
 
 .content-section h2 {
+    overflow-wrap: anywhere;
     font-size: 1.8rem;
-    color: var(--accent);
+    color: var(--accent-text);
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-sm);
     border-bottom: 2px solid var(--secondary);
@@ -250,7 +304,9 @@ main {
     font-size: 1.05rem;
     line-height: 1.8;
     color: var(--text);
-    text-align: justify;
+    /* was `justify`: it opens irregular rivers of white space and is
+       measurably harder going for dyslexic readers */
+    text-align: left;
 }
 
 /* Section Headers */
@@ -291,7 +347,7 @@ main {
 
 .company {
     font-size: 1.15rem;
-    color: var(--accent);
+    color: var(--accent-text);
     margin-bottom: 0.25rem;
 }
 
@@ -351,7 +407,7 @@ main {
 }
 
 .school {
-    color: var(--accent);
+    color: var(--accent-text);
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
@@ -500,8 +556,9 @@ main {
     transition: var(--transition);
 }
 
-.password-input:focus {
-    outline: none;
+.password-input:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
     border-color: var(--primary);
 }
 
@@ -542,7 +599,7 @@ main {
 
 /* Footer Styles */
 .footer {
-    background: linear-gradient(135deg, #7c4dbd 0%, #10b981 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: var(--light);
     padding: var(--spacing-xl) 0;
     margin-top: 4rem;
@@ -672,9 +729,12 @@ main {
 }
 
 .cc-text a {
-    color: #ffd700;
+    /* was #ffd700: 1.81:1 over the green half of the footer gradient. White is
+       2.54 there and 5.75 over the purple half. The dotted rule below is what
+       marks it as a link, so colour is not carrying that on its own. */
+    color: var(--light);
     text-decoration: none;
-    border-bottom: 1px dotted #ffd700;
+    border-bottom: 1px dotted var(--light);
     transition: color 0.2s ease;
 }
 
@@ -1063,12 +1123,12 @@ main {
 }
 
 .certification-card .card-icon { color: var(--primary); }
-.activity-card .card-icon { color: var(--accent); }
+.activity-card .card-icon { color: var(--accent-text); }
 .card-header-text { flex: 1; }
 
 .card-title { font-size: 1.25rem; color: var(--text); font-weight: 600; line-height: 1.2; margin-bottom: 0.25rem; }
 .card-subtitle { color: var(--primary); font-weight: 500; font-size: 0.95rem; }
-.activity-card .card-subtitle { color: var(--accent); }
+.activity-card .card-subtitle { color: var(--accent-text); }
 .card-date { color: var(--text-light); font-size: 0.85rem; margin-bottom: 0.75rem; }
 .card-description { color: var(--text-light); line-height: 1.6; font-size: 0.95rem; flex-grow: 1; }
 
@@ -1418,7 +1478,7 @@ cite { font-style: italic; }
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--accent);
+    color: var(--accent-text);
     margin-bottom: 0.4rem;
 }
 
@@ -1436,4 +1496,30 @@ cite { font-style: italic; }
     border-radius: 8px;
     box-shadow: 0 2px 8px var(--shadow);
     margin-bottom: 0;
+}
+
+/* ---- Reduced motion ----------------------------------------------------- */
+/* .content-section fades and slides in on load, and cards lift on hover.
+   Honour a stated preference for less movement. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .content-section {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ---- Narrow screens ----------------------------------------------------- */
+@media (max-width: 480px) {
+    .content-section h2 {
+        font-size: 1.4rem;
+    }
 }
