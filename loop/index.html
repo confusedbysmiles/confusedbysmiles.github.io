@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Belong in the Loop - Sam Seim</title>
+
+    <!-- Unlinked for now: no nav entry, and not indexed.
+         Delete the next line when the session materials go public. -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <meta name="description" content="Session materials for You Belong in the Loop: Building Agentic AI Workflows Inside Real Constraints — 2027 Nebraska Women in STEM Conference.">
+
+    <!-- Site-wide stylesheet -->
+    <link rel="stylesheet" href="../shared/sam-seim-styles.css">
+    <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
+
+    <!-- Scoped styles for this page only. Three of these repair things the
+         page would otherwise inherit; see the comments. -->
+    <style>
+        /* Site links are distinguished from body text by colour alone.
+           Underline them here so the distinction survives colour blindness
+           and greyscale printing. */
+        .loop-materials a,
+        .loop-contact a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            /* The site sets `transition: all` on every link, which animates the
+               focus outline in over 0.3s — sluggish and easy to miss when you
+               are tabbing. Transition colour only, so focus appears at once. */
+            transition: color 0.2s ease;
+
+            /* An address is one unbreakable token. At 200% zoom on a 320px
+               screen it runs off the side with nowhere to wrap. */
+            overflow-wrap: anywhere;
+        }
+
+        /* The stylesheet has no global focus style, so focus falls back to the
+           browser default and disappears entirely wherever an outline is
+           suppressed. Make it explicit and unmissable on this page. */
+        .loop-materials a:focus-visible,
+        .loop-contact a:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        /* .content-section uses 2.5rem padding, which scales with the root font
+           size: at 200% text on a 320px screen it eats 160px a side and leaves
+           128px for the words, forcing a horizontal scrollbar. Cap it in px at
+           the low end so zoomed text keeps its room. */
+        .loop-page .content-section {
+            padding: clamp(16px, 5vw, 2.5rem);
+        }
+
+        /* .content-section p is justified site-wide. Justification opens
+           irregular rivers of white space and is measurably harder to read for
+           dyslexic readers. Left-align on this page. */
+        .loop-page .content-section p {
+            text-align: left;
+        }
+
+        /* h2 is 1.8rem site-wide, which also doubles under text zoom: at 200%
+           on a 320px screen a single word is wider than the column. Step it
+           down on narrow viewports and let a long word break rather than
+           push the page sideways. */
+        .loop-page .content-section h2 {
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 480px) {
+            .loop-page .content-section h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .loop-materials {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .loop-materials li + li {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--secondary);
+        }
+
+        .loop-materials a {
+            font-size: 1.15rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .loop-note {
+            margin-top: var(--spacing-xs);
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* --accent (#10b981) is the site-wide colour for .content-section h2.
+           It measures 2.54:1 on white, below the 3.0 that large text needs.
+           --accent-dark reaches 3.77:1, so scope the darker token here. This
+           does not touch the global stylesheet. */
+        .loop-page .content-section h2 {
+            color: var(--accent-dark);
+        }
+
+        .loop-lead {
+            display: inline-block;
+            font-weight: 600;
+            color: #047857;   /* 5.48:1 — this is body-size text, so it needs 4.5 */
+            margin-right: var(--spacing-xs);
+        }
+
+        .loop-contact p {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .loop-closing {
+            margin-top: var(--spacing-lg);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* The site animates .content-section in on load. Respect a stated
+           preference for reduced motion. */
+        @media (prefers-reduced-motion: reduce) {
+            .loop-page .content-section {
+                animation: none;
+                opacity: 1;
+            }
+            .loop-page * {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="loop-page">
+    <!-- HEADER - Loaded from shared/header.html -->
+    <div id="header-placeholder"></div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">You Belong in the Loop</h1>
+            <p class="page-subtitle">Building Agentic AI Workflows Inside Real Constraints</p>
+        </div>
+
+        <div class="content-section">
+            <h2>About this session</h2>
+            <p>
+                Most AI sessions hand you prompts that will be obsolete by the time you get
+                back to your desk. This one is about architecture instead: how to audit your
+                own work, identify what is genuinely delegable, and build something that runs
+                without you having to babysit it — inside real constraints, where you cannot
+                paste client data into a chatbot and the network is watching. One rule, one
+                method, and a page you do not have to photograph.
+            </p>
+            <p>
+                Presented by Sam Seim (they/them) at the 2027 Nebraska Women in STEM
+                Conference, Cornhusker Marriott, Lincoln, March 2–3, 2027.
+            </p>
+        </div>
+
+        <div class="content-section">
+            <h2>Materials</h2>
+            <ul class="loop-materials">
+                <li>
+                    <a href="You-Belong-in-the-Loop_NWSTEM2027_Seim_SLIDES.pdf">Slides: You Belong in the Loop (PDF, 187&nbsp;KB)</a>
+                    <p class="loop-note">The full deck as presented, 32 slides.</p>
+                </li>
+                <li>
+                    <a href="Handout_Audit-and-Reference_NWSTEM2027_Seim_PRINT.pdf">Workflow audit and reference card (PDF, 58&nbsp;KB)</a>
+                    <p class="loop-note"><span class="loop-lead">Start here.</span>One double-sided sheet. The audit worksheet on the front, the reference card on the back. Print- and phone-friendly.</p>
+                </li>
+                <li>
+                    <a href="Constraint-Patterns_NWSTEM2027_Seim_PRINT.pdf">Constraint patterns (PDF, 45&nbsp;KB)</a>
+                    <p class="loop-note">Building inside institutional limits — data handling, network, and procurement, and what to say to whom.</p>
+                </li>
+                <li>
+                    <a href="Further-Reading_NWSTEM2027_Seim_PRINT.pdf">Further reading (PDF, 35&nbsp;KB)</a>
+                    <p class="loop-note">Annotated. Every citation checked against the publisher's record before it was printed.</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content-section loop-contact">
+            <h2>Questions</h2>
+            <p><a href="mailto:sam@drseim.com">sam@drseim.com</a></p>
+            <p><a href="https://www.linkedin.com/in/sebseim">linkedin.com/in/sebseim</a></p>
+            <p class="loop-closing">
+                Nobody had to photograph anything. Please don't feel obliged to read any of it.
+            </p>
+        </div>
+    </main>
+
+    <!-- FOOTER - Loaded from shared/footer.html -->
+    <div id="footer-placeholder"></div>
+
+    <!-- SCRIPTS - local copy resolves ../shared/ correctly from a subdirectory -->
+    <script src="component-loader.js"></script>
+</body>
+</html>
