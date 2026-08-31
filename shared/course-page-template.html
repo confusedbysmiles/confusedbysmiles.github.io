@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ============================================================================
+  COURSE PAGE TEMPLATE - reflection + artifacts
+  ============================================================================
+  Copy this file to the repo root (or a course folder) and rename it, e.g.
+  teac995.html, then work through the TODO markers. It is pre-filled with
+  TEAC 995 (Fall 2024) as a worked example.
+
+  Rules this template follows, so the site stays one system:
+    - NO page-local <style> block. Every class used here lives in
+      shared/sam-seim-styles.css. If a course genuinely needs a new component
+      (an embed, a viewer), add it to the shared sheet, not to this page.
+    - Script path is relative. Root-level page  -> shared/component-loader.js
+                               course subfolder -> component-loader.js
+                               (and ../shared/sam-seim-styles.css for the CSS)
+    - Artifact count: two or three. Four is a filing cabinet.
+    - Withholding is performed, not hidden: cut roles and jurisdictions,
+      keep the rules and the verbs. See the study-site line below.
+  ============================================================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TODO: title -->
+    <title>TEAC 995 - Sam Seim</title>
+    <!-- TODO: one sentence, for search results and link previews -->
+    <meta name="description" content="TEAC 995 Doctoral Seminar, Fall 2024: pilot study extending EDPS 935.">
+    <link rel="stylesheet" href="shared/sam-seim-styles.css">
+    <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container">
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/classes.html">UNL PhD Coursework</a> &nbsp;/&nbsp; <span>TEAC 995</span>
+        </nav>
+
+        <!-- ============================== HERO ============================== -->
+        <div class="course-hero">
+            <p class="course-hero__term">Fall 2024</p>              <!-- TODO -->
+            <p class="course-hero__code">TEAC 995</p>                <!-- TODO -->
+            <h1 class="course-hero__title">Doctoral Seminar</h1>     <!-- TODO -->
+            <p class="course-hero__meta">
+                <span>University of Nebraska&ndash;Lincoln</span>
+                <span class="meta-divider" aria-hidden="true">|</span>
+                <span>3 credit hours</span>
+                <span class="meta-divider" aria-hidden="true">|</span>
+                <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+            </p>
+        </div>
+
+        <!-- =========================== REFLECTION =========================== -->
+        <!--
+          TODO: Sam writes this. Two to four paragraphs, first person, in the
+          register of the rest of the site. What the course was for, what it
+          changed, what it fed. Not a summary of the syllabus - the syllabus is
+          not an artifact. This is the section that makes the page worth having;
+          everything below it is a manifest.
+
+          The paragraph below is a placeholder made of verified facts only. It
+          is not a reflection. Replace it.
+        -->
+        <section class="content-section course-reflection" aria-labelledby="reflection-heading">
+            <h2 id="reflection-heading">What this course was</h2>
+            <p>
+                TEAC 995 extended the assignment sequence from EDPS 935 into a pilot study, run at an
+                alternative school in a smaller district inside a larger Midwest metro. The seminar carried
+                the IRB process, the fieldwork, and a first article draft.
+            </p>
+        </section>
+
+        <!-- ============================ ARTIFACTS ============================ -->
+        <!--
+          TODO: two or three. Each one needs a real destination - a page, a PDF,
+          a deck, a repo. An artifact card with no link is a promise, and this
+          site has enough of those. Delete any card you cannot fill.
+
+          .artifact-kind is the small label: Paper / Deck / Dataset / Code /
+          Protocol / Video / Podcast. It tells a reader what they are opening.
+        -->
+        <section class="content-section" aria-labelledby="artifacts-heading">
+            <h2 id="artifacts-heading">Artifacts</h2>
+
+            <div class="artifact-cards">
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">TODO: artifact one</h3>
+                    <p class="artifact-description">
+                        One or two sentences. What it is, and what it was for.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Paper</span>
+                        <a class="course-entry__link" href="#">Read it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">TODO: artifact two</h3>
+                    <p class="artifact-description">
+                        One or two sentences. What it is, and what it was for.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Protocol</span>
+                        <a class="course-entry__link" href="#">Read it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">TODO: artifact three (optional)</h3>
+                    <p class="artifact-description">
+                        One or two sentences. What it is, and what it was for.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Deck</span>
+                        <a class="course-entry__link" href="#">Open it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ====================== OPTIONAL: EMBED BLOCK ======================
+          Delete if unused. For a video or deck, use the pattern already in
+          teac259a/index.html, but move its .embed-container / .video-container
+          / .slides-container rules into shared/sam-seim-styles.css first -
+          right now they live in a page-local <style> block along with a
+          #667eea gradient that predates the current palette.
+        -->
+
+        <!-- ====================== OPTIONAL: NOT PUBLISHED ====================
+          Where course material exists but cannot go online (IRB-restricted
+          data, student work, a district's identifying detail), say so plainly
+          rather than leaving a gap. Perform the withholding.
+        -->
+        <section class="content-section" aria-labelledby="withheld-heading">
+            <h2 id="withheld-heading">Not published here</h2>
+            <p>
+                Consent documents, the IRB file, and the raw fieldwork are held under the study's approval and
+                are not posted. Site and district identifiers are withheld throughout. What is here is the
+                writing that came out of them.
+            </p>
+        </section>
+
+        <p class="breadcrumb"><a href="/classes.html">&larr; Back to coursework</a></p>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="shared/component-loader.js"></script>
+</body>
+</html>

@@ -1523,3 +1523,341 @@ cite { font-style: italic; }
         font-size: 1.4rem;
     }
 }
+
+/* ══════════════════════════════════════════
+   COURSEWORK INDEX (classes.html)
+   Replaces the old .courses-grid / .course-card treatment, which carried a
+   page-local #667eea → #764ba2 gradient that predated this palette. Nothing
+   here sets a literal colour: every value is a token, so the index moves with
+   the rest of the site.
+   ══════════════════════════════════════════ */
+
+.program-summary {
+    background: var(--light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary);
+    padding: clamp(16px, 4vw, var(--spacing-lg));
+    margin-bottom: var(--spacing-xl);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.program-summary p {
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    max-width: 68ch;
+}
+
+.program-summary p:last-of-type { margin-bottom: 0; }
+
+.program-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md) var(--spacing-lg);
+    margin: var(--spacing-lg) 0 0;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--secondary);
+}
+
+.program-facts dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-text);
+    margin-bottom: 0.25rem;
+}
+
+.program-facts dd {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+/* ---- Legend ------------------------------------------------------------- */
+
+.index-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    padding: 0 0 0 clamp(0px, 1vw, 4px);
+    list-style: none;
+}
+
+.index-legend li { margin: 0; }
+
+/* ---- Strand groupings --------------------------------------------------- */
+
+.strand { margin-bottom: var(--spacing-xl); }
+
+.strand__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--secondary);
+}
+
+.strand__title {
+    font-size: 1.5rem;
+    color: var(--accent-text);
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.strand__count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+.strand__gloss {
+    color: var(--text-light);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    max-width: 68ch;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ---- Course entries ----------------------------------------------------- */
+
+.course-list {
+    display: grid;
+    /* auto-fill, not auto-fit: a strand with one course (Teaching Practice)
+       should sit in one column, not stretch a single card across 1200px. */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.course-entry {
+    margin: 0;
+    background: var(--light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+    padding: var(--spacing-lg);
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    /* No transform on hover and no entrance animation: this is a record, and
+       fifteen cards staggering up the screen made it read as a brochure. */
+    transition: border-left-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-entry--live { border-left-color: var(--primary); }
+
+.course-entry--live:hover,
+.course-entry--live:focus-within {
+    border-left-color: var(--accent);
+    box-shadow: 0 4px 14px var(--shadow-dark);
+}
+
+.course-entry__term {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.course-entry__code {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.03em;
+    margin-bottom: 0.15rem;
+}
+
+.course-entry__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: var(--spacing-sm);
+}
+
+.course-entry__note {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: var(--spacing-md);
+    flex-grow: 1;
+}
+
+.course-entry__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    /* flex-start + margin-left:auto on the link, rather than space-between:
+       the foot can hold one, two or three items (status, corpus flag, link)
+       and space-between scatters three of them. */
+    justify-content: flex-start;
+    gap: var(--spacing-sm) var(--spacing-md);
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--secondary);
+}
+
+/* A text link, not a gradient pill. The arrow is decorative and hidden from
+   assistive tech; the link text carries the destination on its own. */
+.course-entry__link {
+    margin-left: auto;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+
+.course-entry__link:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
+.course-entry__link .arrow { margin-left: 0.35rem; }
+
+/* ---- Status ------------------------------------------------------------- */
+
+.course-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.course-status .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.course-status--live { color: var(--primary-dark); }
+.course-status--live .dot { background: var(--primary-light); }
+
+.course-status--drafting { color: #8a4b0a; }
+.course-status--drafting .dot { background: #d97706; }
+
+.course-status--archive { color: var(--text-light); }
+.course-status--archive .dot { background: #8b938d; }
+
+@media (max-width: 768px) {
+    .course-list { grid-template-columns: 1fr; }
+    .strand__head { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+}
+
+/* ══════════════════════════════════════════
+   COURSE PAGE (per-course template)
+   Left-aligned hero + reflection + artifact list. Shares tokens and the
+   .course-entry__link text-link with the coursework index, so a course page
+   and the index it came from read as one system.
+   ══════════════════════════════════════════ */
+
+.course-hero {
+    background: var(--light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary);
+    padding: clamp(16px, 4vw, var(--spacing-lg));
+    margin-bottom: var(--spacing-xl);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.course-hero__term {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+}
+
+.course-hero__code {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--primary);
+    margin-bottom: 0.2rem;
+}
+
+.course-hero__title {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: var(--spacing-md);
+}
+
+.course-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm) var(--spacing-md);
+    align-items: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.course-hero__meta .meta-divider { color: var(--secondary); font-weight: 300; user-select: none; }
+
+/* The reflection is the part that is actually mine, so it gets the wider
+   measure and the larger type; the artifact list is a manifest, not an essay. */
+.course-reflection p {
+    font-size: 1.08rem;
+    line-height: 1.85;
+    max-width: 68ch;
+}
+
+.artifact-card__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm) var(--spacing-md);
+    margin-top: 0.5rem;
+}
+
+.artifact-kind {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+    .course-hero__meta { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+    .course-hero__meta .meta-divider { display: none; }
+}
+
+/* ---- Dissertation corpus flag ------------------------------------------- */
+/* A separate axis from status. Status says whether a page exists; this says
+   the material is in the dissertation corpus. Deliberately a diamond in the
+   third hue so it never reads as a fourth status dot. */
+
+.corpus-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--plum);
+}
+
+.corpus-flag .mark {
+    width: 8px;
+    height: 8px;
+    background: var(--plum);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+}

@@ -4,85 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNL PhD Coursework - Sam Seim</title>
+    <meta name="description" content="Coursework record for Sam Seim's PhD in Educational Studies at the University of Nebraska-Lincoln, Fall 2022 through Summer 2026, grouped by strand.">
     <link rel="stylesheet" href="shared/sam-seim-styles.css">
-    <style>
-        .intro-section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .intro-section h2 {
-            font-size: 1.75rem;
-            color: #333;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .intro-section p { color: #666; line-height: 1.8; font-size: 1.05rem; }
-
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .course-card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-top: 4px solid #667eea;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .course-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-
-        .course-card:nth-child(1) { animation-delay: 0.1s; }
-        .course-card:nth-child(2) { animation-delay: 0.2s; }
-        .course-card:nth-child(3) { animation-delay: 0.3s; }
-        .course-card:nth-child(4) { animation-delay: 0.4s; }
-
-        .course-card h3 { color: #667eea; font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 700; }
-
-        .course-title { font-size: 1.1rem; color: #333; font-weight: 600; margin-bottom: 1rem; line-height: 1.4; }
-
-        .course-description { color: #666; line-height: 1.6; font-size: 0.95rem; flex-grow: 1; margin-bottom: 1.5rem; }
-
-        .course-link {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .course-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-        }
-
-        @media (max-width: 768px) {
-            .courses-grid { grid-template-columns: 1fr; }
-            .intro-section { padding: 1.5rem; }
-        }
-    </style>
     <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
 </head>
 <body>
@@ -91,64 +14,344 @@
     <main class="container">
         <div class="page-header">
             <h1 class="page-title">UNL PhD Coursework</h1>
+            <p class="page-subtitle">Fall 2022 &ndash; Summer 2026</p>
         </div>
-        
-        <section class="intro-section">
-            <h2>Course Artifacts</h2>
+
+        <section class="program-summary" aria-labelledby="summary-heading">
+            <h2 id="summary-heading" class="section-eyebrow">Program record</h2>
             <p>
-                Welcome to my collection of TEAC course pages and projects. These pages document my journey through 
-                my PhD program in pursuit of a degree in Educational Studies with a focus on Innovative Learning Technologies 
-                and a certificate in Mixed Methods Research. Below is a selection of my coursework showcasing research and practical 
-                applications of educational philosophy. Each course represents a significant component 
-                of my professional development in educational studies and research methodologies.
+                Fifteen courses toward a PhD in Educational Studies, with a specialization in Innovative
+                Learning Technologies and a graduate certificate in Mixed Methods Research. They are grouped
+                below by strand &mdash; methods, theory, design, practice, seminar &mdash; rather than by term.
             </p>
+            <p>
+                Grouping coursework thematically is a retrospective act. The registrar handed these out in
+                whatever order they were offered; the strands are something I imposed afterward, and they hold
+                together better in some places than others. Five courses have artifact pages. The rest are
+                archived coursework &mdash; weekly writing, annotated bibliographies, stance statements, final
+                projects &mdash; and are listed here because a record that only shows the finished parts is not
+                a record.
+            </p>
+            <p>
+                Some of this is also dissertation data. The technology autobiography from Fall 2022 is
+                flagged below because it was written in my first term, when I still thought the dissertation
+                would be about gamification in a maths classroom &mdash; which is exactly what makes it usable.
+                It was not written for the argument it now serves. Realistically most of what is on this page
+                is data; the flag marks where that is deliberate rather than merely true.
+            </p>
+            <dl class="program-facts">
+                <div>
+                    <dt>Degree</dt>
+                    <dd>PhD, Educational Studies<br>University of Nebraska&ndash;Lincoln</dd>
+                </div>
+                <div>
+                    <dt>Specialization</dt>
+                    <dd>Innovative Learning Technologies</dd>
+                </div>
+                <div>
+                    <dt>Certificate</dt>
+                    <dd>Mixed Methods Research</dd>
+                </div>
+                <div>
+                    <dt>Listed here</dt>
+                    <dd>15 courses across 5 strands</dd>
+                </div>
+            </dl>
         </section>
 
-        <div class="courses-grid">
-            <div class="course-card">
-                <h3>TEAC 860</h3>
-                <p class="course-title">Production and Utilization of Instructional Materials</p>
-                <p class="course-description">
-                    View my capstone project focused on AI integration in educational contexts, exploring innovative approaches to technology-enhanced learning.
-                </p>
-                <a href="teac860/" class="course-link">View Course</a>
-            </div>
+        <ul class="index-legend">
+            <li><span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span></li>
+            <li><span class="course-status course-status--drafting"><span class="dot" aria-hidden="true"></span>Page in progress</span></li>
+            <li><span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span></li>
+            <li><span class="corpus-flag"><span class="mark" aria-hidden="true"></span>Dissertation corpus</span></li>
+        </ul>
 
-            <div class="course-card">
-                <h3>TEAC 859</h3>
-                <p class="course-title">Designing Learning Experiences</p>
-                <p class="course-description">
-                    A selection of artifacts from this class exploring course concepts and reflections on learning design principles and methodologies.
-                </p>
-                <a href="teac859/" class="course-link">View Course</a>
+        <!-- ============================= STRAND 1 ============================= -->
+        <section class="strand" aria-labelledby="strand-methods">
+            <div class="strand__head">
+                <h2 class="strand__title" id="strand-methods">Research Methods &amp; Measurement</h2>
+                <span class="strand__count">4 courses</span>
             </div>
+            <p class="strand__gloss">
+                The methodological floor. Qualitative approaches first, then a seminar, then measurement, then
+                the certificate capstone that makes the two halves argue in the same study.
+            </p>
+            <ul class="course-list">
 
-            <div class="course-card">
-                <h3>TEAC 259A</h3>
-                <p class="course-title">Instructional Technology in Elementary Schools</p>
-                <p class="course-description">
-                    Artifacts from my practicum work for TEAC 905 assisting with this class in Fall 2025, focusing on elementary education technology integration.
-                </p>
-                <a href="teac259a/" class="course-link">View Course</a>
-            </div>
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Spring 2024</p>
+                    <p class="course-entry__code">EDPS 900K</p>
+                    <p class="course-entry__title">Qualitative Approaches to Educational Research</p>
+                    <p class="course-entry__note">
+                        First formal qualitative methods coursework in the program. Weekly reading and the
+                        assignment sequence that set up EDPS 935.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
 
-            <div class="course-card">
-                <h3>TEAC 995</h3>
-                <p class="course-title">Doctoral Seminar</p>
-                <p class="course-description">
-                    Extending work from EDPS 935, a pilot study conducted at an alternative school within a smaller district in a larger metro area in the Midwest.
-                </p>
-                <a href="teac995.html" class="course-link">View Course</a>
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2024</p>
+                    <p class="course-entry__code">EDPS 935</p>
+                    <p class="course-entry__title">Seminar in Qualitative Research</p>
+                    <p class="course-entry__note">
+                        Eight weeks of seminar with Wayne Babchuk, plus the assignment sequence that became the
+                        pilot study written up in TEAC 995 the same term.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--live">
+                    <p class="course-entry__term">Spring 2026</p>
+                    <p class="course-entry__code">EDPS 936</p>
+                    <p class="course-entry__title">Mixed Methods Research</p>
+                    <p class="course-entry__note">
+                        Capstone for the Mixed Methods Research certificate. Eleven modules and a full research
+                        portfolio: purpose statement, rationale, working definition, procedural diagram, joint
+                        display, article analysis, references.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+                        <a class="course-entry__link" href="/edps936/index.html">Research portfolio<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Summer 2026</p>
+                    <p class="course-entry__code">EDPS 870</p>
+                    <p class="course-entry__title">Introduction to Educational and Psychological Measurement</p>
+                    <p class="course-entry__note">
+                        Test construction, item analysis, reliability, validity, fairness. Two build
+                        assignments: developing a measure, and a validity study.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- ============================= STRAND 2 ============================= -->
+        <section class="strand" aria-labelledby="strand-theory">
+            <div class="strand__head">
+                <h2 class="strand__title" id="strand-theory">Critical Theory &amp; Equity</h2>
+                <span class="strand__count">2 courses</span>
             </div>
-            <div class="course-card">
-                <h3>EDPS 936</h3>
-                <p class="course-title">Mixed Methods Research</p>
-                <p class="course-description">
-                Capstone course for Mixed Methods Research (MMR) Certificate.
-                </p>
-                <a href="/edps936/index.html" class="course-link">View Course</a>
+            <p class="strand__gloss">
+                Where the dissertation's de/colonial framing comes from. Both ran in Fall 2023, back to back.
+            </p>
+            <ul class="course-list">
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2023</p>
+                    <p class="course-entry__code">TEAC 924J</p>
+                    <p class="course-entry__title">Equity and STEM Education Research</p>
+                    <p class="course-entry__note">
+                        Fifteen weeks. Produced an equity stance statement, an annotated bibliography, an expert
+                        presentation, and a final project.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2023</p>
+                    <p class="course-entry__code">TEAC 949B</p>
+                    <p class="course-entry__title">Critical, Anti-colonial, and Decolonizing Theories in Education</p>
+                    <p class="course-entry__note">
+                        The reading the dissertation still runs on. Fifteen weeks of seminar writing, a final
+                        project, and a course self-reflection.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- ============================= STRAND 3 ============================= -->
+        <section class="strand" aria-labelledby="strand-design">
+            <div class="strand__head">
+                <h2 class="strand__title" id="strand-design">Learning Technologies &amp; Design</h2>
+                <span class="strand__count">6 courses</span>
             </div>
-        </div>
+            <p class="strand__gloss">
+                The specialization. A survey, then mathematics, then two passes at AI and APIs three years
+                apart, then the two production courses where things actually had to be built.
+            </p>
+            <ul class="course-list">
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2022</p>
+                    <p class="course-entry__code">TEAC 880A</p>
+                    <p class="course-entry__title">Survey of Instructional Technology</p>
+                    <p class="course-entry__note">
+                        First course in the program. A technology autobiography, a school technology survey with
+                        its own dataset, and a technology portfolio. The autobiography predates the dissertation
+                        by three years and does not know it is evidence.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                        <span class="corpus-flag"><span class="mark" aria-hidden="true"></span>Dissertation corpus</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Spring 2023</p>
+                    <p class="course-entry__code">TEAC 882D</p>
+                    <p class="course-entry__title">Artificial Intelligence and APIs in the Design of Learning Experiences</p>
+                    <p class="course-entry__note">
+                        Chatbots, society and education, taught by Justin Olmanson the semester after ChatGPT
+                        went public. Fifteen weeks, a resource collection, and a final project built around
+                        AI-assisted narrative assessment.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Spring 2024</p>
+                    <p class="course-entry__code">TEAC 880E</p>
+                    <p class="course-entry__title">Instructional Technology in Mathematics</p>
+                    <p class="course-entry__note">
+                        Seven modules and a research proposal. Mathematics and instructional technology in one
+                        course, which is the intersection the dissertation ended up sitting in.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--live">
+                    <p class="course-entry__term">Spring 2025</p>
+                    <p class="course-entry__code">TEAC 860</p>
+                    <p class="course-entry__title">Production and Utilization of Instructional Materials</p>
+                    <p class="course-entry__note">
+                        Capstone: a Management Information Systems course rebuilt for traditional and adult
+                        learners, with the AI used in the rebuild made visible rather than laundered. Also a
+                        podcast, a three-pillar learning resource evaluation, and a set of vibe-coded projects.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+                        <a class="course-entry__link" href="/teac860/">Capstone project<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--live">
+                    <p class="course-entry__term">Fall 2025</p>
+                    <p class="course-entry__code">TEAC 859</p>
+                    <p class="course-entry__title">Designing Learning Experiences</p>
+                    <p class="course-entry__note">
+                        Fifteen weeks with the notes kept in public. The course page carries the weekly notes
+                        browser, a mind map, the waves piece, an educational-lens artifact, and the final project.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+                        <a class="course-entry__link" href="/teac859/">Course artifacts<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Spring 2026</p>
+                    <p class="course-entry__code">TEAC 882B</p>
+                    <p class="course-entry__title">Advanced Web Design and Databases</p>
+                    <p class="course-entry__note">
+                        JavaScript, APIs and four kinds of database, taught as a prototyping practicum. Produced
+                        the math problem generator, a prototyping deck, and the 10(D) 8(Re) framework write-up
+                        on learning technology design.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- ============================= STRAND 4 ============================= -->
+        <section class="strand" aria-labelledby="strand-practice">
+            <div class="strand__head">
+                <h2 class="strand__title" id="strand-practice">Teaching Practice</h2>
+                <span class="strand__count">1 course</span>
+            </div>
+            <p class="strand__gloss">
+                The practicum. The only strand where somebody else's students were in the room.
+            </p>
+            <ul class="course-list">
+
+                <li class="course-entry course-entry--live">
+                    <p class="course-entry__term">Fall 2025</p>
+                    <p class="course-entry__code">TEAC 905 &middot; TEAC 259A</p>
+                    <p class="course-entry__title">Practicum: Instructional Technology in Elementary Schools</p>
+                    <p class="course-entry__note">
+                        Practicum credit earned assisting with TEAC 259A. An introduction video, an interactive
+                        deck built for the students, and the badge icon set for the course's micro-credentials.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+                        <a class="course-entry__link" href="/teac259a/">Practicum materials<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- ============================= STRAND 5 ============================= -->
+        <section class="strand" aria-labelledby="strand-seminar">
+            <div class="strand__head">
+                <h2 class="strand__title" id="strand-seminar">Doctoral Seminar</h2>
+                <span class="strand__count">2 courses</span>
+            </div>
+            <p class="strand__gloss">
+                Bookends, two years apart. The first asked what the dissertation might be. The second ran a
+                pilot to find out.
+            </p>
+            <ul class="course-list">
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2022</p>
+                    <p class="course-entry__code">TEAC 995A</p>
+                    <p class="course-entry__title">Doctoral Seminar</p>
+                    <p class="course-entry__note">
+                        Fourteen weeks and the program's first literature review.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--archive"><span class="dot" aria-hidden="true"></span>Archived coursework</span>
+                    </div>
+                </li>
+
+                <li class="course-entry course-entry--archive">
+                    <p class="course-entry__term">Fall 2024</p>
+                    <p class="course-entry__code">TEAC 995</p>
+                    <p class="course-entry__title">Doctoral Seminar</p>
+                    <p class="course-entry__note">
+                        Extending EDPS 935: a pilot study at an alternative school in a smaller district inside a
+                        larger Midwest metro. IRB documentation, the research file, and a TEEM article draft.
+                    </p>
+                    <div class="course-entry__foot">
+                        <span class="course-status course-status--drafting"><span class="dot" aria-hidden="true"></span>Page in progress</span>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <section class="content-section" aria-labelledby="omissions">
+            <h2 id="omissions">A note on what is not here</h2>
+            <p>
+                Two statistics courses on the program of study, EDPS 859 and EDPS 860, are left off this page.
+                They were taken, they counted, and they produced problem sets rather than artifacts. Dissertation
+                hours (TEAC 999) are tracked separately in the
+                <a href="/dissertation-tracker/">dissertation tracker</a>.
+            </p>
+        </section>
     </main>
 
     <div id="footer-placeholder"></div>
