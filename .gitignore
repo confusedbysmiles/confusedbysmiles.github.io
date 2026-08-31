@@ -1,2 +1,36 @@
+# This repo is public and serves drseim.com from main. Anything committed
+# here is published. Each entry below says why it stays out.
+
+# --- macOS / editor cruft -------------------------------------------------
+.DS_Store
+.idea/
+
+# --- Claude Code working state --------------------------------------------
+# Local worktrees and session state, ~26MB and specific to this machine.
+# Previously only in .git/info/exclude, which is local and not shared.
+.claude/
+
+# --- Cloudflare Workers ---------------------------------------------------
+# cloudflare-workers/ is its own git repository. Committing it here would
+# create a broken nested repo or a gitlink pointing at nothing. Its
+# wrangler.toml also carries the KV namespace id and R2 bucket name, which
+# do not belong in a public repo.
+cloudflare-workers/
 .wrangler/
 neo4j-worker/.wrangler/
+
+# --- History purge backup -------------------------------------------------
+# The safety bundle from a git history purge, 6.2MB. Committing it would
+# republish whatever the purge was meant to remove.
+.purge-backup.bundle
+*.bundle
+
+# --- Google Drive sync scratch --------------------------------------------
+# Drive's own in-progress transfer folders. They appear and vanish while the
+# folder is syncing, so they otherwise sit in git status as permanent noise.
+.tmp.driveupload/
+.tmp.drivedownload/
+
+# --- Local lab setup ------------------------------------------------------
+# DVWA lab scaffolding for SCS 275; not part of the site.
+scs275-lab-setup/
