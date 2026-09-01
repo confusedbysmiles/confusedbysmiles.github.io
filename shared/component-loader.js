@@ -37,8 +37,14 @@ function setActiveNavLink() {
         'classes': 'nav-classes'
     };
     
-    // Set active class
-    const navId = navMap[pageName];
+    // A course subfolder (/teac924j/, /edps936/) is still the Classes section,
+    // so keep that nav item lit rather than lighting nothing.
+    let navId = navMap[pageName];
+    // Override, not fallback: /teac924j/index.html resolves to pageName
+    // "index", which would otherwise light Home.
+    if (/^\/(teac|edps)[0-9]/i.test(currentPath)) {
+        navId = 'nav-classes';
+    }
     if (navId) {
         setTimeout(() => {
             const navLink = document.getElementById(navId);
@@ -51,8 +57,13 @@ function setActiveNavLink() {
 
 // Load components when DOM is ready
 document.addEventListener('DOMContentLoaded', async function() {
-    await loadComponent('header-placeholder', 'shared/header.html');
-    await loadComponent('footer-placeholder', 'shared/footer.html');
+    // Root-absolute, not relative. This file is loaded from the repo root AND
+    // from course subfolders; a relative 'shared/header.html' resolves to
+    // /teac924j/shared/header.html from a subfolder and 404s. That is why each
+    // course folder used to carry its own near-identical copy of this script.
+    // The site is served from the domain root, so /shared/ is always correct.
+    await loadComponent('header-placeholder', '/shared/header.html');
+    await loadComponent('footer-placeholder', '/shared/footer.html');
     setActiveNavLink();
 });
 

@@ -976,7 +976,8 @@ main {
 }
 
 .week-dropdown:hover { border-color: var(--primary); }
-.week-dropdown:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+.week-dropdown:focus { border-color: var(--primary); }
+.week-dropdown:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 .file-list-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
@@ -1861,3 +1862,31 @@ cite { font-style: italic; }
     transform: rotate(45deg);
     flex-shrink: 0;
 }
+
+/* ---- Gated artifacts ----------------------------------------------------- */
+/* Corpus documents are NOT in this repo. They live in R2 behind the worker's
+   authenticated /portfolio/ route and are fetched after login. The card below
+   is all that ships publicly: a title, a description, and a locked state. */
+
+.artifact-card--gated { border-left-color: var(--plum); }
+
+.artifact-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--plum);
+}
+
+.artifact-lock .mark {
+    width: 8px;
+    height: 8px;
+    background: var(--plum);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+}
+
+.artifact-card--gated .artifact-description { color: var(--text-light); }
