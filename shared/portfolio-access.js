@@ -70,12 +70,17 @@ const PortfolioAccess = (() => {
         const dlEl = $("pa-viewer-download");
         if (!bodyEl) return download(key, label);
 
+        const ext = key.split(".").pop().toLowerCase();
+        // Video artifacts live off-site (unlisted YouTube) behind the gate; the
+        // reading copy is the embed and there is no original here to download.
+        const offsite = /^(mp4|mov|m4v|webm)$/.test(ext);
+
         titleEl.textContent = label || key.split("/").pop();
         bodyEl.innerHTML = '<p class="pa-viewer-status">Opening&hellip;</p>';
         dlEl.onclick = () => download(key, label);
+        dlEl.hidden = offsite;
         show("pa-viewer");
 
-        const ext = key.split(".").pop().toLowerCase();
         try {
             if (ext === "pdf") {
                 const resp = await authFetch(key);
