@@ -1557,6 +1557,28 @@ cite { font-style: italic; }
 
 .program-summary p:last-of-type { margin-bottom: 0; }
 
+/* Wide screens: the prose keeps its measure and the facts take the space
+   beside it instead of leaving the right two-fifths of the card empty. */
+@media (min-width: 1100px) {
+    .program-summary {
+        display: grid;
+        grid-template-columns: minmax(0, 68ch) minmax(220px, 1fr);
+        column-gap: var(--spacing-xl);
+        align-items: start;
+    }
+    .program-summary p { max-width: none; }
+    .program-summary .program-facts {
+        grid-template-columns: 1fr;
+        margin: 0;
+        padding: 0 0 0 var(--spacing-lg);
+        border-top: 0;
+        border-left: 1px solid var(--secondary);
+        align-self: stretch;
+        align-content: start;
+        row-gap: var(--spacing-md);
+    }
+}
+
 .program-facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
