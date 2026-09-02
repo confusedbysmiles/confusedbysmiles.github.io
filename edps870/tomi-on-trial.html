@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The People v. The ToMI Scale</title>
+<style>
+  :root{
+    --bench:#1F0E10;
+    --mahogany:#3B161C;
+    --mahogany-2:#52202A;
+    --brass:#C9A24B;
+    --brass-dim:#8A6D2E;
+    --parchment:#EDE2C6;
+    --parchment-2:#E2D4B0;
+    --ink:#291E14;
+    --ink-soft:#5A4A38;
+    --stamp:#B23321;
+    --sustained:#3F6B4E;
+    --paper-text:#E8DCC0;
+    --display:"Hoefler Text","Iberian",Garamond,"Times New Roman",Georgia,serif;
+    --body:Georgia,"Iberian",serif;
+    --mono:"Courier New",Courier,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% -10%, #2a1418 0%, var(--bench) 60%) fixed,
+      var(--bench);
+    color:var(--paper-text);
+    font-family:var(--body);
+    overflow:hidden;
+  }
+  .stage{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    padding:clamp(14px,2vw,28px);
+  }
+
+  /* ---------- header ---------- */
+  .docket{
+    display:flex; align-items:center; gap:18px;
+    border-bottom:2px solid var(--brass-dim);
+    padding-bottom:10px; margin-bottom:6px;
+    font-family:var(--mono);
+    letter-spacing:.08em;
+    color:var(--brass);
+    font-size:clamp(11px,1.15vw,15px);
+    text-transform:uppercase;
+    flex:0 0 auto;
+  }
+  .docket .case{font-weight:bold;}
+  .docket .round-tag{color:var(--paper-text);}
+  .docket .spacer{flex:1;}
+  .tally{display:flex; gap:14px; align-items:center;}
+  .tally .side{
+    display:flex; align-items:center; gap:6px;
+    color:var(--paper-text);
+  }
+  .tally .num{
+    color:var(--brass); font-weight:bold; font-size:1.25em;
+    min-width:1.4em; text-align:center;
+  }
+  .tally button{
+    font-family:var(--mono); cursor:pointer;
+    background:transparent; color:var(--brass-dim);
+    border:1px solid var(--brass-dim); border-radius:3px;
+    width:1.5em; height:1.5em; line-height:1; padding:0;
+    font-size:.95em;
+  }
+  .tally button:hover{color:var(--brass); border-color:var(--brass);}
+
+  /* ---------- main panel ---------- */
+  .panel{
+    flex:1 1 auto; min-height:0;
+    overflow-y:auto;
+    display:block;
+  }
+  .scene{
+    min-height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(12px,2.2vh,26px);
+    padding:10px 0;
+    position:relative;
+  }
+
+  /* opening statements / legal brief */
+  .brief-title{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(20px,2.6vw,34px); line-height:1.15; margin:.1em 0 .55em;
+    color:var(--ink);
+  }
+  .rows{margin:0;}
+  .row{
+    display:grid; grid-template-columns:minmax(120px,28%) 1fr; gap:clamp(10px,1.4vw,22px);
+    padding:.55em 0; border-top:1px dashed #0000002e;
+  }
+  .row:first-child{border-top:none;}
+  .row dt{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.08em;
+    font-size:clamp(11px,1.15vw,15px); color:var(--stamp); font-weight:bold;
+    align-self:start; padding-top:.15em;
+  }
+  .row dd{
+    margin:0; font-family:var(--body); font-size:clamp(14px,1.55vw,20px);
+    line-height:1.4; color:var(--ink);
+  }
+  .row dd b{color:#7a2a1a;} .row dd i{color:var(--ink-soft);}
+  .brief-note{
+    margin:1em 0 0; padding-left:.9em; border-left:4px solid var(--brass-dim);
+    font-family:var(--body); font-style:italic; color:var(--ink-soft);
+    font-size:clamp(13px,1.45vw,19px); line-height:1.4;
+  }
+  .brief-note b{color:#7a2a1a; font-style:normal;}
+
+  /* direction / house-rules screen */
+  .rules{ text-align:center; max-width:min(92vw,980px); display:flex; flex-direction:column; align-items:center; gap:clamp(12px,2vh,22px); }
+  .sides{ display:flex; align-items:stretch; gap:clamp(12px,1.6vw,22px); width:100%; justify-content:center; }
+  .bench-card{ flex:1 1 0; max-width:360px; background:linear-gradient(178deg,var(--parchment),var(--parchment-2)); color:var(--ink); border-radius:6px; padding:clamp(16px,1.8vw,24px); box-shadow:0 14px 34px #0008; text-align:left; border-top:5px solid var(--brass); }
+  .bench-card.defense{ border-top-color:var(--sustained); }
+  .bench-card.prosec{ border-top-color:var(--stamp); }
+  .bc-tag{ font-family:var(--mono); text-transform:uppercase; letter-spacing:.1em; font-size:clamp(10px,1vw,13px); color:var(--ink-soft); }
+  .bc-role{ font-family:var(--display); font-weight:700; font-size:clamp(22px,2.6vw,34px); margin:.05em 0 .25em; }
+  .bench-card.defense .bc-role{ color:#2f5740; }
+  .bench-card.prosec .bc-role{ color:#8f2a1a; }
+  .bench-card p{ margin:0; font-family:var(--body); font-size:clamp(14px,1.5vw,19px); line-height:1.4; }
+  .bench-card .key{ font-family:var(--mono); font-weight:bold; color:var(--ink); background:#0000000f; border:1px solid #00000033; border-radius:3px; padding:0 .35em; }
+  .vs{ font-family:var(--display); font-style:italic; color:var(--brass); font-size:clamp(20px,2.4vw,32px); align-self:center; }
+  .flow{ display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(8px,1.2vw,16px); }
+  .flow span{ font-family:var(--mono); text-transform:uppercase; letter-spacing:.07em; font-size:clamp(10px,1.05vw,14px); color:var(--paper-text); border:1px solid var(--brass-dim); border-radius:20px; padding:.5em 1em; }
+  .vote-line{ font-family:var(--body); font-style:italic; color:var(--brass); font-size:clamp(13px,1.5vw,19px); max-width:56ch; line-height:1.45; }
+
+  .eyebrow{
+    display:block; margin-bottom:.32em;
+    font-family:var(--mono); text-transform:uppercase;
+    letter-spacing:.32em; color:var(--brass);
+    font-size:clamp(11px,1.2vw,15px);
+  }
+
+  /* ---------- title screen ---------- */
+  .title-wrap{text-align:center; max-width:min(92vw,900px);}
+  .v-mark{
+    font-family:var(--display); font-style:italic;
+    color:var(--brass); font-size:clamp(20px,3vw,34px);
+    display:block; margin:.2em 0;
+  }
+  .bigtitle{
+    font-family:var(--display); font-weight:700;
+    line-height:.98; letter-spacing:.01em;
+    font-size:clamp(34px,6vw,80px);
+    margin:0; color:var(--parchment);
+    text-shadow:0 2px 0 #000a;
+  }
+  .lede{
+    font-family:var(--body); font-size:clamp(15px,1.7vw,21px);
+    line-height:1.5; color:var(--paper-text);
+    max-width:46ch; margin:0 auto;
+  }
+  .lede em{color:var(--brass); font-style:italic;}
+
+  /* ---------- round divider ---------- */
+  .round-num{
+    font-family:var(--display); font-style:italic;
+    font-size:clamp(50px,10vw,128px); line-height:1; margin:0;
+    color:var(--brass);
+  }
+  .round-title{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(26px,4.4vw,62px); margin:.1em 0 0;
+    color:var(--parchment);
+  }
+  .round-sub{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.2em;
+    color:var(--brass); font-size:clamp(12px,1.4vw,18px); margin-top:.4em;
+  }
+  .round-how{
+    font-family:var(--body); font-size:clamp(15px,1.6vw,20px);
+    color:var(--paper-text); max-width:44ch; line-height:1.5; margin-top:.6em;
+  }
+
+  /* ---------- exhibit card ---------- */
+  .card{
+    position:relative;
+    background:linear-gradient(178deg,var(--parchment),var(--parchment-2));
+    color:var(--ink);
+    width:min(78vw,920px);
+    border-radius:4px;
+    padding:clamp(22px,3vw,44px) clamp(24px,3.4vw,52px);
+    box-shadow:0 22px 50px #000a, inset 0 0 0 1px #b9a877, inset 0 0 60px #c9b88033;
+    border:1px solid #00000022;
+  }
+  .card::before{ /* exhibit punch holes vibe via top rule */
+    content:""; position:absolute; left:18px; right:18px; top:14px;
+    border-top:1px dashed #00000033;
+  }
+  .exhibit-tag{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.14em;
+    font-size:clamp(11px,1.2vw,15px); color:var(--stamp);
+    font-weight:bold; display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:.6em;
+  }
+  .exhibit-tag .which{color:var(--ink-soft);}
+  .finding{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(22px,3.2vw,42px); line-height:1.16; margin:.1em 0 .35em;
+  }
+  .finding .data{font-style:italic; color:var(--stamp);}
+  .prompt{
+    font-family:var(--body); font-size:clamp(15px,1.6vw,21px);
+    color:var(--ink-soft); line-height:1.45; font-style:italic;
+  }
+
+  /* stamp */
+  .stamp{
+    position:absolute; right:clamp(-6px,1vw,18px); top:clamp(-18px,-1.6vw,-26px);
+    font-family:var(--mono); font-weight:bold; text-transform:uppercase;
+    letter-spacing:.06em; font-size:clamp(20px,2.8vw,40px);
+    padding:.18em .5em; border:4px solid currentColor; border-radius:8px;
+    transform:rotate(-9deg); opacity:0; pointer-events:none;
+    text-shadow:0 0 1px currentColor;
+    background:#ede2c6cc;
+  }
+  .stamp.sustained{color:var(--sustained);}
+  .stamp.objection{color:var(--stamp);}
+  .stamp.show{
+    animation:slam .42s cubic-bezier(.2,1.5,.35,1) forwards;
+  }
+  @keyframes slam{
+    0%{opacity:0; transform:scale(2.6) rotate(-22deg);}
+    70%{opacity:1; transform:scale(.92) rotate(-7deg);}
+    100%{opacity:1; transform:scale(1) rotate(-9deg);}
+  }
+
+  /* ---------- options ---------- */
+  .options{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(10px,1.4vw,18px);
+    width:min(78vw,920px);
+  }
+  .opt{
+    text-align:left; cursor:pointer;
+    background:var(--mahogany); color:var(--paper-text);
+    border:1px solid var(--brass-dim); border-radius:5px;
+    padding:clamp(12px,1.5vw,20px) clamp(14px,1.8vw,24px);
+    font-family:var(--body); font-size:clamp(14px,1.55vw,20px);
+    display:flex; gap:.7em; align-items:baseline; line-height:1.3;
+    transition:background .12s, border-color .12s, opacity .2s;
+  }
+  .opt:hover{background:var(--mahogany-2); border-color:var(--brass);}
+  .opt .letter{
+    font-family:var(--mono); font-weight:bold; color:var(--brass);
+    font-size:1.05em; flex:0 0 auto;
+  }
+  .opt.is-correct{
+    background:#27402f; border-color:var(--sustained);
+    box-shadow:0 0 0 2px var(--sustained) inset;
+  }
+  .opt.is-correct .letter{color:#8fd0a4;}
+  .opt.dim{opacity:.34;}
+
+  /* binary vote (strong/stretch, acquit/convict) */
+  .binary{
+    display:grid; grid-template-columns:1fr 1fr; gap:clamp(12px,1.6vw,22px);
+    width:min(78vw,920px);
+  }
+  .bvote{
+    text-align:center; padding:clamp(14px,1.8vw,26px);
+    border-radius:6px; border:1px solid var(--brass-dim);
+    background:var(--mahogany); cursor:pointer;
+    transition:background .12s,border-color .12s;
+  }
+  .bvote:hover{background:var(--mahogany-2); border-color:var(--brass);}
+  .bvote .bl{
+    font-family:var(--display); font-weight:700; font-size:clamp(20px,2.6vw,36px);
+  }
+  .bvote .bs{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.12em;
+    font-size:clamp(11px,1.1vw,14px); color:var(--brass); margin-top:.3em;
+  }
+  .bvote.strong .bl{color:#8fd0a4;}
+  .bvote.stretch .bl{color:#e6a06a;}
+
+  /* cross-exam reveal: defense vs prosecution */
+  .argpair{
+    display:grid; grid-template-columns:1fr 1fr; gap:clamp(12px,1.6vw,22px);
+    width:min(82vw,1000px);
+  }
+  .arg{
+    background:var(--parchment); color:var(--ink);
+    border-radius:5px; padding:clamp(16px,1.8vw,26px);
+    box-shadow:0 12px 30px #0008; border-top:5px solid;
+  }
+  .arg.defense{border-color:var(--sustained);}
+  .arg.prosec{border-color:var(--stamp);}
+  .arg h4{
+    margin:0 0 .5em; font-family:var(--mono); text-transform:uppercase;
+    letter-spacing:.12em; font-size:clamp(12px,1.3vw,16px);
+  }
+  .arg.defense h4{color:var(--sustained);}
+  .arg.prosec h4{color:var(--stamp);}
+  .arg p{margin:0; font-size:clamp(14px,1.5vw,19px); line-height:1.45;}
+  .meter{
+    width:min(82vw,1000px); margin-top:2px;
+  }
+  .meter .bar{
+    height:14px; border-radius:8px; position:relative;
+    background:linear-gradient(90deg,var(--sustained),#caa24b,var(--stamp));
+    box-shadow:inset 0 0 0 1px #0006;
+  }
+  .meter .needle{
+    position:absolute; top:-7px; width:4px; height:28px; background:var(--parchment);
+    border-radius:2px; box-shadow:0 0 0 1px #000, 0 0 10px #000a; transform:translateX(-50%);
+  }
+  .meter .ends{
+    display:flex; justify-content:space-between; margin-top:6px;
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.1em;
+    font-size:clamp(10px,1vw,13px); color:var(--brass);
+  }
+
+  /* discussion / verdict reveal */
+  .ruling{
+    width:min(82vw,1000px);
+    background:var(--mahogany); border:1px solid var(--brass-dim);
+    border-left:6px solid var(--brass); border-radius:5px;
+    padding:clamp(16px,2vw,28px) clamp(20px,2.4vw,34px);
+  }
+  .ruling h4{
+    margin:0 0 .6em; font-family:var(--mono); text-transform:uppercase;
+    letter-spacing:.16em; color:var(--brass); font-size:clamp(12px,1.3vw,16px);
+  }
+  .ruling ul{margin:0; padding-left:1.2em;}
+  .ruling li{
+    margin:.5em 0; font-size:clamp(14px,1.55vw,20px); line-height:1.4;
+  }
+  .ruling li::marker{color:var(--brass);}
+
+  .teach{
+    width:min(78vw,920px);
+    font-family:var(--body); font-size:clamp(14px,1.55vw,20px); line-height:1.5;
+    color:var(--paper-text); text-align:center; max-width:62ch;
+  }
+  .teach b{color:var(--brass); font-weight:700;}
+
+  /* ---------- buttons / footer ---------- */
+  .cta{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.14em;
+    font-size:clamp(13px,1.4vw,17px); cursor:pointer;
+    background:var(--brass); color:var(--bench); font-weight:bold;
+    border:none; border-radius:4px; padding:.8em 1.6em;
+    box-shadow:0 8px 22px #0008;
+  }
+  .cta:hover{background:#dcb55c;}
+
+  .footer{
+    flex:0 0 auto; display:flex; align-items:center; gap:16px;
+    border-top:2px solid var(--brass-dim); padding-top:10px; margin-top:6px;
+    font-family:var(--mono); font-size:clamp(11px,1.05vw,14px);
+    color:var(--brass-dim); letter-spacing:.06em;
+  }
+  .footer .keys{flex:1; text-transform:uppercase;}
+  .footer .keys b{color:var(--brass); font-weight:bold;}
+  .navbtn{
+    background:transparent; border:1px solid var(--brass-dim); color:var(--brass);
+    border-radius:4px; cursor:pointer; font-family:var(--mono);
+    padding:.4em .8em; letter-spacing:.1em;
+  }
+  .navbtn:hover{border-color:var(--brass); background:#ffffff10;}
+
+  .hidden{display:none !important;}
+
+  :focus-visible{outline:3px solid var(--brass); outline-offset:3px;}
+
+  @media (max-width:760px){
+    .options,.binary{grid-template-columns:1fr;}
+    .argpair{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .stamp.show{animation:fade .25s ease forwards;}
+    @keyframes fade{from{opacity:0;}to{opacity:1; transform:rotate(-9deg);}}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="docket">
+    <span class="case">Case No. 870-2026</span>
+    <span class="round-tag" id="roundTag">Pre-trial</span>
+    <span class="spacer"></span>
+    <div class="tally">
+      <span class="side">Defense
+        <button data-team="d" data-d="-1">&minus;</button>
+        <span class="num" id="dNum">0</span>
+        <button data-team="d" data-d="1">+</button>
+      </span>
+      <span class="side">Prosecution
+        <button data-team="p" data-d="-1">&minus;</button>
+        <span class="num" id="pNum">0</span>
+        <button data-team="p" data-d="1">+</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="panel" id="panel"><!-- scene renders here --></div>
+
+  <div class="footer">
+    <span class="keys"><b>Space</b> reveal / advance &nbsp;·&nbsp; <b>&larr; &rarr;</b> move &nbsp;·&nbsp; <b>D</b>/<b>P</b> award point &nbsp;·&nbsp; <b>F</b> fullscreen</span>
+    <button class="navbtn" id="prevBtn">&larr; Back</button>
+    <button class="navbtn" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONTENT ---------------- */
+const OPT = {
+  ic:"Internal consistency (reliability)",
+  struct:"Evidence based on internal structure",
+  conv:"Convergent evidence (relations to other variables)",
+  disc:"Discriminant evidence (relations to other variables)",
+  known:"Known-groups / contrasted-groups",
+  content:"Content / theoretical evidence",
+  crit:"Criterion evidence (a known outcome)"
+};
+
+const scenes = [
+  { type:"title" },
+
+  { type:"rules" },
+
+  /* ===== OPENING STATEMENTS ===== */
+  { type:"section", label:"Opening Statements", title:"Laying out the case", sub:"For the record",
+    how:"I set up the article \u2014 what the scale is, the theory behind it, and who it\u2019s for \u2014 before any evidence is heard." },
+
+  { type:"opening", tag:"Opening Statement \u00b7 The Construct",
+    title:"What the defendant claims to measure",
+    rows:[
+      {k:"Defendant", v:"The <b>Teacher of Mathematics Identity (ToMI)</b> scale \u2014 Willis et al. (2023)"},
+      {k:"The construct", v:"Whether a person sees themselves <i>as a teacher of mathematics</i> \u2014 defined as a <b>state</b> that can strengthen or weaken, not a fixed trait"},
+      {k:"Why it\u2019s here", v:"The ToMI literature was almost entirely <b>qualitative</b> and small-sample. No published <b>quantitative</b> measure existed \u2014 that absence is the whole case."}
+    ] },
+
+  { type:"opening", tag:"Opening Statement \u00b7 The Theory",
+    title:"Three sworn authorities",
+    rows:[
+      {k:"Mead (1934)", v:"The self is known only through others \u2014 you need a community to see who you are"},
+      {k:"Erikson (1968)", v:"Identity is developed across life and is, to a degree, <b>measurable</b>"},
+      {k:"Wenger (1998)", v:"Identity forms through participation in a <b>community of practice</b>"}
+    ],
+    note:"From these three theorists come the scale\u2019s three subscales." },
+
+  { type:"opening", tag:"Opening Statement \u00b7 Structure & Population",
+    title:"The subscales \u2014 and who was in the dock",
+    rows:[
+      {k:"Subscales", v:"<b>Belonging</b> to a math community \u00b7 <b>Self-efficacy</b> as a math teacher \u00b7 <b>Enthusiasm</b> to teach math (final 15-item form, 5 items each)"},
+      {k:"Population", v:"In-service teachers of mathematics \u2014 members of an Australian math-teacher association, primary & secondary"},
+      {k:"Two juries", v:"Independent samples: n = 301 for the EFA, n = 311 for the CFA (remember this \u2014 it matters in Round I)"}
+    ],
+    note:"Watch this: the sample is <b>self-selected</b> association members, <b>not</b> pre-service teachers. Hold that thought for the verdict." },
+
+  /* ===== ROUND I ===== */
+  { type:"round", num:"I", title:"Voir Dire", sub:"Identify the Witness",
+    how:"I read each exhibit aloud. The jury votes by hand for the kind of evidence it is. Then we reveal the ruling." },
+
+  { type:"exhibit", round:1, idx:1, of:7, tag:"Exhibit A",
+    finding:['Cronbach\u2019s \u03b1 = ', {d:".950"}, ' for belonging, ', {d:".859"}, ' for self-efficacy, ', {d:".827"}, ' for enthusiasm.'],
+    prompt:"What does the witness establish?",
+    options:[OPT.ic, OPT.struct, OPT.conv, OPT.content],
+    correct:0, ok:true,
+    teach:"Alpha indexes <b>internal consistency</b> \u2014 how tightly items within a subscale hang together. It is a reliability coefficient, <b>not</b> a validity one. File this away for cross-examination: .950 is suspiciously high." },
+
+  { type:"exhibit", round:1, idx:2, of:7, tag:"Exhibit B",
+    finding:['EFA: principal-axis factoring, oblimin rotation, KMO = ', {d:".915"}, ', three factors, ', {d:"62.5%"}, ' of variance, no cross-loadings over .32.'],
+    prompt:"What does the witness establish?",
+    options:[OPT.ic, OPT.struct, OPT.known, OPT.crit],
+    correct:1, ok:true,
+    teach:"Items cluster into the three hypothesized dimensions \u2014 that is <b>evidence based on internal structure</b> (factorial validity). KMO .915 is \u2018marvelous\u2019 sampling adequacy; oblimin is an <b>oblique</b> rotation, correct here because subscales of one identity construct should be allowed to correlate." },
+
+  { type:"exhibit", round:1, idx:3, of:7, tag:"Exhibit C",
+    finding:['On an ', {d:"independent"}, ' sample: RMSEA = ', {d:".060"}, ', CFI = ', {d:".963"}, ', SRMR = ', {d:".049"}, ' (\u03c7\u00b2 significant).'],
+    prompt:"What does the witness establish?",
+    options:[OPT.conv, OPT.ic, OPT.struct, OPT.disc],
+    correct:2, ok:true,
+    teach:"A <b>confirmatory</b> factor analysis re-tests the EFA model on a fresh sample \u2014 still internal-structure evidence, now with <b>replication</b>. \u03c7\u00b2 is significant, but it is hypersensitive at large N; RMSEA, CFI and SRMR all land in the good range." },
+
+  { type:"exhibit", round:1, idx:4, of:7, tag:"Exhibit D",
+    finding:['Teachers with ', {d:"5+ years"}, ' experience scored higher on ToMI than those with 0\u20135 years (d up to ', {d:"0.84"}, ').'],
+    prompt:"What does the witness establish?",
+    options:[OPT.ic, OPT.content, OPT.known, OPT.disc],
+    correct:2, ok:true,
+    teach:"Theory predicts identity strengthens with experience, and the groups that <b>should</b> differ <b>do</b> \u2014 that is <b>known-groups</b> evidence (a flavor of relations-to-other-variables). d = 0.84 on self-efficacy is a large effect." },
+
+  { type:"exhibit", round:1, idx:5, of:7, tag:"Exhibit E",
+    finding:['ToMI correlated with wellbeing while teaching math (r \u2248 ', {d:".52\u2013.62"}, ') and with the size of a teacher\u2019s math network.'],
+    prompt:"What does the witness establish?",
+    options:[OPT.disc, OPT.conv, OPT.ic, OPT.struct],
+    correct:1, ok:true,
+    teach:"Scores move with theoretically linked but distinct variables, in the predicted direction and magnitude \u2014 <b>convergent</b> evidence. (You can argue wellbeing edges toward a <b>criterion</b>; flag that for discussion.)" },
+
+  { type:"exhibit", round:1, idx:6, of:7, tag:"Exhibit F",
+    finding:['ToMI had ', {d:"no"}, ' significant relationship with participation in ', {d:"non-math"}, ' professional learning.'],
+    prompt:"What does this null result establish?",
+    options:[OPT.conv, OPT.ic, OPT.disc, OPT.known],
+    correct:2, ok:true,
+    teach:"The cleverest move in the paper: a <b>predicted null</b>. The scale relates to <b>math-specific</b> PL but not general PL \u2014 <b>discriminant</b> evidence that it captures a math identity, not generic teacher identity." },
+
+  { type:"exhibit", round:1, idx:7, of:7, tag:"Exhibit G",
+    finding:['Items were built from ', {d:"Mead, Erikson, and Wenger"}, '; the construct is defined as a ', {d:"state"}, ', not a trait.'],
+    prompt:"What does the witness establish?",
+    options:[OPT.content, OPT.conv, OPT.crit, OPT.ic],
+    correct:0, ok:true,
+    teach:"Grounding items in established identity theory is <b>content / theoretical</b> evidence \u2014 the substantive backbone of construct validity. Note the <b>state-not-trait</b> stance: they claim to catch a snapshot that can move over time." },
+
+  /* ===== ROUND II ===== */
+  { type:"round", num:"II", title:"Cross-Examination", sub:"Strong or Stretch?",
+    how:"Same witnesses, harder questions. The jury votes: is this evidence STRONG, or a STRETCH? Then both counsel make their case." },
+
+  { type:"crossex", round:2, tag:"Cross-examining Exhibit A",
+    claim:["\u03b1 = .950 ", {d:"proves"}, " the belonging subscale is excellent."],
+    defense:"Reliability is genuinely high and it held up \u2014 even after cutting belonging from 10 items to 5, \u03b1 stayed at .918. Consistent measurement across samples.",
+    prosec:"Alpha climbs with item count and redundancy. A .95 often means items are near-paraphrases. The authors themselves trimmed belonging because 10 items were over-weighting the total ToMI score.",
+    meter:72, teach:"Lesson for the class: <b>higher alpha is not automatically better</b>. Length and redundancy inflate it." },
+
+  { type:"crossex", round:2, tag:"Cross-examining Exhibit E/F",
+    claim:["Network ", {d:"size"}, " shows access to a \u2018community of practice.\u2019"],
+    defense:"It is theory-driven (Mead, Wenger), correlates positively with ToMI, and replicates across both samples.",
+    prosec:"It is a single item counting <b>how many</b> people, not the <b>quality</b> of those ties. The authors concede a number of contacts is not a community. Weak operationalization of the construct.",
+    meter:62, teach:"A clean example of <b>construct underrepresentation</b> in a proxy variable \u2014 great fodder for your critique points." },
+
+  { type:"crossex", round:2, tag:"Cross-examining Exhibit F",
+    claim:["The non-math null ", {d:"proves"}, " discriminant validity."],
+    defense:"A predicted null is hard to fake and shows real specificity \u2014 arguably the study\u2019s strongest design move.",
+    prosec:"Absence of evidence is not evidence of absence. One underpowered null test does not by itself establish discriminant validity; you want several.",
+    meter:55, teach:"Both can be true: it is the best move in the paper <b>and</b> it rests on a single null. Push the jury on what would make it convincing." },
+
+  { type:"crossex", round:2, tag:"Cross-examining the design",
+    claim:["\u2018Of ~50 tests, only ", {d:"5"}, " failed to replicate.\u2019"],
+    defense:"Splitting the sample and replicating inferential tests across independent halves is rare, rigorous, and directly answers the replication crisis.",
+    prosec:"Run ~50 tests with <b>no</b> multiple-comparison correction and chance alone delivers some \u2018hits.\u2019 They cite Rothman and Tukey to skip the correction \u2014 defensible, but contestable.",
+    meter:60, teach:"Two real psychometric values in tension: <b>replication</b> vs. <b>multiplicity</b>. There is no clean winner \u2014 which is exactly why it discusses well." },
+
+  /* ===== ROUND III ===== */
+  { type:"round", num:"III", title:"Closing Arguments", sub:"The Verdict",
+    how:"Two charges remain. The jury renders a verdict on each \u2014 then we argue it out. This is where we leave the article behind." },
+
+  { type:"verdict", round:3, tag:"Charge One",
+    question:["Is \u2018belonging + self-efficacy + enthusiasm\u2019 actually an ", {d:"identity"}, " \u2014 or three pleasant feelings about math wearing a trench coat?"],
+    left:{l:"Acquit", s:"It\u2019s a valid construct"},
+    right:{l:"Convict", s:"It over-claims"},
+    rulingTitle:"Take it to the jury",
+    ruling:[
+      "Darragh\u2019s own warning (quoted in the paper): teacher identity gets <b>diluted</b> when it\u2019s reduced to measures of affect. Did they dodge that, or fall into it?",
+      "Modern view: there is one <b>construct validity</b> with multiple evidence sources \u2014 so does \u2018we found three correlated factors\u2019 demonstrate <b>identity</b>, or just three correlated affect scales?",
+      "What evidence would actually distinguish \u2018has a math-teacher identity\u2019 from \u2018likes teaching math and feels competent\u2019?"
+    ]},
+
+  { type:"verdict", round:3, tag:"Charge Two",
+    question:["The defendant admits ", {d:"\u2018life history and context being absent.\u2019"}, " Does ToMI need a retrial \u2014 a new instrument for how biography shapes a math teacher?"],
+    left:{l:"Acquit", s:"Good enough as-is"},
+    right:{l:"Retrial", s:"Build the next instrument"},
+    rulingTitle:"The opening for the next study",
+    ruling:[
+      "The sample is self-selected math-association members; enthusiasm items are negatively skewed. Who is <b>missing</b> \u2014 and how would this scale behave on pre-service teachers?",
+      "It is a <b>state</b> measured <b>cross-sectionally</b>. Can a single snapshot capture an identity? What would longitudinal evidence add?",
+      "The authors point at Cribbs et al. (2020) to model the variance from <b>life history</b> \u2014 the exact gap a biographical \u2192 pedagogy instrument would fill.",
+      "If you built the next iteration: which subscale do you cut, keep, or add \u2014 and what evidence would you collect first?"
+    ]},
+
+  { type:"closing" }
+];
+
+/* ---------------- ENGINE ---------------- */
+let i = 0, revealed = false;
+let score = {d:0, p:0};
+const panel = document.getElementById('panel');
+const roundTag = document.getElementById('roundTag');
+const ROUND_NAMES = {1:"Round I \u00b7 Voir Dire", 2:"Round II \u00b7 Cross-Examination", 3:"Round III \u00b7 Closing"};
+
+function esc(s){return s;}
+function buildFinding(parts){
+  return parts.map(p => typeof p === 'string' ? esc(p) : '<span class="data">'+esc(p.d)+'</span>').join('');
+}
+function letter(n){return String.fromCharCode(65+n);}
+
+function sceneHasReveal(s){
+  return ['exhibit','crossex','verdict'].includes(s.type);
+}
+
+function setRoundTag(s){
+  if(s.type==='title') roundTag.textContent = "Pre-trial";
+  else if(s.type==='closing') roundTag.textContent = "Adjourned";
+  else if(s.type==='section') roundTag.textContent = s.label;
+  else if(s.type==='rules') roundTag.textContent = "House Rules";
+  else if(s.type==='opening') roundTag.textContent = "Opening Statements";
+  else if(s.round) roundTag.textContent = ROUND_NAMES[s.round];
+  else if(s.num) roundTag.textContent = "Round "+s.num;
+  else roundTag.textContent = "";
+}
+
+function render(){
+  const s = scenes[i];
+  setRoundTag(s);
+  let html = "";
+
+  if(s.type==='title'){
+    html = `<div class="title-wrap">
+      <span class="eyebrow">In the matter of</span>
+      <h1 class="bigtitle">The People</h1>
+      <span class="v-mark">v.</span>
+      <h1 class="bigtitle">The ToMI Scale</h1>
+      <p class="lede" style="margin-top:1.1em">A measurement instrument stands accused of claiming to capture an <em>identity</em>. The jury \u2014 that\u2019s you \u2014 weighs the evidence. The Honorable Goblin presides. <em>All rise.</em></p>
+      <p class="lede" style="font-family:var(--mono); font-size:clamp(11px,1.15vw,15px); letter-spacing:.06em; color:var(--brass); margin-top:1em">Willis et al. (2023) \u00b7 Mathematics Education Research Journal</p>
+      <div style="margin-top:1.4em"><button class="cta" id="goBtn">Call the court to order &rarr;</button></div>
+    </div>`;
+  }
+
+  else if(s.type==='rules'){
+    html = `<div class="rules">
+      <span class="eyebrow">Before we begin</span>
+      <h2 class="round-title" style="margin:.05em 0">Order in the Court</h2>
+      <p class="round-sub">How the trial works \u2014 your job, members of the jury</p>
+      <div class="sides">
+        <div class="bench-card defense">
+          <div class="bc-tag">Left side of the room</div>
+          <div class="bc-role">The Defense</div>
+          <p>The ToMI scale is <b>valid</b> \u2014 the evidence holds up.</p>
+        </div>
+        <div class="vs">v.</div>
+        <div class="bench-card prosec">
+          <div class="bc-tag">Right side of the room</div>
+          <div class="bc-role">The Prosecution</div>
+          <p>The scale <b>over-reaches</b> \u2014 it claims more than it proves.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span>I \u00b7 Voir Dire \u2014 name the evidence</span>
+        <span>II \u00b7 Cross-Examination \u2014 strong or stretch?</span>
+        <span>III \u00b7 Closing \u2014 the verdict</span>
+      </div>
+      <p class="vote-line">You vote by a show of hands or calling it out. Points land on the scoreboard up top. No psychometrics degree required \u2014 objections encouraged.</p>
+    </div>`;
+  }
+
+  else if(s.type==='section'){
+    html = `<div class="title-wrap" style="max-width:min(90vw,820px)">
+      <span class="eyebrow">${s.label}</span>
+      <h2 class="round-title" style="margin-top:.2em">${s.title}</h2>
+      <p class="round-sub">${s.sub}</p>
+      <p class="round-how">${s.how}</p>
+    </div>`;
+  }
+
+  else if(s.type==='opening'){
+    html = `<div class="card">
+      <div class="exhibit-tag"><span>${s.tag}</span></div>
+      <p class="brief-title">${s.title}</p>
+      <dl class="rows">
+        ${s.rows.map(r=>`<div class="row"><dt>${r.k}</dt><dd>${r.v}</dd></div>`).join('')}
+      </dl>
+      ${s.note?`<p class="brief-note">${s.note}</p>`:''}
+    </div>`;
+  }
+
+  else if(s.type==='round'){
+    html = `<div class="title-wrap" style="max-width:min(90vw,760px)">
+      <span class="eyebrow">The court calls</span>
+      <p class="round-num">${s.num}</p>
+      <h2 class="round-title">${s.title}</h2>
+      <p class="round-sub">${s.sub}</p>
+      <p class="round-how">${s.how}</p>
+    </div>`;
+  }
+
+  else if(s.type==='exhibit'){
+    const stampClass = s.ok ? 'sustained' : 'objection';
+    const stampWord = s.ok ? 'Sustained' : 'Objection';
+    html = `<div class="card">
+      <div class="exhibit-tag"><span>${s.tag}</span><span class="which">Exhibit ${s.idx} of ${s.of}</span></div>
+      <p class="finding">${buildFinding(s.finding)}</p>
+      <p class="prompt">${s.prompt}</p>
+      <div class="stamp ${stampClass} ${revealed?'show':''}">${stampWord}</div>
+    </div>
+    <div class="options">
+      ${s.options.map((o,n)=>`<button class="opt ${revealed?(n===s.correct?'is-correct':'dim'):''}" data-opt="${n}">
+        <span class="letter">${letter(n)}</span><span>${o}</span></button>`).join('')}
+    </div>
+    ${revealed?`<p class="teach">${s.teach}</p>`:''}`;
+  }
+
+  else if(s.type==='crossex'){
+    html = `<div class="card">
+      <div class="exhibit-tag"><span>${s.tag}</span><span class="which">Cross-examination</span></div>
+      <p class="finding">${buildFinding(s.claim)}</p>
+      <p class="prompt">Strong evidence \u2014 or a stretch?</p>
+    </div>`;
+    if(!revealed){
+      html += `<div class="binary">
+        <button class="bvote strong" data-opt="0"><div class="bl">Strong</div><div class="bs">Sustained</div></button>
+        <button class="bvote stretch" data-opt="1"><div class="bl">Stretch</div><div class="bs">Objection</div></button>
+      </div>`;
+    } else {
+      html += `<div class="argpair">
+        <div class="arg defense"><h4>Defense</h4><p>${s.defense}</p></div>
+        <div class="arg prosec"><h4>Prosecution</h4><p>${s.prosec}</p></div>
+      </div>
+      <div class="meter">
+        <div class="bar"><div class="needle" style="left:${s.meter}%"></div></div>
+        <div class="ends"><span>Stretch</span><span>The court\u2019s leaning (debatable)</span><span>Strong</span></div>
+      </div>
+      <p class="teach">${s.teach}</p>`;
+    }
+  }
+
+  else if(s.type==='verdict'){
+    html = `<div class="card">
+      <div class="exhibit-tag"><span>${s.tag}</span><span class="which">Deliberation</span></div>
+      <p class="finding">${buildFinding(s.question)}</p>
+    </div>`;
+    if(!revealed){
+      html += `<div class="binary">
+        <button class="bvote strong" data-opt="0"><div class="bl">${s.left.l}</div><div class="bs">${s.left.s}</div></button>
+        <button class="bvote stretch" data-opt="1"><div class="bl">${s.right.l}</div><div class="bs">${s.right.s}</div></button>
+      </div>`;
+    } else {
+      html += `<div class="ruling"><h4>${s.rulingTitle}</h4><ul>${s.ruling.map(r=>`<li>${r}</li>`).join('')}</ul></div>`;
+    }
+  }
+
+  else if(s.type==='closing'){
+    html = `<div class="title-wrap" style="max-width:min(90vw,820px)">
+      <span class="eyebrow">By order of the court</span>
+      <h1 class="bigtitle" style="font-size:clamp(34px,6vw,86px)">Court adjourned</h1>
+      <p class="lede" style="margin-top:1em">The ToMI scale leaves a <em>validated witness</em> \u2014 and an open case file. The variance left unexplained, <em>biography shaping pedagogy</em>, is the next instrument waiting to be built.</p>
+      <p class="lede" style="font-family:var(--mono); font-size:clamp(11px,1.15vw,15px); letter-spacing:.06em; color:var(--brass); margin-top:1.2em">Final tally \u2014 Defense ${score.d} \u00b7 Prosecution ${score.p}</p>
+    </div>`;
+  }
+
+  panel.innerHTML = '<div class="scene">'+html+'</div>';
+
+  const go = document.getElementById('goBtn');
+  if(go) go.onclick = advance;
+
+  // clicking any option/vote triggers reveal
+  panel.querySelectorAll('[data-opt]').forEach(el=>{
+    el.onclick = ()=>{ if(!revealed){ revealed=true; render(); } };
+  });
+}
+
+function advance(){
+  const s = scenes[i];
+  if(sceneHasReveal(s) && !revealed){ revealed = true; render(); return; }
+  if(i < scenes.length-1){ i++; revealed=false; render(); }
+}
+function back(){
+  if(revealed){ revealed=false; render(); return; }
+  if(i>0){ i--; revealed = sceneHasReveal(scenes[i]) ? false : false; render(); }
+}
+function bump(team, d){
+  score[team] = Math.max(0, score[team]+d);
+  document.getElementById('dNum').textContent = score.d;
+  document.getElementById('pNum').textContent = score.p;
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key===' '||e.key==='ArrowRight'||e.key==='Enter'){ e.preventDefault(); advance(); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); back(); }
+  else if(e.key==='d'||e.key==='D'){ bump('d',1); }
+  else if(e.key==='p'||e.key==='P'){ bump('p',1); }
+  else if(e.key==='f'||e.key==='F'){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+});
+
+document.getElementById('nextBtn').onclick = advance;
+document.getElementById('prevBtn').onclick = back;
+document.querySelectorAll('.tally button').forEach(b=>{
+  b.onclick = ()=> bump(b.dataset.team, parseInt(b.dataset.d));
+});
+
+render();
+</script>
+</body>
+</html>
