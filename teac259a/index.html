@@ -4,158 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEAC 259A - Sam Seim</title>
+    <meta name="description" content="Welcome page for TEAC 259A students, Fall 2025: an introduction video, an interactive deck, and the conversation that built the page.">
     <link rel="stylesheet" href="../shared/sam-seim-styles.css">
-    <style>
-        .section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .section h2 {
-            font-size: 1.75rem;
-            color: #333;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .description { color: #666; margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.7; }
-
-        .embed-container {
-            position: relative;
-            width: 100%;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .video-container { padding-bottom: 56.25%; }
-        .slides-container { padding-bottom: 62.5%; }
-
-        .embed-container iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: 0;
-        }
-
-        .note {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            border-radius: 4px;
-        }
-
-        .note strong { color: #667eea; }
-        .note a { color: #667eea; text-decoration: none; font-weight: 500; }
-        .note a:hover { text-decoration: underline; }
-
-        .chat-section { background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .chat-content { padding: 1.5rem; max-height: 400px; overflow-y: auto; }
-
-        .user-message, .assistant-message {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-
-        .user-message { background: white; border: 1px solid #e0e0e0; margin-right: 2rem; }
-        .user-message::before { content: "User:"; display: block; font-weight: 600; color: #667eea; margin-bottom: 0.5rem; }
-
-        .assistant-message { background: #f0f4ff; border: 1px solid #d0d8ff; margin-left: 2rem; }
-        .assistant-message::before { content: "Claude:"; display: block; font-weight: 600; color: #764ba2; margin-bottom: 0.5rem; }
-
-        .chat-content::-webkit-scrollbar { width: 8px; }
-        .chat-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .chat-content::-webkit-scrollbar-thumb { background: #667eea; border-radius: 4px; }
-        .chat-content::-webkit-scrollbar-thumb:hover { background: #5568d3; }
-
-        @media (max-width: 768px) {
-            .section { padding: 1.5rem; }
-            .user-message, .assistant-message { margin-left: 0; margin-right: 0; }
-            .chat-content { padding: 1rem; }
-        }
-    </style>
     <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
 </head>
 <body>
     <div id="header-placeholder"></div>
 
     <main class="container">
-            <section class="section">
-                <h2>Course Introduction Video</h2>
-                <p class="description">
-                    Welcome to TEAC 259A! Please watch this introduction video to get to know me a little bit and learn about what we'll be exploring together in this course.
-                </p>
-                <div class="embed-container video-container">
-                    <iframe 
-                        src="https://www.youtube.com/embed/98C8G5wBgTE" 
-                        title="TEAC 259A Introduction Video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </section>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/classes.html">UNL PhD Coursework</a> &nbsp;/&nbsp;
+            <a href="/teac905/">TEAC 905</a> &nbsp;/&nbsp; <span>TEAC 259A student page</span>
+        </nav>
 
-            <section class="section">
-                <h2>Interactive Presentation</h2>
-                <p class="description">
-                    Navigate through the slides below to explore course content and concepts. You can interact with the presentation directly using the controls or arrow keys. There are some easter eggs if you click around—see if you can find them!
-                </p>
-                <div class="embed-container slides-container">
-                    <iframe 
-                        src="https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/embed?start=false&loop=false&delayms=3000&rm=minimal" 
-                        title="TEAC 259A Course Presentation"
-                        allowfullscreen="true" 
-                        mozallowfullscreen="true" 
-                        webkitallowfullscreen="true"
-                        allow="navigation-top-level-frame">
-                    </iframe>
-                </div>
-                
-                <div class="note">
-                    <strong>Note:</strong> If links within the slides aren't clickable in the embedded view above, 
-                    <a href="https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing" 
-                       target="_blank">
-                        open the presentation in a new tab
-                    </a> for full interactive functionality.
-                </div>
-            </section>
+        <div class="course-hero">
+            <p class="course-hero__term">Fall 2025</p>
+            <p class="course-hero__code">TEAC 259A</p>
+            <h1 class="course-hero__title">Welcome to TEAC 259A</h1>
+            <p class="course-hero__meta">
+                <span>Instructional Technology</span>
+                <span class="meta-divider" aria-hidden="true">|</span>
+                <span>Page built for students, September 2025</span>
+            </p>
+        </div>
 
-            <section class="section">
-                <h2>Page Creation Process</h2>
-                <p class="description">
-                    This section shows the conversation used to create this webpage, demonstrating the collaborative process between instructor and AI assistant in developing educational resources.
-                </p>
-                
-                <div class="chat-section">
-                    <div class="chat-header">Chat Conversation</div>
-                    <div class="chat-content">
-                        <div class="user-message">
-                            Hey-o! I would love you to make a page for my drseim.com website that I can share with students for TEAC 259A that I am helping with for my practicum TEAC 905. Please embed the following slide deck (https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing) so that students can interact with it directly on the page and please also include the following video introduction I recorded for them (https://youtu.be/98C8G5wBgTE). Additionally, I would like a small space below dedicated to displaying this chat used to create the page.
-                        </div>
-                        <div class="assistant-message">
-                            I'll create a professional educational webpage for your TEAC 259A students that includes the embedded presentation, video, and chat display. The page features a clean, responsive design with proper embedding of your Google Slides presentation and YouTube video, along with this conversation shown in a dedicated section. The layout ensures easy navigation and interaction with all course materials while maintaining a cohesive visual style that aligns with your drseim.com website.
-                        </div>
-                    </div>
+        <section class="content-section" aria-labelledby="video-heading">
+            <h2 id="video-heading">Course Introduction Video</h2>
+            <p>
+                Welcome to TEAC 259A! Please watch this introduction video to get to know me a little bit and
+                learn about what we'll be exploring together in this course.
+            </p>
+            <div class="artifact-video">
+                <iframe src="https://www.youtube-nocookie.com/embed/98C8G5wBgTE?rel=0" title="TEAC 259A Introduction Video" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="deck-heading">
+            <h2 id="deck-heading">Interactive Presentation</h2>
+            <p>
+                Navigate through the slides below to explore course content and concepts. You can interact with
+                the presentation directly using the controls or arrow keys. There are some easter eggs if you
+                click around&mdash;see if you can find them!
+            </p>
+            <div class="artifact-video artifact-video--slides">
+                <iframe src="https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/embed?start=false&amp;loop=false&amp;delayms=3000&amp;rm=minimal" title="TEAC 259A Course Presentation" allowfullscreen></iframe>
+            </div>
+            <p class="artifact-note">
+                If links within the slides aren't clickable in the embedded view above,
+                <a href="https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing" target="_blank" rel="noopener">open the presentation in a new tab</a>
+                for full interactive functionality.
+            </p>
+        </section>
+
+        <section class="content-section" aria-labelledby="process-heading">
+            <h2 id="process-heading">Page Creation Process</h2>
+            <p>
+                This section shows the conversation used to create this webpage, demonstrating the collaborative
+                process between instructor and AI assistant in developing educational resources.
+            </p>
+            <div class="chat-log" aria-label="Chat conversation">
+                <div class="chat-turn chat-turn--user">
+                    <p class="chat-turn__who">User</p>
+                    <p>Hey-o! I would love you to make a page for my drseim.com website that I can share with students for TEAC 259A that I am helping with for my practicum TEAC 905. Please embed the following slide deck (https://docs.google.com/presentation/d/1rPYHPd9moCCyAchoFKlH8o2_ASRVlhHs12H08qIpDy4/edit?usp=sharing) so that students can interact with it directly on the page and please also include the following video introduction I recorded for them (https://youtu.be/98C8G5wBgTE). Additionally, I would like a small space below dedicated to displaying this chat used to create the page.</p>
                 </div>
-            </section>
-        </main>
+                <div class="chat-turn chat-turn--assistant">
+                    <p class="chat-turn__who">Claude</p>
+                    <p>I'll create a professional educational webpage for your TEAC 259A students that includes the embedded presentation, video, and chat display. The page features a clean, responsive design with proper embedding of your Google Slides presentation and YouTube video, along with this conversation shown in a dedicated section. The layout ensures easy navigation and interaction with all course materials while maintaining a cohesive visual style that aligns with your drseim.com website.</p>
+                </div>
+            </div>
+            <p class="artifact-note">
+                Restyled in September 2026 to match the rest of the site; the text and the embeds are as the
+                students saw them. The practicum this page belonged to is <a href="/teac905/">TEAC 905</a>.
+            </p>
+        </section>
+    </main>
 
     <div id="footer-placeholder"></div>
     <script src="/shared/component-loader.js"></script>

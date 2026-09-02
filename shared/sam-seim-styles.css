@@ -1040,6 +1040,15 @@ main {
 .artifact-video { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 0.5rem 0 1rem; background: #000; border-radius: var(--border-radius); overflow: hidden; }
 .artifact-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .artifact-figure { display: block; width: 100%; height: auto; margin: 0.5rem 0 1rem; border-radius: var(--border-radius); background: #fff; }
+.artifact-video--slides { aspect-ratio: 16 / 10; }
+.artifact-note { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; max-width: 70ch; margin: 1.25rem 0 0; }
+
+/* A short chat transcript kept as part of an artifact (the 259A student page). */
+.chat-log { display: grid; gap: 0.75rem; margin-top: 0.5rem; }
+.chat-turn { border-left: 3px solid var(--secondary); padding: 0.75rem 1rem; background: var(--light); border-radius: 0 var(--border-radius) var(--border-radius) 0; }
+.chat-turn--assistant { border-left-color: var(--plum); }
+.chat-turn__who { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.35rem; }
+.chat-turn p:last-child { margin-bottom: 0; font-size: 0.95rem; line-height: 1.65; overflow-wrap: anywhere; }
 
 .empty-state {
     display: flex;
@@ -1843,8 +1852,13 @@ cite { font-style: italic; }
 .course-reflection p {
     font-size: 1.08rem;
     line-height: 1.85;
-    max-width: 68ch;
 }
+
+/* Course pages are reading pages. Instead of holding one section to a 68ch
+   measure inside a 1200px card and leaving the right of it empty, the whole
+   page column narrows so every card and its text share one width (~80ch).
+   The chart page (.yd) keeps the full column so its SVGs stay legible. */
+main.container:has(.course-hero):not(:has(.yd)) { max-width: 840px; }
 
 .artifact-card__foot {
     display: flex;
