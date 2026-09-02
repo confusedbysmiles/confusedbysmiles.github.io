@@ -2033,3 +2033,56 @@ button.artifact-lock {
 
 button.artifact-lock:hover { color: var(--text); }
 button.artifact-lock:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+
+/* ---- Gated artifact reader ---------------------------------------------- */
+
+.pa-overlay--wide .pa-box--viewer {
+    max-width: 60rem;
+    height: 88vh;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pa-viewer-body {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+    background: #fff;
+    margin-bottom: var(--spacing-md);
+}
+
+.pa-viewer-frame { width: 100%; height: 100%; border: none; display: block; }
+
+.pa-viewer-doc { padding: var(--spacing-lg); color: var(--text); line-height: 1.7; }
+.pa-viewer-doc p { margin-bottom: var(--spacing-md); }
+.pa-viewer-doc h1, .pa-viewer-doc h2, .pa-viewer-doc h3 {
+    color: var(--text); margin: var(--spacing-lg) 0 var(--spacing-sm); line-height: 1.3;
+}
+.pa-viewer-doc blockquote {
+    margin: var(--spacing-md) 0; padding-left: var(--spacing-md);
+    border-left: 3px solid var(--secondary); color: var(--text-light);
+}
+
+.pa-viewer-plain {
+    padding: var(--spacing-lg); margin: 0; white-space: pre-wrap; word-wrap: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86rem; line-height: 1.6; color: var(--text);
+}
+
+.pa-viewer-status { padding: var(--spacing-lg); color: var(--text-light); margin: 0; }
+
+.pa-viewer-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--spacing-md); flex-wrap: wrap;
+}
+
+.pa-viewer-note { margin: 0; font-size: 0.8rem; color: var(--text-light); }
+
+.pa-btn--quiet {
+    width: auto; background: none; color: var(--primary);
+    border: 1px solid var(--primary); padding: 0.45rem 0.9rem; font-size: 0.85rem;
+}
+.pa-btn--quiet:hover { background: var(--primary); color: #fff; }

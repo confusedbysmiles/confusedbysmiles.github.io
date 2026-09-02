@@ -26,35 +26,87 @@ const PortfolioAccess = (() => {
         if (el) { el.hidden = false; document.body.style.overflow = "hidden"; }
     }
     function hideAll() {
-        ["pa-login", "pa-request"].forEach((id) => { const el = $(id); if (el) el.hidden = true; });
+        ["pa-login", "pa-request", "pa-viewer"].forEach((id) => { const el = $(id); if (el) el.hidden = true; });
         document.body.style.overflow = "";
     }
 
-    // Fetch a gated artifact and hand it to the browser.
+    const esc = (t) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+    async function authFetch(key) {
+        return fetch(`${WORKER_URL}/portfolio/${key}`, {
+            headers: { Authorization: `Bearer ${token()}` }
+        });
+    }
+
+    function expired(key, label) {
+        try { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); } catch (e) {}
+        pendingKey = { key, label };
+        hideAll();
+        show("pa-login");
+    }
+
+    // Save the original file, for readers who want it rather than the rendering.
+    async function download(key, label) {
+        const resp = await authFetch(key);
+        if (resp.status === 401) return expired(key, label);
+        if (!resp.ok) return;
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = label || key.split("/").pop();
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+    }
+
+    // Open a gated artifact in the reader.
+    // .pdf  — the blob, in an iframe, at full fidelity.
+    // .md   — fetched as text.
+    // other — a pandoc rendering stored beside the original as <name>.view.html.
+    //         Falls back to downloading the original if no rendering exists.
     async function open(key, label) {
         if (!token()) { pendingKey = { key, label }; show("pa-login"); return; }
+
+        const titleEl = $("pa-viewer-title");
+        const bodyEl = $("pa-viewer-body");
+        const dlEl = $("pa-viewer-download");
+        if (!bodyEl) return download(key, label);
+
+        titleEl.textContent = label || key.split("/").pop();
+        bodyEl.innerHTML = '<p class="pa-viewer-status">Opening&hellip;</p>';
+        dlEl.onclick = () => download(key, label);
+        show("pa-viewer");
+
+        const ext = key.split(".").pop().toLowerCase();
         try {
-            const resp = await fetch(`${WORKER_URL}/portfolio/${key}`, {
-                headers: { Authorization: `Bearer ${token()}` }
-            });
-            if (resp.status === 401) {
-                try { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); } catch (e) {}
-                pendingKey = { key, label };
-                show("pa-login");
+            if (ext === "pdf") {
+                const resp = await authFetch(key);
+                if (resp.status === 401) return expired(key, label);
+                if (!resp.ok) throw new Error(resp.status);
+                const url = URL.createObjectURL(await resp.blob());
+                bodyEl.innerHTML = '<iframe class="pa-viewer-frame" title="' +
+                    esc(label || "Artifact") + '"></iframe>';
+                bodyEl.querySelector("iframe").src = url;
+                setTimeout(() => URL.revokeObjectURL(url), 600000);
                 return;
             }
-            if (!resp.ok) { alert(`That artifact could not be opened (${resp.status}).`); return; }
-            const blob = await resp.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = label || key.split("/").pop();
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 30000);
+            if (ext === "md" || ext === "txt") {
+                const resp = await authFetch(key);
+                if (resp.status === 401) return expired(key, label);
+                if (!resp.ok) throw new Error(resp.status);
+                bodyEl.innerHTML = '<pre class="pa-viewer-plain">' + esc(await resp.text()) + "</pre>";
+                return;
+            }
+            const viewKey = key.replace(/\.[^.]+$/, ".view.html");
+            const resp = await authFetch(viewKey);
+            if (resp.status === 401) return expired(key, label);
+            if (!resp.ok) {
+                bodyEl.innerHTML = '<p class="pa-viewer-status">No reading copy exists for this ' +
+                    'artifact yet. Use Download original below.</p>';
+                return;
+            }
+            bodyEl.innerHTML = '<div class="pa-viewer-doc">' + (await resp.text()) + "</div>";
         } catch (e) {
-            alert("Could not reach the archive. Please try again.");
+            bodyEl.innerHTML = '<p class="pa-viewer-status">That artifact could not be opened. ' +
+                'Use Download original below.</p>';
         }
     }
 
