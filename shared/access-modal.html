@@ -1,0 +1,61 @@
+<!-- Portfolio access modals. Injected on every page by component-loader.js.
+     Namespaced pa-* so nothing collides with the tracker's own modal classes
+     in dissertation-tracker/tracker.css. -->
+<div id="pa-login" class="pa-overlay" hidden>
+    <div class="pa-box" role="dialog" aria-modal="true" aria-labelledby="pa-login-title">
+        <div class="pa-head">
+            <h2 id="pa-login-title">Log in</h2>
+            <button type="button" class="pa-close" data-pa-close aria-label="Close">&times;</button>
+        </div>
+        <p class="pa-lede">
+            Dissertation corpus documents are held in restricted storage. Log in to open them.
+        </p>
+        <div class="pa-field">
+            <label for="pa-username">Username</label>
+            <input type="text" id="pa-username" autocomplete="username" spellcheck="false">
+        </div>
+        <div class="pa-field">
+            <label for="pa-password">Password</label>
+            <input type="password" id="pa-password" autocomplete="current-password">
+        </div>
+        <p class="pa-error" id="pa-login-error" role="alert"></p>
+        <div class="pa-actions">
+            <button type="button" class="pa-btn" id="pa-login-submit">Log in</button>
+        </div>
+        <p class="pa-foot"><a href="#" id="pa-to-request">Request access instead</a></p>
+    </div>
+</div>
+
+<div id="pa-request" class="pa-overlay" hidden>
+    <div class="pa-box" role="dialog" aria-modal="true" aria-labelledby="pa-request-title">
+        <div class="pa-head">
+            <h2 id="pa-request-title">Request access</h2>
+            <button type="button" class="pa-close" data-pa-close aria-label="Close">&times;</button>
+        </div>
+        <p class="pa-lede">
+            These are dissertation data rather than published work. Tell me who you are and
+            I&rsquo;ll review the request.
+        </p>
+        <div class="pa-field">
+            <label for="pa-name">Full name</label>
+            <input type="text" id="pa-name" autocomplete="name">
+        </div>
+        <div class="pa-field">
+            <label for="pa-req-username">Preferred username</label>
+            <input type="text" id="pa-req-username" spellcheck="false" autocomplete="off">
+        </div>
+        <div class="pa-field">
+            <label for="pa-email">Email</label>
+            <input type="email" id="pa-email" autocomplete="email">
+        </div>
+        <div class="pa-field">
+            <label for="pa-reason">Why are you asking?</label>
+            <textarea id="pa-reason" rows="3"></textarea>
+        </div>
+        <p class="pa-error" id="pa-request-error" role="alert"></p>
+        <div class="pa-actions">
+            <button type="button" class="pa-btn" id="pa-request-submit">Send request</button>
+        </div>
+        <p class="pa-foot"><a href="#" id="pa-to-login">Back to log in</a></p>
+    </div>
+</div>

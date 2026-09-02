@@ -1890,3 +1890,140 @@ cite { font-style: italic; }
 }
 
 .artifact-card--gated .artifact-description { color: var(--text-light); }
+
+/* ---- Portfolio access modals -------------------------------------------- */
+/* Namespaced pa-* so nothing collides with the tracker's modal classes in
+   dissertation-tracker/tracker.css. Tokens only. */
+
+.pa-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 33, 30, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    z-index: 1000;
+}
+
+.pa-box {
+    background: var(--light);
+    border-radius: var(--border-radius-lg);
+    border-top: 4px solid var(--plum);
+    padding: var(--spacing-lg);
+    width: 100%;
+    max-width: 30rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px var(--shadow-dark);
+}
+
+.pa-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.pa-head h2 { margin: 0; font-size: 1.35rem; color: var(--text); }
+
+.pa-close {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 0 var(--spacing-xs);
+}
+
+.pa-close:hover { color: var(--text); }
+
+.pa-lede {
+    color: var(--text-light);
+    font-size: 0.92rem;
+    margin: 0 0 var(--spacing-md);
+}
+
+.pa-field { margin-bottom: var(--spacing-md); }
+
+.pa-field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: var(--spacing-xs);
+}
+
+.pa-field input,
+.pa-field textarea {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    color: var(--text);
+    background: #fff;
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+}
+
+.pa-field input:focus-visible,
+.pa-field textarea:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+    border-color: var(--primary);
+}
+
+.pa-error {
+    color: #8a1c1c;
+    font-size: 0.85rem;
+    margin: 0 0 var(--spacing-sm);
+    min-height: 1.2em;
+}
+
+.pa-actions { margin-bottom: var(--spacing-sm); }
+
+.pa-btn {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.pa-btn:hover { background: var(--primary-dark); }
+.pa-btn:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+
+.pa-foot {
+    text-align: center;
+    font-size: 0.88rem;
+    margin: 0;
+}
+
+/* The lock on a gated artifact card is a control, not a label. */
+button.artifact-lock {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--plum);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+button.artifact-lock:hover { color: var(--text); }
+button.artifact-lock:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }

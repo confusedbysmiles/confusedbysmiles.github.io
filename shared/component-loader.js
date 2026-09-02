@@ -65,6 +65,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadComponent('header-placeholder', '/shared/header.html');
     await loadComponent('footer-placeholder', '/shared/footer.html');
     setActiveNavLink();
+
+    // Gated-artifact access. Only pages that actually have a gated card carry
+    // the placeholder, so this is a no-op everywhere else.
+    if (document.getElementById('access-modal-placeholder')) {
+        await loadComponent('access-modal-placeholder', '/shared/access-modal.html');
+        if (typeof PortfolioAccess !== 'undefined') PortfolioAccess.wire();
+    }
 });
 
 // Alternative: If you prefer jQuery (if you're using it)
