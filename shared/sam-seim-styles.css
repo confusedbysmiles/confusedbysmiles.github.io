@@ -1042,6 +1042,8 @@ main {
 .artifact-figure { display: block; width: 100%; height: auto; margin: 0.5rem 0 1rem; border-radius: var(--border-radius); background: #fff; }
 .artifact-video--slides { aspect-ratio: 16 / 10; }
 .artifact-note { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; max-width: 70ch; margin: 1.25rem 0 0; }
+.artifact-abstract { border-left: 3px solid var(--secondary); margin: 0.75rem 0 1rem; padding: 0.25rem 0 0.25rem 1rem; }
+.artifact-abstract p { font-size: 0.98rem; line-height: 1.7; margin: 0; color: var(--text); }
 
 /* A short chat transcript kept as part of an artifact (the 259A student page). */
 .chat-log { display: grid; gap: 0.75rem; margin-top: 0.5rem; }
