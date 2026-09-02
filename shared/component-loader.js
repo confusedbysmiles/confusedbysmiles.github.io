@@ -37,11 +37,16 @@ function setActiveNavLink() {
         'classes': 'nav-classes'
     };
     
+    // Only the site root is Home. Every subfolder has an index.html too, and
+    // mapping "index" straight to nav-home lit Home on /edps936/,
+    // /dissertation-tracker/ and every course page.
+    const isRoot = currentPath === '/' || currentPath === '/index.html';
+    let navId = isRoot ? 'nav-home' : navMap[pageName];
+    if (!isRoot && pageName === 'index') {
+        navId = undefined;
+    }
     // A course subfolder (/teac924j/, /edps936/) is still the Classes section,
-    // so keep that nav item lit rather than lighting nothing.
-    let navId = navMap[pageName];
-    // Override, not fallback: /teac924j/index.html resolves to pageName
-    // "index", which would otherwise light Home.
+    // so light that rather than nothing.
     if (/^\/(teac|edps)[0-9]/i.test(currentPath)) {
         navId = 'nav-classes';
     }

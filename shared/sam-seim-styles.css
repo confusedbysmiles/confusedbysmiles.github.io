@@ -2086,3 +2086,10 @@ button.artifact-lock:focus-visible { outline: 2px solid var(--plum); outline-off
     border: 1px solid var(--primary); padding: 0.45rem 0.9rem; font-size: 0.85rem;
 }
 .pa-btn--quiet:hover { background: var(--primary); color: #fff; }
+
+/* Audio artifact on a course page. */
+.artifact-audio {
+    width: 100%;
+    margin: var(--spacing-md) 0;
+    display: block;
+}
