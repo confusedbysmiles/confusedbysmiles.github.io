@@ -180,6 +180,22 @@
       border: none; 
     }
     
+    .week-note {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.55;
+      padding: 0.5rem 0.25rem 0.9rem;
+      border-bottom: 1px solid var(--secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .embed-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+    }
+
     /* Empty State */
     .empty-state {
       display: flex; 
@@ -462,15 +478,88 @@
           }
         ] 
       },
-      week7: { folderName: "Week 7", start: "2025-10-03", end: "2025-10-09", files: [] },
-      week8: { folderName: "Week 8", start: "2025-10-10", end: "2025-10-16", files: [] },
-      week9: { folderName: "Week 9", start: "2025-10-17", end: "2025-10-23", files: [] },
-      week10: { folderName: "Week 10", start: "2025-10-24", end: "2025-10-30", files: [] },
-      week11: { folderName: "Week 11", start: "2025-10-31", end: "2025-11-06", files: [] },
-      week12: { folderName: "Week 12", start: "2025-11-07", end: "2025-11-13", files: [] },
-      week13: { folderName: "Week 13", start: "2025-11-14", end: "2025-11-20", files: [] },
-      week14: { folderName: "Week 14", start: "2025-11-21", end: "2025-12-04", files: [] },
-      week15: { folderName: "Week 15", start: "2025-12-05", end: "2025-12-12", files: [] }
+      week7: {
+        folderName: "Week 7: Learning Theories",
+        start: "2025-10-03",
+        end: "2025-10-09",
+        files: [
+          { name: "Week 7 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/1eOfqV7jbwn22Jrymp1pZWWuG3KwY1BhLJGjKFP4t258/embed" },
+          { name: "Week 7 Synthesis Slide", icon: "🖼️", url: "/teac859/notes/week07-synthesis-slide.pdf" },
+          { name: "Week 7 Notes: Illeris, Ertmer & Newby, Greeno, Allen", icon: "✏️", url: "/teac859/notes/week07-learning-theories-synthesis.pdf" }
+        ]
+      },
+      week8: {
+        folderName: "Week 8: Learning Theories & Design Pathways",
+        start: "2025-10-10",
+        end: "2025-10-16",
+        files: [
+          { name: "Week 8 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/10ON4CuAfcFALPnZAUegvq1bYRtx7hIXe93-EnSgsrd0/embed" },
+          { name: "Design Pathways (course deck)", icon: "📊", url: "https://docs.google.com/presentation/d/1MJ8uA3ax2rgKd3RLD4gEoYRjw8F7ivdNuJMJ5EgaHec/embed" },
+          { name: "Week 8 Summary Slide", icon: "🖼️", url: "/teac859/notes/week08-learning-theories-slide.pdf" },
+          { name: "Week 8 Notes: Design Thinking, Indigenous Pedagogies, Revolutionary Frameworks", icon: "✏️", url: "/teac859/notes/week08-learning-theories-notes.pdf" },
+          { name: "Pedagogical Profile Heatmap", icon: "🗺️", url: "/teac859/notes/pedagogical-heatmap.png" }
+        ]
+      },
+      week9: {
+        folderName: "Week 9: Project Week 1",
+        start: "2025-10-17",
+        end: "2025-10-23",
+        note: "No class meeting. Two self-selected readings toward the final project; citations went into the project deck's speaker notes.",
+        files: []
+      },
+      week10: {
+        folderName: "Week 10: What Is Teaching Actually For?",
+        start: "2025-10-24",
+        end: "2025-10-30",
+        files: [
+          { name: "Week 10 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/1nsFHEIplcP5lug7x56fXc9a_yqY7OBj6FMx2iPhBHCg/embed" },
+          { name: "Week 10 Summary Slide", icon: "🖼️", url: "/teac859/notes/week10-summary-slide.pdf" },
+          { name: "Week 10 Notes: Hinchliffe, TPACK, Duckworth, Perkins, Backward Design", icon: "✏️", url: "/teac859/notes/week10-what-is-teaching-for.pdf" }
+        ]
+      },
+      week11: {
+        folderName: "Week 11: Andragogy, Agile Design, and a Taxonomy of Generative AI Use",
+        start: "2025-10-31",
+        end: "2025-11-06",
+        files: [
+          { name: "Week 11 Slides", icon: "📊", url: "https://docs.google.com/presentation/d/17qrqvaficcU3b825Lt0cpp0oQ4LCrFxmL2R0c9ZrHZg/embed" },
+          { name: "Week 11 Summary Slide", icon: "🖼️", url: "/teac859/notes/week11-summary-slide.pdf" },
+          { name: "Week 11 Notes: Loeng, Chan, Olmanson, Bertram", icon: "✏️", url: "/teac859/notes/week11-summary-and-synthesis.pdf" }
+        ]
+      },
+      week12: {
+        folderName: "Week 12: Project Week 2",
+        start: "2025-11-07",
+        end: "2025-11-13",
+        note: "No class meeting. Final project work; see the Final Project page for what came out of it.",
+        files: []
+      },
+      week13: {
+        folderName: "Week 13: Project Presentations",
+        start: "2025-11-14",
+        end: "2025-11-20",
+        note: "First round of final project presentations. Mine was third.",
+        files: [
+          { name: "Final Project Presentation", icon: "📊", url: "https://docs.google.com/presentation/d/1Riko-GLu5xKIaL01nhP2d1phhlgNnPid/embed?start=false&loop=false&delayms=3000" }
+        ]
+      },
+      week14: {
+        folderName: "Week 14: Motivation (online only)",
+        start: "2025-11-21",
+        end: "2025-12-04",
+        note: "Thanksgiving week off, then an online session: two-minute project updates and Magnifico, Olmanson, McClintock, Mayer, and Scheer on motivation. No shared deck; no notes of mine survive for this week.",
+        files: []
+      },
+      week15: {
+        folderName: "Week 15: Design Sense, Eclecticism, and Final Presentations",
+        start: "2025-12-05",
+        end: "2025-12-12",
+        files: [
+          { name: "Yanchar & Gabbitas: Between Eclecticism and Orthodoxy", icon: "✏️", url: "/teac859/notes/week15-yanchar-gabbitas-summary.pdf" },
+          { name: "Olmanson, Hassani & Jeon: A Taxonomy of Generative AI Use", icon: "✏️", url: "/teac859/notes/week15-ai-taxonomy-summary.pdf" },
+          { name: "Final Project Presentation", icon: "📊", url: "https://docs.google.com/presentation/d/1Riko-GLu5xKIaL01nhP2d1phhlgNnPid/embed?start=false&loop=false&delayms=3000" }
+        ]
+      }
     };
 
     // Get DOM elements
@@ -493,8 +582,15 @@
       // Update subheader with week info and dates
       weekSubheader.textContent = `${weekData.folderName} (${formatDate(weekData.start)} – ${formatDate(weekData.end)})`;
       
+      if (weekData.note) {
+        const n = document.createElement('div');
+        n.className = 'week-note';
+        n.textContent = weekData.note;
+        fileList.appendChild(n);
+      }
+
       if (weekData.files.length === 0) {
-        fileList.innerHTML = '<div style="padding:1rem;color:#999;text-align:center;">No files available</div>';
+        if (!weekData.note) fileList.innerHTML = '<div style="padding:1rem;color:#999;text-align:center;">No files available</div>';
         resetViewer();
         return;
       }
@@ -523,6 +619,10 @@
       embedContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
       
       setTimeout(() => {
+        if (/\.(png|jpe?g|gif|webp)$/i.test(file.url)) {
+          embedContainer.innerHTML = `<img src="${file.url}" alt="${file.name}">`;
+          return;
+        }
         embedContainer.innerHTML = `
           <iframe src="${file.url}" 
                   allow="autoplay; fullscreen; clipboard-write" 
