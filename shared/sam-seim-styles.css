@@ -1898,6 +1898,9 @@ cite { font-style: italic; }
 .pa-overlay {
     position: fixed;
     inset: 0;
+    /* NOTE: author styles beat the UA's [hidden]{display:none}, so display:flex
+       below would keep these visible with the hidden attribute set. The rule
+       after this block restores it. */
     background: rgba(28, 33, 30, 0.55);
     display: flex;
     align-items: center;
@@ -1917,6 +1920,9 @@ cite { font-style: italic; }
     overflow-y: auto;
     box-shadow: 0 8px 32px var(--shadow-dark);
 }
+
+/* Must out-specify .pa-overlay's display:flex. */
+.pa-overlay[hidden] { display: none; }
 
 .pa-head {
     display: flex;
