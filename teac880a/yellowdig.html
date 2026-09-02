@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Yellowdig Semester - TEAC 880A - Sam Seim</title>
+    <meta name="description" content="Four charts from the TEAC 880A discussion board, Fall 2022: where the words went, the word-cloud list against the course writing, the register measured against the voice profile, and the dissertation's vocabulary counted in the first semester.">
+    <link rel="stylesheet" href="../shared/sam-seim-styles.css">
+    <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
+    <style>
+.yd {
+    --surface: var(--light);
+    --ink: var(--text);
+    --ink-2: var(--text-light);
+    --ink-3: #7b827d;
+    --rule: var(--secondary);
+    --grid: #e3e6e1;
+    --posts: #128a5e;
+    --comments: #d0691c;
+    --other: #3b4a91;
+    --rise: #128a5e;
+    --fall: #d0691c;
+    --flat: #9aa19c;
+    --tip-bg: #252a27;
+    --tip-ink: #fbfbfa;
+    font-size: 1.02rem;
+    line-height: 1.6;
+}
+.yd .lede { max-width: 66ch; color: var(--ink-2); margin: 0 0 4px; font-size: 1.08rem; line-height: 1.7; }
+.yd section.panel h2 { color: var(--primary); }
+.yd .fact .n { color: var(--ink); }
+
+
+.yd .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin: 32px 0 56px; }
+.yd .fact { background: var(--surface); padding: 16px 18px; }
+.yd .fact .n { font-size: 1.9rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.yd .fact .l { font-size: 0.8rem; color: var(--ink-2); margin-top: 4px; }
+
+.yd section.panel { margin: 0 0 64px; }
+.yd section.panel h2 { font-size: 1.45rem; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; }
+.yd section.panel .read { max-width: 66ch; color: var(--ink-2); margin: 0 0 20px; }
+.yd section.panel .read strong { color: var(--ink); font-weight: 500; }
+.yd .figure { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 20px 14px; }
+.yd .figure-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 12px; }
+.yd .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.82rem; color: var(--ink-2); }
+.yd .legend span { display: inline-flex; align-items: center; gap: 7px; }
+.yd .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+.yd .swatch.hatch { background-image: repeating-linear-gradient(135deg, currentColor 0 2px, transparent 2px 5px); }
+.yd .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.yd .ring { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-sizing: border-box; border: 2.5px solid currentColor; }
+.yd button.toggle { font: inherit; font-size: 0.78rem; font-weight: 500; color: var(--ink-2); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+.yd button.toggle:hover, .yd button.toggle:focus-visible { color: var(--ink); border-color: var(--ink-3); outline: none; }
+.yd button.toggle:focus-visible { box-shadow: 0 0 0 3px var(--grid); }
+.yd svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.yd svg text { font-family: inherit; fill: var(--ink-2); font-size: 12.5px; }
+.yd svg text.val { fill: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.yd svg text.lab { fill: var(--ink); font-size: 13.5px; }
+.yd svg text.axis { fill: var(--ink-3); font-size: 11.5px; }
+.yd svg line.grid { stroke: var(--grid); stroke-width: 1; }
+.yd svg line.base { stroke: var(--rule); stroke-width: 1; }
+.yd .hit { fill: transparent; cursor: default; }
+.yd .tip { position: fixed; pointer-events: none; z-index: 10; background: var(--tip-bg); color: var(--tip-ink); font-size: 0.8rem; line-height: 1.35; padding: 7px 10px; border-radius: 4px; max-width: 280px; box-shadow: 0 4px 14px rgba(0,0,0,.18); opacity: 0; transition: opacity .12s; }
+.yd .tip b { font-weight: 600; }
+.yd table.data { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 4px; }
+.yd table.data th, .yd table.data td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule); }
+.yd table.data th { font-weight: 600; color: var(--ink-2); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.yd table.data td.num, .yd table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.yd .tablewrap { overflow-x: auto; }
+.yd [hidden] { display: none !important; }
+.yd .wordrow { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 14px; }
+.yd .wordrow span { font-size: 0.9rem; padding: 3px 10px; border: 1px solid var(--rule); border-radius: 999px; color: var(--ink); background: var(--surface); }
+.yd .note { font-size: 0.82rem; color: var(--ink-3); margin: 12px 0 0; max-width: 70ch; }
+.yd .yd-foot { color: var(--ink-3); font-size: 0.82rem; max-width: 70ch; border-top: 1px solid var(--rule); padding-top: 18px; margin-top: 8px; }
+@media (prefers-reduced-motion: reduce) { .yd .tip { transition: none; } }
+@media (max-width: 640px) { .yd .figure { padding: 14px 12px 10px; } .yd svg text.lab { font-size: 12px; } }
+
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/classes.html">UNL PhD Coursework</a> &nbsp;/&nbsp;
+            <a href="/teac880a/">TEAC 880A</a> &nbsp;/&nbsp; <span>The Yellowdig Semester</span>
+        </nav>
+        <div class="course-hero">
+            <p class="course-hero__term">Fall 2022</p>
+            <p class="course-hero__code">TEAC 880A</p>
+            <h1 class="course-hero__title">The Yellowdig Semester</h1>
+            <p class="course-hero__meta"><span>Discussion-board record, charted</span><span class="meta-divider" aria-hidden="true">|</span><span class="corpus-flag"><span class="mark" aria-hidden="true"></span>Dissertation corpus</span></p>
+        </div>
+        <div class="yd">
+  <p class="lede">Everything I wrote on the discussion board in the first course of the program, read against the dissertation that came four years later. Posts are what I put up; comments are what I said back to other people. The other names are not here.</p>
+
+  <div class="facts" role="list">
+    <div class="fact" role="listitem"><div class="n">13</div><div class="l">posts · 4,900 words</div></div>
+    <div class="fact" role="listitem"><div class="n">47</div><div class="l">comments · 4,366 words</div></div>
+    <div class="fact" role="listitem"><div class="n">383</div><div class="l">sentences, median 23 words</div></div>
+    <div class="fact" role="listitem"><div class="n">16,535</div><div class="l">points the platform awarded</div></div>
+    <div class="fact" role="listitem"><div class="n">0</div><div class="l">em dashes in 9,266 words</div></div>
+  </div>
+
+  <!-- ───────────── Panel 1 ───────────── -->
+  <section class="panel" aria-labelledby="p1">
+    <h2 id="p1">Where the words went</h2>
+    <p class="read">Twelve weeks of readings, grouped here into eleven threads, plus the introductions. I gave the most words to the podcast on Casap and Hunter&rsquo;s World Peace Game &mdash; and most of those were replies, not the post. <strong>Perkins got a post and no conversation at all.</strong> Mishra drew seven replies to one post; the intersection of pedagogy, content and technology was the thing I kept coming back to in other people&rsquo;s threads.</p>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="legend"><span><i class="swatch" style="background:var(--posts)"></i>Words in my posts</span><span><i class="swatch hatch" style="color:var(--comments)"></i>Words in my comments</span></div>
+        <button class="toggle" data-toggle="t1" aria-expanded="false">Show as table</button>
+      </div>
+      <div id="c1"></div>
+      <div class="tablewrap" id="t1" hidden></div>
+    </div>
+  </section>
+
+  <!-- ───────────── Panel 2 ───────────── -->
+  <section class="panel" aria-labelledby="p2">
+    <h2 id="p2">The list against the talk</h2>
+    <p class="read">Before recording the technology autobiography I typed 142 words to seed a word cloud &mdash; the words I thought described my relationship with technology. Here are the fifteen I listed most often, ranked, beside where the same words rank in the 9,266 words I actually wrote in class. <strong><em>Students</em> was eleventh on the list about me and first in everything I said to other people.</strong> <em>Access</em> held: fourth on the list, tenth in the talk, fifteen mentions.</p>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="legend"><span><i class="dot" style="background:var(--rise)"></i>Ranked higher in the talk</span><span><i class="dot" style="background:var(--fall)"></i>Ranked lower in the talk</span><span><i class="dot" style="background:var(--flat)"></i>Within two places</span></div>
+        <button class="toggle" data-toggle="t2" aria-expanded="false">Show as table</button>
+      </div>
+      <div id="c2"></div>
+      <div class="tablewrap" id="t2" hidden></div>
+      <p class="note">Sixteen words on the list never appeared in class at all:</p>
+      <div class="wordrow" aria-label="Words on the word-cloud list that do not occur in the discussion-board writing">
+        <span>cellphone</span><span>laptop</span><span>respect</span><span>discussion boards</span><span>artificial</span><span>STEM</span><span>NASA</span><span>empathsize</span><span>innovative</span><span>discourse</span><span>morals</span><span>ethics</span><span>dangerous</span><span>citizenship</span><span>judgement</span><span>fluency</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── Panel 3 ───────────── -->
+  <section class="panel" aria-labelledby="p3">
+    <h2 id="p3">The register</h2>
+    <p class="read">Six measurements from the voice profile, with the discussion board placed among the registers already measured: three academic papers and three books. <strong>Not one em dash in 9,266 words</strong> &mdash; the same switch-off the Doane study showed, in a form nobody was grading for style. The comments carry more first person per ten thousand words than any of the three papers and two of the three books; the posts sit with the papers. Ten spaced hyphens did the dash&rsquo;s job.</p>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="legend"><span><i class="dot" style="background:var(--posts)"></i>Yellowdig posts</span><span><i class="ring" style="color:var(--comments)"></i>Yellowdig comments</span><span><i class="dot" style="background:var(--other)"></i>Academic papers</span><span><i class="ring" style="color:var(--other)"></i>Fiction &amp; essays</span></div>
+        <button class="toggle" data-toggle="t3" aria-expanded="false">Show as table</button>
+      </div>
+      <div id="c3"></div>
+      <div class="tablewrap" id="t3" hidden></div>
+      <p class="note">Comparison values are from the voice profile (ACADEMIC_VOICE.md, August 2026): Doane master&rsquo;s study, TEAC 880E/955 proposal, TEAC 949B paper, Book II, <em>Clean Breath</em>, <em>Not Nothing</em>. Sentences ≤8 and ≥40 words are shares of all sentences; the rest are per 10,000 words.</p>
+    </div>
+  </section>
+
+  <!-- ───────────── Panel 4 ───────────── -->
+  <section class="panel" aria-labelledby="p4">
+    <h2 id="p4">Dissertation vocabulary, counted in 2022</h2>
+    <p class="read">A set of words the dissertation now leans on, counted in the first semester&rsquo;s writing. The words were chosen in 2026; the counts are from 2022. <strong><em>Access</em> is the most frequent, and nine of its fifteen uses are in replies to other people.</strong> <em>Positionality</em>, <em>reflexivity</em>, <em>bias</em>, <em>privilege</em> and <em>objective</em> occur only in comments &mdash; the methods vocabulary arrived in argument with classmates, not in the posts. <em>Identity</em> appears once.</p>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="legend"><span><i class="swatch" style="background:var(--posts)"></i>In posts</span><span><i class="swatch hatch" style="color:var(--comments)"></i>In comments</span></div>
+        <button class="toggle" data-toggle="t4" aria-expanded="false">Show as table</button>
+      </div>
+      <div id="c4"></div>
+      <div class="tablewrap" id="t4" hidden></div>
+      <p class="note">Counts include inflections (<em>equity/equitable</em>, <em>cultures/cultural</em>, <em>gamified/gamification</em>). The selection of terms is the assistant&rsquo;s, made 2 September 2026, and is listed in full in the table.</p>
+    </div>
+  </section>
+
+  <p class="yd-foot">Source: the Yellowdig personal-data export for <em>SURVY INSTRCTNL TECH TEAC880A SEC 700 Fall 2022</em>, generated 22 January 2023. Word counts are whitespace-split; sentences are split on terminal punctuation. Nothing from other participants is counted or shown.</p>
+</div>
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+        <p class="breadcrumb"><a href="/teac880a/">&larr; Back to TEAC 880A</a></p>
+    </main>
+    <div id="footer-placeholder"></div>
+    <script src="/shared/component-loader.js"></script>
+    <script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (n, a = {}, txt) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; return e; };
+  const tip = $("#tip");
+  function bindTip(node, html) {
+    node.addEventListener("mousemove", (e) => { tip.innerHTML = html; tip.style.opacity = 1; const x = Math.min(e.clientX + 14, window.innerWidth - 300); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; });
+    node.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+  }
+  const fmt = (n) => n.toLocaleString("en-US");
+  const hatchDefs = (svg, id, color) => {
+    const d = el("defs"); const p = el("pattern", { id, patternUnits: "userSpaceOnUse", width: 6, height: 6, patternTransform: "rotate(135)" });
+    p.appendChild(el("rect", { width: 6, height: 6, fill: color, "fill-opacity": 0.28 }));
+    p.appendChild(el("rect", { width: 2.4, height: 6, fill: color }));
+    d.appendChild(p); svg.appendChild(d);
+  };
+  const cssVar = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  /* ───── Panel 1: stacked horizontal bars ───── */
+  const P1 = [
+    { k: "Casap & Hunter — podcast and the World Peace Game", p: 340, c: 700 },
+    { k: "Mitra — hole in the wall, SOLE, the Granny Cloud", p: 681, c: 416 },
+    { k: "Mishra — content, pedagogy and technology", p: 370, c: 579 },
+    { k: "Lai & Bower — evaluating technology in classrooms", p: 400, c: 481 },
+    { k: "Basham, Blackorby & Marino — UDL and the wicked problem", p: 487, c: 355 },
+    { k: "Introductions", p: 537, c: 291 },
+    { k: "Dhawan — online learning as panacea", p: 316, c: 434 },
+    { k: "Pacey — technology-practice", p: 248, c: 485 },
+    { k: "Duckworth & Giertz — wonderful ideas, useless machines", p: 461, c: 210 },
+    { k: "Papert — Mindstorms, the QWERTY phenomenon", p: 431, c: 222 },
+    { k: "Koehler & Mishra — TPACK", p: 309, c: 193 },
+    { k: "Perkins — teaching for understanding", p: 320, c: 0 },
+  ].sort((a, b) => (b.p + b.c) - (a.p + a.c));
+
+  function stackedBars(mount, tableMount, rows, opts) {
+    const labelW = opts.labelW, W = 980, rowH = 30, barH = 16, top = 26, bottom = 8;
+    const H = top + rows.length * rowH + bottom;
+    const max = opts.max || Math.max(...rows.map(r => r.p + r.c));
+    const x0 = labelW + 8, x1 = W - 56, sx = (v) => x0 + (x1 - x0) * v / max;
+    const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opts.aria });
+    const pid = "h" + mount; hatchDefs(svg, pid, cssVar("--comments"));
+    const ticks = opts.ticks;
+    ticks.forEach(t => { svg.appendChild(el("line", { class: "grid", x1: sx(t), x2: sx(t), y1: top - 6, y2: H - bottom })); svg.appendChild(el("text", { class: "axis", x: sx(t), y: 12, "text-anchor": "middle" }, fmt(t))); });
+    rows.forEach((r, i) => {
+      const y = top + i * rowH + (rowH - barH) / 2;
+      svg.appendChild(el("text", { class: "lab", x: labelW, y: y + barH / 2 + 4.5, "text-anchor": "end" }, r.k));
+      const g = el("g");
+      const pw = sx(r.p) - sx(0), cw = sx(r.c) - sx(0);
+      if (r.p > 0) g.appendChild(el("rect", { class: "mark", x: sx(0), y, width: Math.max(pw - (r.c > 0 ? 1 : 0), 1), height: barH, fill: "var(--posts)", rx: r.c > 0 ? 0 : 4 }));
+      if (r.c > 0) { const rc = el("rect", { class: "mark", x: sx(0) + pw + (r.p > 0 ? 2 : 0), y, width: Math.max(cw - 2, 1), height: barH, rx: 4 }); rc.setAttribute("fill", `url(#${pid})`); rc.setAttribute("stroke", "var(--comments)"); rc.setAttribute("stroke-width", "1"); g.appendChild(rc); }
+      svg.appendChild(g);
+      svg.appendChild(el("text", { class: "val", x: sx(r.p + r.c) + 8, y: y + barH / 2 + 4.5 }, fmt(r.p + r.c)));
+      const hit = el("rect", { class: "hit", x: 0, y: top + i * rowH, width: W, height: rowH });
+      bindTip(hit, `<b>${r.k}</b><br>${opts.unit} in posts: ${fmt(r.p)}<br>${opts.unit} in comments: ${fmt(r.c)}<br>Total: ${fmt(r.p + r.c)}`);
+      svg.appendChild(hit);
+    });
+    svg.appendChild(el("line", { class: "base", x1: sx(0), x2: sx(0), y1: top - 6, y2: H - bottom }));
+    $("#" + mount).appendChild(svg);
+    const t = document.createElement("table"); t.className = "data";
+    t.innerHTML = `<thead><tr><th>${opts.rowName}</th><th class="num">Posts</th><th class="num">Comments</th><th class="num">Total</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.k}</td><td class="num">${fmt(r.p)}</td><td class="num">${fmt(r.c)}</td><td class="num">${fmt(r.p + r.c)}</td></tr>`).join("") + "</tbody>";
+    $("#" + tableMount).appendChild(t);
+  }
+  stackedBars("c1", "t1", P1, { labelW: 400, ticks: [0, 250, 500, 750, 1000], unit: "Words", rowName: "Reading", aria: "Words written per reading, posts and comments stacked" });
+
+  /* ───── Panel 2: rank slope ───── */
+  const P2 = [
+    ["technology", 23, 87, 1, 2], ["tool", 7, 15, 2, 9], ["teaching", 7, 77, 3, 4], ["access", 6, 15, 4, 10], ["research", 5, 26, 5, 7],
+    ["learning", 4, 83, 6, 3], ["school", 4, 26, 7, 8], ["community", 3, 4, 8, 18], ["integration", 3, 11, 9, 12], ["tech-savvy", 3, 1, 10, 21],
+    ["students", 3, 130, 11, 1], ["teachers", 3, 41, 12, 6], ["framework", 3, 10, 13, 15], ["education", 2, 68, 22, 5], ["cellphone", 2, 0, 18, 26],
+  ];
+  (function slope() {
+    // compress the right-hand ranks to the 15 words shown, keeping order
+    const rightOrder = [...P2].sort((a, b) => a[4] - b[4]);
+    const rpos = new Map(rightOrder.map((d, i) => [d[0], i + 1]));
+    const leftOrder = [...P2].sort((a, b) => a[3] - b[3]);
+    const lpos = new Map(leftOrder.map((d, i) => [d[0], i + 1]));
+    const W = 980, rowH = 30, top = 34, H = top + P2.length * rowH + 10, xl = 300, xr = 680;
+    const y = (i) => top + (i - 0.5) * rowH;
+    const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Rank of each word on the 2022 word-cloud list versus its rank in the discussion-board writing" });
+    svg.appendChild(el("text", { class: "axis", x: xl, y: 14, "text-anchor": "end" }, "ON THE WORD-CLOUD LIST (142 WORDS)"));
+    svg.appendChild(el("text", { class: "axis", x: xr, y: 14, "text-anchor": "start" }, "IN THE COURSE WRITING (9,266 WORDS)"));
+    svg.appendChild(el("line", { class: "base", x1: xl + 12, x2: xl + 12, y1: top - 8, y2: H - 6 }));
+    svg.appendChild(el("line", { class: "base", x1: xr - 12, x2: xr - 12, y1: top - 8, y2: H - 6 }));
+    P2.forEach(d => {
+      const [w, l, c, lr, cr] = d; const a = lpos.get(w), b = rpos.get(w);
+      const delta = a - b; const col = Math.abs(delta) <= 2 ? "var(--flat)" : delta > 0 ? "var(--rise)" : "var(--fall)";
+      const g = el("g");
+      g.appendChild(el("line", { x1: xl + 12, y1: y(a), x2: xr - 12, y2: y(b), stroke: col, "stroke-width": 2, "stroke-linecap": "round", opacity: 0.9 }));
+      [ [xl + 12, y(a)], [xr - 12, y(b)] ].forEach(([cx, cy]) => { g.appendChild(el("circle", { cx, cy, r: 6.5, fill: "var(--surface)" })); g.appendChild(el("circle", { cx, cy, r: 4.5, fill: col })); });
+      g.appendChild(el("text", { class: "lab", x: xl - 2, y: y(a) + 4.5, "text-anchor": "end" }, `${w}`));
+      g.appendChild(el("text", { class: "axis", x: xl - 2 - 7.2 * (w.length + 1), y: y(a) + 4.5, "text-anchor": "end" }, `${l}×`));
+      g.appendChild(el("text", { class: "lab", x: xr + 2, y: y(b) + 4.5, "text-anchor": "start" }, `${w}`));
+      g.appendChild(el("text", { class: "axis", x: xr + 2 + 7.2 * (w.length + 1), y: y(b) + 4.5, "text-anchor": "start" }, `${c}×`));
+      bindTip(g, `<b>${w}</b><br>On the list: ${l} time${l === 1 ? "" : "s"} (rank ${lr} of 142)<br>In the writing: ${c} time${c === 1 ? "" : "s"} (rank ${cr} among these words)`);
+      svg.appendChild(g);
+    });
+    $("#c2").appendChild(svg);
+    const t = document.createElement("table"); t.className = "data";
+    t.innerHTML = `<thead><tr><th>Word</th><th class="num">Times on the list</th><th class="num">List rank</th><th class="num">Times in class writing</th><th class="num">Writing rank</th></tr></thead><tbody>` +
+      P2.map(d => `<tr><td>${d[0]}</td><td class="num">${d[1]}</td><td class="num">${d[3]}</td><td class="num">${d[2]}</td><td class="num">${d[4]}</td></tr>`).join("") + "</tbody>";
+    $("#t2").appendChild(t);
+  })();
+
+  /* ───── Panel 3: register small multiples ───── */
+  const REG = [
+    { name: "Doane master's study", kind: "acad", v: [0.0, 19, 17.8, 7.3, 0.0, 89.9] },
+    { name: "Research proposal, TEAC 880E/955 (2024)", kind: "acad", v: [8.2, 25, 8.3, 15.0, 0.0, 49.5] },
+    { name: "TEAC 949B paper (2023)", kind: "acad", v: [19.7, 28, 16.9, 21.7, 0.0, 137.8] },
+    { name: "Yellowdig posts (2022)", kind: "post", v: [0.0, 23, 17.6, 11.4, 0.5, 126.5] },
+    { name: "Yellowdig comments (2022)", kind: "comm", v: [0.0, 23, 6.4, 12.1, 2.3, 329.8] },
+    { name: "Book II", kind: "fic", v: [136.2, 13, 35.2, 16.1, 4.0, 315.7] },
+    { name: "Clean Breath", kind: "fic", v: [127.0, 11, 41.3, 15.5, 7.8, 58.5] },
+    { name: "Not Nothing", kind: "fic", v: [96.5, 11, 41.9, 7.4, 8.4, 521.9] },
+  ];
+  const METRICS = [
+    { k: "Em dashes per 10,000 words", max: 150, ticks: [0, 50, 100, 150], f: (v) => v.toFixed(1) },
+    { k: "Median sentence length (words)", max: 30, ticks: [0, 10, 20, 30], f: (v) => String(v) },
+    { k: "Sentences of 8 words or fewer (%)", max: 45, ticks: [0, 15, 30, 45], f: (v) => v.toFixed(1) + "%" },
+    { k: "Sentences of 40 words or more (%)", max: 25, ticks: [0, 5, 10, 15, 20, 25], f: (v) => v.toFixed(1) + "%" },
+    { k: "Sentences opening And / But / So (%)", max: 10, ticks: [0, 2.5, 5, 7.5, 10], f: (v) => v.toFixed(1) + "%" },
+    { k: "“I” per 10,000 words", max: 550, ticks: [0, 100, 200, 300, 400, 500], f: (v) => v.toFixed(0) },
+  ];
+  (function register() {
+    const W = 980, labelW = 290, rowH = 74, top = 10, H = top + METRICS.length * rowH + 8, x0 = labelW + 36, x1 = W - 24;
+    const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Six voice measurements across eight bodies of writing" });
+    METRICS.forEach((m, mi) => {
+      const yb = top + mi * rowH + 48; const sx = (v) => x0 + (x1 - x0) * Math.min(v, m.max) / m.max;
+      svg.appendChild(el("text", { class: "lab", x: labelW, y: yb + 4, "text-anchor": "end" }, m.k));
+      svg.appendChild(el("line", { class: "grid", x1: x0, x2: x1, y1: yb, y2: yb }));
+      m.ticks.forEach(t => { svg.appendChild(el("line", { class: "grid", x1: sx(t), x2: sx(t), y1: yb - 5, y2: yb + 5 })); svg.appendChild(el("text", { class: "axis", x: sx(t), y: yb + 21, "text-anchor": "middle" }, m.f(t))); });
+      // marks that land on the same spot stack upward rather than hide each other
+      const seen = {}; const pos = {};
+      REG.forEach((r, ri) => {
+        const v = r.v[mi]; const key = Math.round(sx(v) / 10); seen[key] = (seen[key] || 0) + 1;
+        const cx = sx(v), cy = yb - (seen[key] - 1) * 13; pos[ri] = { cx, cy };
+        const g = el("g");
+        g.appendChild(el("circle", { cx, cy, r: 8.5, fill: "var(--surface)" }));
+        if (r.kind === "post") g.appendChild(el("circle", { cx, cy, r: 6.5, fill: "var(--posts)" }));
+        else if (r.kind === "comm") g.appendChild(el("circle", { cx, cy, r: 5.5, fill: "var(--surface)", stroke: "var(--comments)", "stroke-width": 3 }));
+        else if (r.kind === "acad") g.appendChild(el("circle", { cx, cy, r: 6.5, fill: "var(--other)" }));
+        else g.appendChild(el("circle", { cx, cy, r: 5.5, fill: "var(--surface)", stroke: "var(--other)", "stroke-width": 3 }));
+        g.appendChild(el("circle", { class: "hit", cx, cy, r: 13 }));
+        bindTip(g, `<b>${r.name}</b><br>${m.k}: ${m.f(v)}`);
+        svg.appendChild(g);
+      });
+      // direct labels for the two Yellowdig points only
+      const yp = REG[3].v[mi], yc = REG[4].v[mi];
+      const anchorFor = (cx) => cx < x0 + 120 ? ["start", -8] : cx > x1 - 120 ? ["end", 8] : ["middle", 0];
+      const lbl = (cx, txt) => { const [an, dx] = anchorFor(cx); svg.appendChild(el("text", { class: "val", x: cx + dx, y: yb - 32, "text-anchor": an }, txt)); };
+      if (Math.abs(sx(yp) - sx(yc)) < 90) lbl((sx(yp) + sx(yc)) / 2, `posts ${m.f(yp)} · comments ${m.f(yc)}`);
+      else { lbl(sx(yp), `posts ${m.f(yp)}`); lbl(sx(yc), `comments ${m.f(yc)}`); }
+    });
+    $("#c3").appendChild(svg);
+    const t = document.createElement("table"); t.className = "data";
+    t.innerHTML = `<thead><tr><th>Writing</th>${METRICS.map(m => `<th class="num">${m.k}</th>`).join("")}</tr></thead><tbody>` +
+      REG.map(r => `<tr><td>${r.name}</td>${r.v.map((v, i) => `<td class="num">${METRICS[i].f(v)}</td>`).join("")}</tr>`).join("") + "</tbody>";
+    $("#t3").appendChild(t);
+  })();
+
+  /* ───── Panel 4: vocabulary ───── */
+  const P4 = [
+    { k: "access", p: 6, c: 9 }, { k: "culture / cultural", p: 7, c: 7 }, { k: "struggle", p: 2, c: 5 }, { k: "data", p: 5, c: 6 }, { k: "framework", p: 8, c: 2 }, { k: "power", p: 7, c: 2 },
+    { k: "wonderful", p: 6, c: 1 }, { k: "gamification / gamified", p: 2, c: 4 }, { k: "neutral", p: 4, c: 2 }, { k: "equity / equitable", p: 3, c: 3 }, { k: "fail / failure", p: 4, c: 1 },
+    { k: "fortunate", p: 1, c: 3 }, { k: "conservative", p: 3, c: 1 }, { k: "right answer", p: 3, c: 1 }, { k: "disrupt", p: 3, c: 0 }, { k: "homeschool", p: 2, c: 1 }, { k: "bias", p: 0, c: 3 },
+    { k: "autonomy", p: 2, c: 0 }, { k: "gatekeeping", p: 1, c: 1 }, { k: "growth mindset", p: 1, c: 1 }, { k: "positionality", p: 0, c: 2 }, { k: "privilege", p: 0, c: 2 }, { k: "objective", p: 0, c: 2 },
+    { k: "quantitative", p: 1, c: 1 }, { k: "identity", p: 0, c: 1 }, { k: "reflexivity", p: 0, c: 1 }, { k: "qualitative", p: 0, c: 1 },
+  ].sort((a, b) => (b.p + b.c) - (a.p + a.c));
+  stackedBars("c4", "t4", P4, { labelW: 230, max: 16, ticks: [0, 4, 8, 12, 16], unit: "Occurrences", rowName: "Term", aria: "Occurrences of selected dissertation terms in the 2022 discussion-board writing, posts and comments stacked" });
+
+  /* ───── table toggles ───── */
+  document.querySelectorAll("button.toggle").forEach(b => {
+    b.addEventListener("click", () => {
+      const t = $("#" + b.dataset.toggle); const open = t.hidden; t.hidden = !open; b.setAttribute("aria-expanded", String(open)); b.textContent = open ? "Hide table" : "Show as table";
+    });
+  });
+})();
+</script>
+</body>
+</html>
