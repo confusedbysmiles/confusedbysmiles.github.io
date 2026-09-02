@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAC 882B - Sam Seim</title>
+    <meta name="description" content="TEAC 882B Advanced Web Design and Databases, Spring 2026: two interconnected prototypes, a math problem generator and the dissertation tracker, with the deck and the build prompt that started the instrument.">
+    <link rel="stylesheet" href="../shared/sam-seim-styles.css">
+    <link rel="icon" href="/shared/MyCoolS.png" type="image/png">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="/classes.html">UNL PhD Coursework</a> &nbsp;/&nbsp; <span>TEAC 882B</span>
+        </nav>
+
+        <div class="course-hero">
+            <p class="course-hero__term">Spring 2026</p>
+            <p class="course-hero__code">TEAC 882B</p>
+            <h1 class="course-hero__title">Advanced Web Design and Databases</h1>
+            <p class="course-hero__meta">
+                <span>University of Nebraska&ndash;Lincoln</span>
+                <span class="meta-divider" aria-hidden="true">|</span>
+                <span>3 credit hours</span>
+                <span class="meta-divider" aria-hidden="true">|</span>
+                <span class="course-status course-status--live"><span class="dot" aria-hidden="true"></span>Artifacts online</span>
+            </p>
+        </div>
+
+        <section class="content-section course-reflection" aria-labelledby="reflection-heading">
+            <h2 id="reflection-heading">What this course was</h2>
+            <p>
+                A prototyping practicum &mdash; JavaScript, APIs, and a tour of database shapes: relational,
+                document, graph, vector. The deliverable was a working prototype and an account of building
+                it. I built two, and they were never really separate. The first was a Student Agency Math
+                Problem Generator: a student picks a topic, a difficulty, and a context from their own life
+                &mdash; sports, cooking, gaming &mdash; and a model writes them a problem. The second was a
+                tracker to document building the first: formative memories with technology and mathematics,
+                then a running log of decisions, obstacles, and the questions that surfaced while the
+                generator came together.
+            </p>
+            <p>
+                The tracker outgrew the assignment. It runs on a graph database now &mdash; Neo4j Aura,
+                reached through a Cloudflare Worker because the Neo4j driver will not run inside one, which
+                took a week of wrong endpoints and a credentials file that listed the instance id as the
+                database name to discover. It has a live graph viewer. It has an authentication layer.
+                It is the instrument behind this portfolio&rsquo;s gated artifacts.
+            </p>
+            <p>
+                The deck names the biggest risk to the tracker in one line: <em>might not use it
+                consistently.</em> That line was right.
+            </p>
+        </section>
+
+        <section class="content-section" aria-labelledby="throughline-heading">
+            <p><span class="corpus-flag"><span class="mark" aria-hidden="true"></span>Dissertation corpus</span></p>
+            <h2 id="throughline-heading">Through line</h2>
+            <p>
+                The build prompt for the tracker is dated 12 February 2026. It describes the dissertation as
+                a study of <em>&ldquo;student agency in math education, specifically for students retaking
+                Algebra 1.&rdquo;</em> Four days later, on 16 February, the purpose statement written for
+                EDPS 936 reframed the dissertation as a mixed methods autoethnography with a single
+                participant &mdash; me. The instrument was specified before the study it now carries existed,
+                for a study that no longer does. The prompt has not been updated. It does not need to be;
+                it is data now.
+            </p>
+            <p>
+                The same prompt says, in its thirteenth line: <em>&ldquo;This tracker IS my dissertation
+                data &mdash; it&rsquo;s &lsquo;reflection through making.&rsquo;&rdquo;</em> That phrase is
+                one of the six themes in the EDPS 936 joint display, written weeks afterward. I had the name
+                for the theme before I had the study it belonged to.
+            </p>
+            <p>
+                And the deck&rsquo;s design for the tracker &mdash; <em>&ldquo;research journal meets
+                development log, with AI helping spot patterns between past experiences and current
+                decisions&rdquo;</em>; a reflection prompt that asks <em>&ldquo;You mentioned struggling
+                with rigid math curricula as a student. How is that shaping your design choices
+                here?&rdquo;</em> &mdash; is the use of generative technology I later declared to my
+                committee before beginning comprehensive exams: retrieval and connection-finding across my
+                own record, not generation. The declaration describes a tool. The tool was designed first.
+            </p>
+        </section>
+
+        <section class="content-section" aria-labelledby="artifacts-heading">
+            <h2 id="artifacts-heading">Artifacts</h2>
+            <div class="artifact-cards">
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">Prototyping Deck</h3>
+                    <p class="artifact-description">
+                        Twelve slides: the two prototypes side by side, their closest analogues and biggest
+                        risks, the six-phase design for the tracker, what was built on Neo4j, and what went
+                        wrong getting there.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Presentation</span>
+                        <a class="course-entry__link" href="prototyping-deck.pdf">Open the PDF<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">Student Agency Math Problem Generator</h3>
+                    <p class="artifact-description">
+                        The first prototype, still running. Choose a topic, a difficulty, and a context from
+                        your own life; a model writes the problem.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Live prototype</span>
+                        <a class="course-entry__link" href="/math-generator/">Try it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">Dissertation Tracker</h3>
+                    <p class="artifact-description">
+                        The second prototype, and the dissertation&rsquo;s instrument. Memory capture,
+                        build log, AI-assisted reflection, and a graph of how the entries connect.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Live instrument</span>
+                        <a class="course-entry__link" href="/dissertation-tracker/">Open it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="artifact-card">
+                    <h3 class="artifact-title">Graph Viewer</h3>
+                    <p class="artifact-description">
+                        Live data from Neo4j Aura, fetched through the Cloudflare Worker on load. Every node
+                        and relationship in the tracker, drawn.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Live visualization</span>
+                        <a class="course-entry__link" href="/dissertation-tracker/graph-viewer.html">See it<span class="arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="gated-heading">
+            <h2 id="gated-heading">Dissertation corpus &mdash; access required</h2>
+            <p>
+                The build prompt is dissertation data rather than coursework product. It is not published on
+                this site and is not in its repository. It is held in restricted storage and released on
+                request.
+            </p>
+            <div class="artifact-cards">
+
+                <article class="artifact-card artifact-card--gated">
+                    <h3 class="artifact-title">Autoethnography Tracker &mdash; Build Prompt</h3>
+                    <p class="artifact-description">
+                        12 February 2026. The instruction that started the instrument, written to a model,
+                        describing a dissertation that was reframed four days later. Six phases, a
+                        localStorage MVP that was meant to be upgraded, and the line that names the tracker
+                        as data.
+                    </p>
+                    <div class="artifact-card__foot">
+                        <span class="artifact-kind">Build specification</span>
+                        <button type="button" class="artifact-lock" data-gated-key="teac882b/autoethnography-prompt.md" data-gated-label="AUTOETHNOGRAPHY-PROMPT.md"><span class="mark" aria-hidden="true"></span>Access required</button>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <div id="access-modal-placeholder"></div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/shared/portfolio-access.js"></script>
+    <script src="/shared/component-loader.js"></script>
+</body>
+</html>
