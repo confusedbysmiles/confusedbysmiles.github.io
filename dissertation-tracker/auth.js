@@ -45,6 +45,7 @@ const Auth = (() => {
     // Call when a 401 is received — clears state and shows login modal
     function handleUnauthorized() {
         logout();
+        updateAuthButton();
         showLoginModal();
     }
 
@@ -154,6 +155,7 @@ const Auth = (() => {
             hideLoginModal();
             updateAuthButton();
             showToastIfAvailable('Welcome, ' + data.username + '!', 'success');
+            document.dispatchEvent(new CustomEvent('auth:login'));
 
             // Clear form
             if (usernameEl) usernameEl.value = '';
@@ -240,8 +242,8 @@ const Auth = (() => {
         try {
             const resp = await fetch(WORKER_URL + '/auth/admin/requests', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token }),
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({}),
             });
 
             const data = await resp.json();
@@ -326,8 +328,8 @@ const Auth = (() => {
         try {
             const resp = await fetch(WORKER_URL + '/auth/admin/approve', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, requestId, action, password }),
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ requestId, action, password }),
             });
 
             const data = await resp.json();
