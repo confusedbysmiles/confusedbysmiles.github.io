@@ -27,20 +27,15 @@ function saveEntries(entries) {
     }
 }
 
-function addEntry(entry, token) {
+function addEntry(entry) {
     const entries = loadEntries();
     entry.id = generateId();
     entry.createdAt = new Date().toISOString();
     if (entry.approved === undefined) entry.approved = false;
     entries.push(entry);
     saveEntries(entries);
-    Neo4j.saveEntry(entry, token)
-        .catch(err => {
-            if (err.message && err.message.includes('401')) {
-                Auth.handleUnauthorized();
-            }
-            console.warn('[Neo4j] write failed:', err);
-        });
+    Neo4j.saveEntry(entry)
+        .catch(err => console.warn('[Neo4j] write failed:', err));
     return entry;
 }
 
@@ -152,15 +147,6 @@ const converseState = {
 };
 
 async function initConverseTab() {
-    // Load all entries as context for Claude
-    try {
-        const data = await Neo4j.getEntries();
-        converseState.allEntries = data.entries || [];
-    } catch (err) {
-        console.warn('[Converse] Could not fetch entries for context:', err);
-        converseState.allEntries = loadEntries().filter(e => e.approved !== false);
-    }
-
     // Wire input controls
     document.getElementById('converse-send-btn').addEventListener('click', sendConverseMessage);
     document.getElementById('converse-input').addEventListener('keydown', e => {
@@ -181,6 +167,32 @@ async function initConverseTab() {
         e.target.value = '';
     });
 
+    // Every worker route needs a session, so the conversation waits for login
+    if (!isLoggedIn()) {
+        appendConverseMessage('assistant', 'Log in to start a conversation.');
+        document.addEventListener('auth:login', startConverseSession, { once: true });
+        return;
+    }
+    await startConverseSession();
+}
+
+async function startConverseSession() {
+    // Load all entries as context for Claude
+    try {
+        const data = await Neo4j.getEntries();
+        converseState.allEntries = data.entries || [];
+    } catch (err) {
+        console.warn('[Converse] Could not fetch entries for context:', err);
+        converseState.allEntries = loadEntries().filter(e => e.approved !== false);
+    }
+
+    // A stored token the worker rejected (expired) has now been cleared
+    if (!isLoggedIn()) {
+        appendConverseMessage('assistant', 'Your session expired. Log in to continue.');
+        document.addEventListener('auth:login', startConverseSession, { once: true });
+        return;
+    }
+
     if (!isSseim()) {
         await fetchConverseReply();
         return;
@@ -197,7 +209,7 @@ async function initConverseTab() {
 
     // Load unresolved entries and stash them in sessionContext so Claude surfaces them
     try {
-        const data = await fetch(`${WORKER_URL}/entries/unresolved`).then(r => r.json());
+        const data = await Neo4j.authFetch('/entries/unresolved').then(r => r.json());
         if (data.entries && data.entries.length > 0) {
             converseState.sessionContext = { unresolvedEntries: data.entries };
         }
@@ -207,7 +219,7 @@ async function initConverseTab() {
 
     // Check for pinned conversations — show resume banner if one exists
     try {
-        const data = await fetch(`${WORKER_URL}/conversations/pinned`).then(r => r.json());
+        const data = await Neo4j.authFetch('/conversations/pinned').then(r => r.json());
         if (data.conversations && data.conversations.length > 0) {
             showPinnedBanner(data.conversations[0]);
             return; // wait for Resume / Start Fresh choice
@@ -302,7 +314,7 @@ async function pinCurrentConversation() {
 
     try {
         // Extract a draft entry so the conversation has a Neo4j anchor
-        const extractResp = await fetch(`${WORKER_URL}/chat/extract`, {
+        const extractResp = await Neo4j.authFetch('/chat/extract', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ messages: converseState.messages }),
@@ -323,11 +335,10 @@ async function pinCurrentConversation() {
         const entries = loadEntries();
         entries.push(draft);
         saveEntries(entries);
-        const token = getToken();
-        await Neo4j.saveEntry(draft, token);
+        await Neo4j.saveEntry(draft);
 
         // Save conversation node to Neo4j
-        const convResp = await fetch(`${WORKER_URL}/conversation`, {
+        const convResp = await Neo4j.authFetch('/conversation', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ entryId: draft.id, messages: converseState.messages, summary: pinContext }),
@@ -337,7 +348,7 @@ async function pinCurrentConversation() {
         const conversationId = convData.id;
 
         // Pin it
-        await fetch(`${WORKER_URL}/conversation/${encodeURIComponent(conversationId)}/pin`, {
+        await Neo4j.authFetch(`/conversation/${encodeURIComponent(conversationId)}/pin`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ pinContext }),
@@ -377,7 +388,7 @@ async function flagCurrentEntryUnresolved() {
     }
 
     try {
-        const resp = await fetch(`${WORKER_URL}/entry/${encodeURIComponent(entryId)}/flag-unresolved`, {
+        const resp = await Neo4j.authFetch(`/entry/${encodeURIComponent(entryId)}/flag-unresolved`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ note: note.trim() }),
@@ -395,9 +406,7 @@ async function fetchConverseReply() {
     showConverseTyping(true);
 
     try {
-        const endpoint = converseState.pendingFile
-            ? `${WORKER_URL}/chat/with-file`
-            : `${WORKER_URL}/chat`;
+        const endpoint = converseState.pendingFile ? '/chat/with-file' : '/chat';
 
         const body = {
             messages:       converseState.messages,
@@ -411,7 +420,7 @@ async function fetchConverseReply() {
             }),
         };
 
-        const resp = await fetch(endpoint, {
+        const resp = await Neo4j.authFetch(endpoint, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify(body),
@@ -460,7 +469,7 @@ async function handleFileSelected(file) {
             formData.append('conversationId', converseState.currentConversationId);
         }
 
-        const resp = await fetch(`${WORKER_URL}/upload`, {
+        const resp = await Neo4j.authFetch('/upload', {
             method: 'POST',
             body:   formData,
         });
@@ -596,7 +605,7 @@ async function endAndSaveDraft() {
 
     try {
         // Ask Claude to extract a structured entry from the conversation
-        const extractResp = await fetch(`${WORKER_URL}/chat/extract`, {
+        const extractResp = await Neo4j.authFetch('/chat/extract', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ messages: converseState.messages }),
@@ -620,8 +629,7 @@ async function endAndSaveDraft() {
         saveEntries(entries);
 
         // Save to Neo4j (requires auth)
-        const token = getToken();
-        await Neo4j.saveEntry(draft, token);
+        await Neo4j.saveEntry(draft);
 
         showToast('Draft saved — find it in the Review tab', 'success');
         converseState.currentEntryId = draft.id;
@@ -891,8 +899,7 @@ function renderReviewPanel() {
         const updatedEntry = getReviewFormValues(reviewState.entries[reviewState.currentIndex]);
 
         try {
-            const token = getToken();
-            await Neo4j.approveEntry(updatedEntry.id, updatedEntry, token);
+            await Neo4j.approveEntry(updatedEntry.id, updatedEntry);
 
             // Update localStorage
             const all = loadEntries();
@@ -1197,10 +1204,8 @@ function initDeleteModal() {
         if (!pendingDeleteId) return;
 
         // Best-effort Neo4j delete
-        Neo4j.query(
-            'MATCH (e:TrackerEntry {id: $id}) DETACH DELETE e',
-            { id: pendingDeleteId }
-        ).catch(err => console.warn('[Neo4j] delete failed:', err));
+        Neo4j.deleteEntry(pendingDeleteId)
+            .catch(err => console.warn('[Neo4j] delete failed:', err));
 
         deleteEntry(pendingDeleteId);
         timelineEntries = null; // invalidate so Timeline re-fetches
@@ -1274,9 +1279,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initConverseTab();
 
     // Fetch unapproved count for the Review badge without waiting
-    Neo4j.getUnapproved()
+    const refreshUnapprovedCount = () => Neo4j.getUnapproved()
         .then(data => setUnapprovedCount((data.entries || []).length))
         .catch(() => {});
+    refreshUnapprovedCount();
+
+    // Data fetched while logged out fell back to localStorage; refetch it
+    document.addEventListener('auth:login', () => {
+        timelineEntries = null;
+        refreshUnapprovedCount();
+        const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+        if (activeTab === 'timeline') renderTimeline();
+        if (activeTab === 'review')   initReviewTab();
+    });
 
     Neo4j.health()
         .then(r => console.log('[Neo4j] status:', r.neo4j))

@@ -574,7 +574,17 @@ let selectedId = null;
 // ── Fetch & build graph data ─────────────────────────────────────────────────
 async function loadGraph() {
   try {
-    const resp = await fetch(`${WORKER}/entries`);
+    // Same session the tracker stores on login (auth.js)
+    const token = localStorage.getItem("AUTH_TOKEN");
+    const resp = token
+      ? await fetch(`${WORKER}/entries`, { headers: { Authorization: `Bearer ${token}` } })
+      : null;
+    if (!resp || resp.status === 401) {
+      setStatus("error", "Not logged in");
+      hideLoading();
+      showGraphEmpty("Log in to view the graph", 'Log in on the <a href="index.html">tracker</a>, then reload this page.');
+      return;
+    }
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const { entries } = await resp.json();
 
