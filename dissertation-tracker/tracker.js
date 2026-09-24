@@ -497,7 +497,7 @@ async function handleFileSelected(file) {
         previewDiv.className = 'chat-message chat-message-assistant';
         if (file.type.startsWith('image/')) {
             const img = document.createElement('img');
-            img.src   = `${WORKER_URL}/file/${encodeURIComponent(key)}`;
+            img.src   = `${WORKER_URL}/file/${key.split('/').map(encodeURIComponent).join('/')}`;
             img.alt   = file.name;
             img.style.cssText = 'max-width:100%;max-height:200px;border-radius:6px;display:block;';
             const caption = document.createElement('div');
